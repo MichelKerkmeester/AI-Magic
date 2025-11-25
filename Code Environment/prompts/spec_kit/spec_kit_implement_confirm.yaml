@@ -234,7 +234,7 @@ workflow:
       - Log progress after each task
     approach: incremental_implementation_with_reviews
     requirements:
-      - follow: .claude/knowledge/code_standards.md
+      - follow: Check knowledge base or skills folder for coding standards
       - update: task_checklist_progressively
       - test: before_commit
       - validate: continuously

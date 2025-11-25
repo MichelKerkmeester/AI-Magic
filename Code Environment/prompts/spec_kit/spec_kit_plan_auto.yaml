@@ -108,13 +108,13 @@ workflow:
     purpose: Review knowledge base and project standards
     activities:
       - Read and review AGENTS.md
-      - Read .claude/knowledge/*.md files
+      - Check knowledge base (.claude/knowledge/) or skills folder (.claude/skills/) for relevant coding standards
       - Extract coding standards summary
       - Identify architectural patterns
       - Document project conventions
     required_documents:
       - AGENTS.md
-      - .claude/knowledge/*.md
+      - Knowledge base or skills folder (if available)
     verification: MUST_REVIEW
     validation: principles_established
 

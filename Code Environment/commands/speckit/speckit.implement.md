@@ -4,7 +4,11 @@ description: Implementation workflow (8 steps) - execute pre-planned work. Requi
 
 ## Smart Command: /speckit.implement
 
-**Purpose**: Execute implementation of a pre-planned feature. Requires existing spec.md and plan.md from a prior `/speckit.plan` or `/speckit.complete` workflow that was terminated early.
+**Purpose**: Execute implementation of a pre-planned feature. Requires existing spec.md and plan.md from a prior `/speckit.plan` workflow.
+
+> **Step Numbering**: Steps are numbered 10-17 to indicate continuation from `/speckit.plan` (steps 1-7).
+> This shows the logical sequence: Plan creates spec/plan artifacts (steps 1-7), Implement executes them (steps 10-17).
+> Steps 8-9 are reserved for future intermediate steps.
 
 ## User Input
 
@@ -102,8 +106,28 @@ Based on detected/selected mode:
 
 ### Interactive Mode (`:confirm`)
 - Pauses after each step for user approval
-- Presents options: Approve, Review Code, Modify, Continue
+- Presents options: Approve, Review Details, Modify, Skip, Abort
 - Allows code review at each checkpoint
+
+## Context Loading
+
+When resuming work in an existing spec folder, the system will prompt to load prior session memory:
+- **A)** Load most recent memory file (quick context refresh)
+- **B)** Load all recent files (up to 3) (comprehensive context)
+- **C)** List all files and select specific (historical search)
+- **D)** Skip (start fresh, no context)
+
+See CLAUDE.md Section 2 for full memory file handling details.
+
+## Failure Recovery
+
+| Failure Type | Recovery Action |
+|--------------|-----------------|
+| Step validation fails | Review requirements, ask clarifying questions, retry |
+| User rejects approach | Present alternatives, modify code, document decision |
+| Tests fail during implementation | Debug, fix, re-run before marking complete |
+| Prerequisites insufficient | Return to `/speckit.plan` workflow |
+| Environment unavailable | Skip browser testing, document limitation |
 
 ## Prerequisite Check
 

@@ -122,6 +122,26 @@ Based on detected/selected mode:
 - Documents user decisions at each checkpoint
 - Allows course correction throughout workflow
 
+## Context Loading
+
+When resuming work in an existing spec folder, the system will prompt to load prior session memory:
+- **A)** Load most recent memory file (quick context refresh)
+- **B)** Load all recent files (up to 3) (comprehensive context)
+- **C)** List all files and select specific (historical search)
+- **D)** Skip (start fresh, no context)
+
+See CLAUDE.md Section 2 for full memory file handling details.
+
+## Failure Recovery
+
+| Failure Type | Recovery Action |
+|--------------|-----------------|
+| Step validation fails | Review requirements, ask clarifying questions, retry |
+| User rejects approach | Present alternatives, modify plan, document decision |
+| Tests fail during implementation | Debug, fix, re-run before marking complete |
+| Prerequisites insufficient | Return to prior workflow phase (planning) |
+| Environment unavailable | Skip browser testing, document limitation |
+
 ## Error Handling
 
 | Condition | Action |

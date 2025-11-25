@@ -89,8 +89,27 @@ Based on detected/selected mode:
 
 ### Interactive Mode (`:confirm`)
 - Pauses after each step for user approval
-- Presents options: Approve, Review Details, Modify, Skip
+- Presents options: Approve, Review Details, Modify, Skip, Abort
 - Allows course correction throughout planning
+
+## Context Loading
+
+When resuming work in an existing spec folder, the system will prompt to load prior session memory:
+- **A)** Load most recent memory file (quick context refresh)
+- **B)** Load all recent files (up to 3) (comprehensive context)
+- **C)** List all files and select specific (historical search)
+- **D)** Skip (start fresh, no context)
+
+See CLAUDE.md Section 2 for full memory file handling details.
+
+## Failure Recovery
+
+| Failure Type | Recovery Action |
+|--------------|-----------------|
+| Step validation fails | Review requirements, ask clarifying questions, retry |
+| User rejects approach | Present alternatives, modify plan, document decision |
+| Spec ambiguity persists | Document as assumption, add to risk matrix |
+| Environment unavailable | Skip browser testing, document limitation |
 
 ## Error Handling
 

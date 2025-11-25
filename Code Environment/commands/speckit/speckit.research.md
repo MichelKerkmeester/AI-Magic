@@ -113,9 +113,29 @@ The generated `research.md` includes:
 
 ### Interactive Mode (`:confirm`)
 - Pauses after each step for user approval
+- Presents options: Approve, Review Details, Modify, Skip, Abort
 - Allows redirection of research focus
 - Presents findings for review before proceeding
 - Enables iterative exploration
+
+## Context Loading
+
+When resuming work in an existing spec folder, the system will prompt to load prior session memory:
+- **A)** Load most recent memory file (quick context refresh)
+- **B)** Load all recent files (up to 3) (comprehensive context)
+- **C)** List all files and select specific (historical search)
+- **D)** Skip (start fresh, no context)
+
+See CLAUDE.md Section 2 for full memory file handling details.
+
+## Failure Recovery
+
+| Failure Type | Recovery Action |
+|--------------|-----------------|
+| Research scope unclear | Ask clarifying questions, narrow focus |
+| External sources unavailable | Document limitation, continue with available info |
+| Conflicting findings | Document both perspectives with analysis, flag for review |
+| Technical dead-end | Document findings, recommend alternative approach |
 
 ## Error Handling
 
