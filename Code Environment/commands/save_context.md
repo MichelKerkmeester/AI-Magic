@@ -1,6 +1,6 @@
 ---
-description: Save conversation context to the related spec folder
-argument-hint: [optional: spec-folder-name or "latest"]
+description: Save conversation context to the related spec folder (v1.3.0)
+argument-hint: [optional: spec-folder-name e.g. "122-skill-standardization"]
 allowed-tools: Read, Write, Bash
 ---
 
@@ -30,11 +30,21 @@ This skill automatically activates when:
 /save-context
 ```
 
-Optional argument to specify target spec folder:
+Optional argument to specify target spec folder (must be full folder name):
 ```
-/save-context 092-skill-md-template
-/save-context latest
+/save_context 092-skill-md-template
+/save_context 122-skill-standardization
 ```
+
+**Note**: Magic keywords like "latest" are not supported. Use the full folder name (e.g., `122-skill-standardization`).
+
+---
+
+## Spec Folder Detection
+
+**Alignment Scoring**: The skill calculates alignment between conversation topics and spec folder names. If alignment is below 70%, you'll be prompted to select the correct folder.
+
+**Sub-Folder Awareness**: When `.spec-active` marker exists, context is saved to the active sub-folder's `memory/` directory (e.g., `specs/122-name/003-subfolder/memory/`).
 
 ---
 
@@ -171,3 +181,10 @@ Settings in `.claude/skills/workflows-save-context/config.jsonc`:
 - `maxToolOutputLines`: Max lines from tool outputs (default: 100)
 - `messageTimeWindow`: Time window for grouping phases in ms (default: 300000)
 - `timezoneOffsetHours`: Timezone adjustment for timestamps (default: 1)
+
+---
+
+## Full Documentation
+
+For comprehensive documentation including troubleshooting, performance characteristics, and advanced features, see:
+`.claude/skills/workflows-save-context/SKILL.md`

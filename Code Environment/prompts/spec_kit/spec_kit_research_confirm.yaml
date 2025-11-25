@@ -1,0 +1,384 @@
+# ───────────────────────────────────────────────────────────────────
+# SMART SPECKIT: RESEARCH WORKFLOW (INTERACTIVE MODE)
+# ───────────────────────────────────────────────────────────────────
+role: Expert Developer using Smart SpecKit for interactive research
+purpose: Spec-driven comprehensive technical investigation with user approval
+action: Run SpecKit research workflow with user checkpoints
+
+operating_mode:
+  workflow: sequential
+  workflow_compliance: MANDATORY
+  workflow_execution: interactive
+  approvals: step_by_step
+  tracking: progressive_research_documentation
+  validation: checkpoint_based
+
+research_philosophy:
+  principle: "Thoroughness first, documentation second"
+  approach: "Systematic investigation with user validation at checkpoints"
+  mandate: "Research deeply, validate with user, document comprehensively"
+
+# ───────────────────────────────────────────────────────────────────
+# USER INPUTS (Transformed from raw text)
+# ───────────────────────────────────────────────────────────────────
+user_inputs:
+  git_branch: |
+    [GIT_BRANCH]
+    Git branch name. Leave empty to auto-create as feature-{NNN}.
+
+  spec_folder: |
+    [SPEC_FOLDER]
+    Spec folder path. Leave empty to auto-create next available.
+
+  context: |
+    [CONTEXT]
+    Background information, technical stack, or investigating context.
+
+  issues: |
+    [ISSUES]
+    Known issues, questions, problems, or unknowns to investigate.
+
+  request: |
+    [REQUEST]
+    Research topic or technical question to investigate. REQUIRED.
+
+  environment: |
+    [STAGING LINK]
+    Staging URL for browser-based analysis.
+
+  scope: |
+    [FILES]
+    Files or folders to focus investigation on.
+
+# ─────────────────────────────────────────────────────────────────
+# FIELD HANDLING
+# ─────────────────────────────────────────────────────────────────
+field_handling:
+  spec_id:
+    derive_from: "spec_folder path using pattern specs/{NNN} or specs/{NNN-name}"
+    fallback: "Extract numeric portion or use timestamp if extraction fails"
+
+  defaults:
+    git_branch_empty: "Auto-create feature-{NNN} from highest +001"
+    spec_folder_empty: "Auto-create specs/{NNN} from highest +001"
+    context_empty: "Infer from [REQUEST] and codebase exploration"
+    issues_empty: "Investigate and discover during workflow"
+    environment_empty: "Skip browser analysis steps"
+    scope_empty: "Use scope_policy.default"
+
+  scope_policy:
+    default: "specs/**"
+    rule: "Limit file operations to scope when provided"
+
+# ─────────────────────────────────────────────────────────────────
+# AVAILABLE TEMPLATES
+# ─────────────────────────────────────────────────────────────────
+available_templates:
+  spec: .opencode/speckit/templates/spec_template.md
+  research: .opencode/speckit/templates/research_template.md
+  research_spike: .opencode/speckit/templates/research_spike_template.md
+  decision_record: .opencode/speckit/templates/decision_record_template.md
+  checklist: .opencode/speckit/templates/checklist_template.md
+
+# ─────────────────────────────────────────────────────────────────
+# CHECKPOINT OPTIONS
+# ─────────────────────────────────────────────────────────────────
+checkpoint_options:
+  standard:
+    - label: "Approve"
+      description: "Approve this step and proceed to next"
+    - label: "Review Details"
+      description: "Show more details about what was done"
+    - label: "Modify"
+      description: "Request changes before proceeding"
+    - label: "Skip"
+      description: "Skip this step (if optional)"
+
+  research_direction:
+    - label: "Continue"
+      description: "Research direction is good, proceed"
+    - label: "Go Deeper"
+      description: "Investigate this area more thoroughly"
+    - label: "Redirect"
+      description: "Change research focus"
+    - label: "Skip Area"
+      description: "This area is not relevant"
+
+# ─────────────────────────────────────────────────────────────────
+# WORKFLOW (9 STEPS WITH CHECKPOINTS)
+# ─────────────────────────────────────────────────────────────────
+workflow:
+  step_1_request_analysis:
+    purpose: Analyze research request and define investigation scope
+    activities:
+      - Analyze all user inputs thoroughly
+      - Define research scope and objectives
+      - Verify or create spec folder structure
+      - Check for existing research artifacts
+      - Establish investigation boundaries
+      - Identify key questions to answer
+    deep_analysis:
+      focus: comprehensive_research_scoping
+      outputs:
+        - feature_summary
+        - research_objectives
+        - investigation_priorities
+        - key_questions
+        - success_criteria
+    validation: understanding_confirmed
+    checkpoint:
+      question: "Step 1 Complete: Research scope defined. How would you like to proceed?"
+      use: AskUserQuestion
+      options:
+        - label: "Approve Scope"
+          description: "Research scope is clear, proceed"
+        - label: "Narrow Focus"
+          description: "Make research scope more specific"
+        - label: "Expand Scope"
+          description: "Broaden research areas"
+
+  step_2_pre_work_review:
+    purpose: Review knowledge base and project standards
+    activities:
+      - Read and review AGENTS.md
+      - Read .claude/knowledge/*.md files
+      - Extract relevant coding standards
+      - Identify architectural patterns
+      - Document project conventions
+      - Note constraints relevant to research
+    required_documents:
+      - AGENTS.md
+      - .claude/knowledge/*.md
+    verification: MUST_REVIEW
+    validation: principles_established
+    checkpoint:
+      question: "Step 2 Complete: Knowledge base reviewed. How would you like to proceed?"
+      use: AskUserQuestion
+      options: checkpoint_options.standard
+
+  step_3_codebase_investigation:
+    purpose: Explore existing codebase for patterns and implementations
+    activities:
+      - Search for related code patterns
+      - Analyze existing implementations
+      - Document current architecture
+      - Identify integration points
+      - Map dependencies
+      - Note technical debt or limitations
+    outputs:
+      - current_state_analysis
+      - existing_patterns
+      - integration_points
+      - dependency_map
+    validation: codebase_understood
+    checkpoint:
+      question: "Step 3 Complete: Codebase investigated. How would you like to proceed?"
+      use: AskUserQuestion
+      options: checkpoint_options.research_direction
+
+  step_4_external_research:
+    purpose: Research external documentation and best practices
+    activities:
+      - Search official documentation
+      - Review API references
+      - Analyze community best practices
+      - Identify relevant libraries/tools
+      - Document limitations and constraints
+      - Compare alternative approaches
+    outputs:
+      - best_practices_summary
+      - api_documentation
+      - library_comparison
+      - constraint_documentation
+    validation: external_research_complete
+    checkpoint:
+      question: "Step 4 Complete: External research done. How would you like to proceed?"
+      use: AskUserQuestion
+      options: checkpoint_options.research_direction
+
+  step_5_technical_analysis:
+    purpose: Perform feasibility assessment and technical analysis
+    activities:
+      - Evaluate technical feasibility
+      - Assess performance implications
+      - Analyze security considerations
+      - Review scalability requirements
+      - Document trade-offs
+      - Identify risks and mitigations
+    outputs:
+      - technical_specifications
+      - feasibility_assessment
+      - performance_analysis
+      - security_review
+      - risk_assessment
+    validation: technical_analysis_complete
+    checkpoint:
+      question: "Step 5 Complete: Technical analysis done. Review findings?"
+      use: AskUserQuestion
+      options:
+        - label: "Approve Analysis"
+          description: "Analysis is comprehensive, proceed"
+        - label: "Review Findings"
+          description: "Show detailed technical findings"
+        - label: "Investigate More"
+          description: "Dig deeper into specific areas"
+
+  step_6_quality_checklist:
+    purpose: Generate validation checklist for research quality
+    activities:
+      - Load checklist_template.md
+      - Generate research-specific validation items
+      - Include completeness checks
+      - Include accuracy verification items
+      - Include documentation quality checks
+    outputs:
+      - quality_checklist: generated
+    template: .opencode/speckit/templates/checklist_template.md
+    validation: checklist_generated
+    checkpoint:
+      question: "Step 6 Complete: Quality checklist generated. How would you like to proceed?"
+      use: AskUserQuestion
+      options: checkpoint_options.standard
+
+  step_7_solution_design:
+    purpose: Design solution architecture based on research findings
+    activities:
+      - Synthesize research findings
+      - Design recommended architecture
+      - Define implementation patterns
+      - Create integration approach
+      - Document decision rationale
+      - Outline implementation strategy
+    outputs:
+      - solution_architecture
+      - implementation_patterns
+      - integration_approach
+      - decision_rationale
+    optional_documents:
+      - decision-record-[name].md: "For significant architecture decisions"
+    template: .opencode/speckit/templates/decision_record_template.md
+    validation: solution_designed
+    checkpoint:
+      question: "Step 7 Complete: Solution designed. Review architecture?"
+      use: AskUserQuestion
+      options:
+        - label: "Approve Design"
+          description: "Architecture looks good"
+        - label: "Review Architecture"
+          description: "Show detailed architecture design"
+        - label: "Alternative Approach"
+          description: "Explore different architecture"
+
+  step_8_research_compilation:
+    purpose: Compile all research into comprehensive documentation
+    activities:
+      - Load research_template.md
+      - Fill all 17 sections systematically
+      - Include executive overview
+      - Document core architecture
+      - Add technical specifications
+      - Include constraints and limitations
+      - Document integration patterns
+      - Provide implementation guide
+      - Add code examples
+      - Include testing strategies
+      - Document performance considerations
+      - Add security section
+      - Include troubleshooting guide
+      - Add API reference
+      - Include acknowledgements
+      - Add appendix and changelog
+    outputs:
+      - research.md: comprehensive_technical_documentation
+    template: .opencode/speckit/templates/research_template.md
+    validation: research_documented
+    checkpoint:
+      question: "Step 8 Complete: Research compiled. Review research.md?"
+      use: AskUserQuestion
+      options:
+        - label: "Approve Research"
+          description: "Research documentation is complete"
+        - label: "Review Document"
+          description: "Show research.md for detailed review"
+        - label: "Add Content"
+          description: "Add more to research documentation"
+
+  step_9_save_context:
+    purpose: Save conversation context for documentation
+    activities:
+      - Invoke workflows-save-context skill
+      - Preserve research decisions and rationale
+      - Preserve technical findings
+      - Preserve code analysis results
+    tool_invocation:
+      tool: Skill
+      parameter: skill="workflows-save-context"
+      note: "Use the Skill tool with skill parameter to activate context saving"
+    outputs:
+      - context_file: "specs/[NNN-feature]/memory/[DD-MM-YY_HH-MM]__research_session.md"
+    validation: context_saved_successfully
+    checkpoint:
+      question: "Step 9 Complete: Research workflow finished!"
+      use: AskUserQuestion
+      options:
+        - label: "Done"
+          description: "Complete the research workflow"
+        - label: "View Summary"
+          description: "Show research summary"
+
+# ─────────────────────────────────────────────────────────────────
+# WORKFLOW TERMINATION
+# ─────────────────────────────────────────────────────────────────
+termination:
+  after_step: 9
+  message: "Research phase completed successfully. Workflow terminated after step 9 (save context)."
+  next_steps:
+    - Review research.md findings
+    - Validate technical recommendations
+    - Run /speckit.plan or /speckit.complete to proceed with development
+
+# ─────────────────────────────────────────────────────────────────
+# INTERACTIVE EXECUTION GUIDANCE
+# ─────────────────────────────────────────────────────────────────
+interactive_execution:
+  principle: "Execute research workflow with user approval and direction at each checkpoint"
+
+  checkpoint_behavior:
+    - Complete step activities
+    - Present findings summary
+    - Use AskUserQuestion for approval
+    - Wait for user response
+    - Process user feedback
+    - Proceed, redirect, or go deeper as directed
+
+  research_direction_handling:
+    continue: "Proceed to next research step"
+    go_deeper: "Expand investigation in current area"
+    redirect: "Change research focus based on user guidance"
+    skip_area: "Skip this area and proceed"
+
+  user_feedback_handling:
+    approve: "Proceed to next step"
+    review: "Show detailed output of current step"
+    modify: "Accept changes and re-execute step"
+    skip: "Skip optional step and proceed"
+
+# ─────────────────────────────────────────────────────────────────
+# RULES
+# ─────────────────────────────────────────────────────────────────
+rules:
+  ALWAYS:
+    - follow_workflow_sequence
+    - document_all_findings
+    - validate_before_completion
+    - cite_sources_and_references
+    - pause_at_checkpoints_for_approval
+    - respect_user_direction
+    - allow_research_redirection
+
+  NEVER:
+    - skip_workflow_steps
+    - make_unsupported_claims
+    - proceed_without_user_approval
+    - ignore_user_direction
+    - submit_incomplete_research
