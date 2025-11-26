@@ -60,7 +60,41 @@ Create comprehensive ASCII flowcharts in markdown for visualizing complex workfl
 
 ---
 
-## 2. 🗂️ REFERENCES
+## 2. 🧭 SMART ROUTING
+
+```python
+def route_flowchart_resources(task):
+    # pattern-based template selection
+    if task.is_linear_sequence:
+        return load("references/simple_workflow.md")  # top-to-bottom flow
+    
+    if task.has_decision_branches:
+        return load("references/decision_tree_flow.md")  # multi-branch decisions
+    
+    if task.has_parallel_tasks:
+        return load("references/parallel_execution.md")  # sync points, concurrent
+    
+    if task.has_nested_process:
+        return load("references/user_onboarding.md")  # hierarchical sub-processes
+    
+    if task.has_approval_gate or task.has_loop_iteration:
+        return load("references/approval_workflow_loops.md")  # revision cycles
+    
+    if task.has_multi_stage or task.needs_swimlanes:
+        return load("references/system_architecture_swimlane.md")  # layer separation
+    
+    # validation script
+    if task.validating_diagram:
+        return execute("scripts/validate.sh")  # size and depth warnings
+
+# limits: max 40 boxes, 8 levels deep
+# if > 40 boxes: recommend splitting into sub-workflows
+# patterns: linear, decision, parallel, nested, approval, loop, swimlane
+```
+
+---
+
+## 3. 🗂️ REFERENCES
 
 ### Core Framework
 | Document | Purpose | Key Insight |
@@ -82,52 +116,9 @@ Create comprehensive ASCII flowcharts in markdown for visualizing complex workfl
 |----------|---------|-------------|
 | **scripts/validate.sh** | Flowchart validation automation | Execute to check size and depth warnings |
 
-### Smart Routing Logic
-
-```python
-def flowchart_creation_workflow(requirements):
-    analysis = analyze_workflow_requirements(requirements)
-    step_count = analysis.steps + analysis.decisions + analysis.branches
-
-    if step_count > 40:
-        return escalate_split_recommendation(
-            reason=f"{step_count} boxes exceeds 40-box limit",
-            suggestion="Split into sub-workflows or phases"
-        )
-
-    pattern_map = {
-        'is_linear_sequence': ('linear', 'simple_workflow.md'),
-        'has_decision_branches': ('decision_branch', 'decision_tree_flow.md'),
-        'has_parallel_tasks': ('parallel', 'parallel_execution.md'),
-        'has_nested_process': ('nested', 'user_onboarding.md'),
-        'has_approval_gate': ('approval_gate', 'approval_workflow_loops.md'),
-        'has_loop_iteration': ('loop', 'approval_workflow_loops.md'),
-        'has_multi_stage': ('pipeline', 'system_architecture_swimlane.md')
-    }
-
-    pattern, template_file = next(
-        ((p, t) for attr, (p, t) in pattern_map.items() if getattr(analysis, attr)),
-        ('combined', None)
-    )
-
-    template = load_template(template_file) if template_file else create_combined_template(analysis)
-
-    diagram = build_diagram(pattern, template, requirements)
-
-    validation = validate_readability(diagram, script="validate.sh")
-    while not validation.all_paths_clear:
-        diagram = refine_layout_labels(diagram, validation.issues, adjust_spacing=True, adjust_alignment=True)
-        validation = validate_readability(diagram, script="validate.sh")
-
-    check_box_alignment(diagram)
-    validate_decision_labels(diagram)
-
-    return {"status": "complete", "diagram": diagram, "pattern": pattern}
-```
-
 ---
 
-## 3. 🛠️ HOW IT WORKS
+## 4. 🛠️ HOW IT WORKS
 
 This skill provides reusable flowchart components and 7 core patterns for visualizing complex workflows, user journeys, and system architectures using ASCII art in markdown.
 

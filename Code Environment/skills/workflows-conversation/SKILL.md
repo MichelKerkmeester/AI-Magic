@@ -55,7 +55,41 @@ Orchestrates mandatory spec folder creation for all conversations involving file
 
 ---
 
-## 2. 🗂️ REFERENCES
+## 2. 🧭 SMART ROUTING
+
+```python
+def route_conversation_resources(task):
+    # level 1: simple changes (< 100 LOC)
+    if task.estimated_loc < 100:
+        return load("templates/spec_template.md")  # spec.md only
+    
+    # level 2: moderate changes (100-499 LOC)
+    if task.estimated_loc < 500:
+        load("templates/spec_template.md")  # spec.md
+        return load("templates/plan_template.md")  # + plan.md
+    
+    # level 3: complex changes (>= 500 LOC)
+    if task.estimated_loc >= 500:
+        return execute("/speckit.specify")  # auto-generates all core files
+    
+    # supporting templates (optional, load as needed)
+    if task.needs_task_breakdown:
+        return load("templates/tasks_template.md")
+    if task.needs_validation_checklist:
+        return load("templates/checklist_template.md")
+    if task.documenting_decision:
+        return load("templates/decision_record_template.md")
+    if task.doing_research:
+        return load("templates/research_spike_template.md")
+
+# levels: 1 (< 100 LOC), 2 (100-499 LOC), 3 (>= 500 LOC)
+# high risk/complexity bumps to at least level 2
+# templates in: .opencode/speckit/templates/
+```
+
+---
+
+## 3. 🗂️ REFERENCES
 
 ### Core Framework & Workflows
 
@@ -74,65 +108,9 @@ Orchestrates mandatory spec folder creation for all conversations involving file
 | **references/automation_workflows.md** | Hook enforcement and context auto-save | Hook prompts **at conversation start**, not mid-work |
 | **references/quick_reference.md** | Commands, checklists, troubleshooting | Pre-implementation checklist is **mandatory** |
 
-### Smart Routing Logic
-
-```python
-def conversation_documentation_workflow(request):
-    if not detects_file_modification(request):
-        return
-
-    estimate = estimate_implementation(request)
-    level = determine_level(estimate.loc, estimate.risk, estimate.complexity)
-
-    state = check_conversation_state()
-
-    if state == "start":
-        related = search_related_specs(request)
-        choice = present_spec_folder_options(related)
-
-        if choice == "D":
-            create_skip_marker(".claude/.spec-skip")
-            return
-    else:
-        choice = "B"
-
-    if choice in ["A", "B", "C"]:
-        if choice == "A" and has_root_level_content(related[0]):
-            subfolder_name = ask_user("New sub-folder name:")
-            migrate_to_subfolders(related[0], subfolder_name)
-            spec_folder = f"{related[0]}/{next_subfolder_number()}-{subfolder_name}"
-        else:
-            spec_folder = f"specs/{find_next_spec_number():03d}-{ask_user('Folder name:')}"
-
-        os.makedirs(spec_folder, exist_ok=True)
-
-        if level == 1:
-            copy_template("spec_template.md", f"{spec_folder}/spec.md")
-        elif level == 2:
-            copy_template("spec_template.md", f"{spec_folder}/spec.md")
-            copy_template("plan_template.md", f"{spec_folder}/plan.md")
-        else:
-            execute_command("/speckit.specify")
-
-        fill_template_placeholders(spec_folder, request)
-
-        if wait_for_user_approval():
-            execute_implementation(request)
-            register_context_autosave(spec_folder, interval=20)
-
-
-def determine_level(loc, risk, complexity):
-    base = 1 if loc < 100 else (2 if loc < 500 else 3)
-
-    if risk in ["high", "critical"] or complexity == "high":
-        return max(base, 2)
-
-    return base
-```
-
 ---
 
-## 3. ⚙️ HOW IT WORKS
+## 4. ⚙️ HOW IT WORKS
 
 ### 4-Level Decision Framework
 

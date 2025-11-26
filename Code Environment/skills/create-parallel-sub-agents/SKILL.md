@@ -77,7 +77,45 @@ Autonomous agent orchestration system that analyzes task complexity, receives sk
 
 ---
 
-## 2. 🗂️ REFERENCES
+## 2. 🧭 SMART ROUTING
+
+```python
+def route_orchestrator_resources(task):
+    # complexity scoring algorithm
+    if task.calculating_complexity:
+        return load("references/complexity_scoring.md")  # 5-factor weighted scoring
+    
+    # skill grouping by domain
+    if task.grouping_skills:
+        return load("references/skill_clustering.md")  # code/docs/git/testing clusters
+    
+    # dispatch decision (when to dispatch vs handle directly)
+    if task.deciding_dispatch:
+        return load("references/dispatch_decision.md")  # threshold-based decision tree
+    
+    # sub-agent lifecycle (create, dispatch, integrate, cleanup)
+    if task.managing_agents:
+        return load("references/sub_agent_lifecycle.md")  # ephemeral agent pattern
+    
+    # creating sub-agent specifications
+    if task.creating_sub_agent:
+        return load("assets/sub_agent_template.md")  # spec template
+    
+    # pre-dispatch validation
+    if task.before_dispatch:
+        return load("assets/dispatch_checklist.md")  # validation checklist
+    
+    # quick decision lookup
+    if task.needs_quick_reference:
+        return load("references/quick_reference.md")  # one-page decision tree
+
+# thresholds: <25=direct, 25-35=ask user, >35=dispatch
+# fallback: >30% failure rate → handle directly
+```
+
+---
+
+## 3. 🗂️ REFERENCES
 
 ### Core Framework
 | Document | Purpose | Key Insight |
@@ -94,57 +132,6 @@ Autonomous agent orchestration system that analyzes task complexity, receives sk
 | **references/quick_reference.md** | One-page decision tree for fast lookup | Load for quick navigation and decision support |
 | **assets/sub_agent_template.md** | Sub-agent specification template | Load when creating sub-agent specs |
 | **assets/dispatch_checklist.md** | Pre-dispatch validation checklist | Load before launching sub-agents |
-
-### Smart Routing Logic
-
-**Note**: The following is conceptual pseudo-code illustrating the orchestration flow. Actual implementation uses shell hooks and Claude's Task tool.
-
-```python
-# CONCEPTUAL PSEUDO-CODE - Not runnable code
-def orchestrate_task(request):
-    analysis = analyze_task(request)
-    score = calculate_complexity(analysis)
-
-    if score < 25:
-        return execute_directly(request)
-    elif score < 35:
-        if ask_user_preference() == "direct":
-            return execute_directly(request)
-
-    if check_token_budget() < 0.20:
-        return execute_directly(request)
-
-    skill_groups = group_skills_by_domain(
-        read_skill_recommendations(),
-        analysis.domains
-    )
-
-    agents = [
-        create_sub_agent(domain, skill_groups[domain])
-        for domain in analysis.domains
-    ]
-
-    results = dispatch_agents(agents)
-
-    if failure_rate(results) > 0.30:
-        return execute_directly(request)
-
-    if has_failures(results):
-        results = retry_failed(results)
-
-    return integrate_results(results)
-
-
-def calculate_complexity(analysis):
-    weights = {
-        'domains': 35 * (0 if len(analysis.domains) == 1 else 0.5 if len(analysis.domains) == 2 else 1.0),
-        'files': 25 * (0 if analysis.files <= 2 else 0.5 if analysis.files <= 5 else 1.0),
-        'loc': 15 * (0 if analysis.loc < 50 else 0.5 if analysis.loc <= 200 else 1.0),
-        'parallel': 20 * (0 if analysis.parallel == "none" else 0.5 if analysis.parallel == "some" else 1.0),
-        'type': 5 * (0 if analysis.type == "trivial" else 0.5 if analysis.type == "moderate" else 1.0)
-    }
-    return round(sum(weights.values()))
-```
 
 ---
 

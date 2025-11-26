@@ -44,7 +44,51 @@ Guide the creation of effective Claude skills through a structured 6-step workfl
 
 ---
 
-## 2. 🗂️ REFERENCES
+## 2. 🧭 SMART ROUTING
+
+```python
+def route_documentation_resources(task):
+    # MODE 1: Document Quality
+    if task.mode == "document_quality":
+        if task.checking_structure:
+            return load("references/core_standards.md")  # filename, types, violations
+        if task.optimizing_content:
+            return load("references/optimization.md")  # c7score, 16 transformations
+        if task.validating_quality:
+            return load("references/validation.md")  # scoring, gates, recommendations
+        if task.needs_workflow_guidance:
+            return load("references/workflows.md")  # 4 execution modes
+    
+    # MODE 2: Skill Creation
+    if task.mode == "skill_creation":
+        if task.creating_skill:
+            load("references/skill_creation.md")  # 6-step workflow
+            return execute("scripts/init_skill.py")  # scaffolding
+        if task.needs_skill_template:
+            return load("assets/skill_md_template.md")  # SKILL.md template
+        if task.creating_command:
+            return load("assets/command_template.md")  # slash command templates
+        if task.packaging_skill:
+            return execute("scripts/package_skill.py")  # validation + packaging
+        if task.quick_validation:
+            return execute("scripts/quick_validate.py")  # fast validation
+    
+    # frontmatter help
+    if task.needs_frontmatter:
+        return load("assets/frontmatter_templates.md")  # YAML by doc type
+    
+    # batch analysis
+    if task.analyzing_docs:
+        return execute("scripts/analyze_docs.py")  # quality automation
+    
+    # quick lookup
+    if task.needs_quick_reference:
+        return load("references/quick_reference.md")  # one-page cheat sheet
+```
+
+---
+
+## 3. 🗂️ REFERENCES
 
 ### Core Framework
 | Document                                 | Purpose                               | Key Insight                                |
@@ -77,74 +121,9 @@ Guide the creation of effective Claude skills through a structured 6-step workfl
 | **scripts/package_skill.py** | Skill validation and packaging | Execute for MODE 2 Step 5 packaging |
 | **scripts/quick_validate.py** | Minimal skill validation | Execute for fast validation checks |
 
-### Smart Routing Logic
-
-```python
-def documentation_specialist_router(request):
-    intent = detect_intent(request)
-
-    if intent == "create_new_skill":
-        return skill_creation_mode(request)
-    elif intent == "update_existing_skill":
-        return skill_creation_mode(request, update=True)
-    else:
-        return document_quality_mode(request)
-
-
-def document_quality_mode(document):
-    doc_type = detect_document_type(document)
-    violations = validate_structure(document, doc_type, get_enforcement_level(doc_type))
-
-    if violations.critical:
-        return {"status": "blocked", "violations": violations}
-
-    if violations.safe:
-        apply_safe_fixes(violations.safe)
-
-    optimized = optimize_for_ai_readability(document)
-    scores = calculate_quality_scores(optimized)
-
-    while scores.c7score < 85 or scores.structure < 100:
-        optimized = apply_improvements(optimized, suggest_improvements(optimized))
-        scores = calculate_quality_scores(optimized)
-
-    return {
-        "status": "approved" if scores.overall >= 90 else "manual_review",
-        "scores": scores,
-        "content": optimized
-    }
-
-
-def skill_creation_mode(request, update=False):
-    examples = gather_concrete_examples(request)
-    validate_understanding(examples)
-
-    resources = plan_bundled_resources(request)
-
-    skill_path = execute_script("init_skill.py", request) if not update else request.existing_skill_path
-
-    populate_skill_md(skill_path, examples, resources)
-    populate_bundled_resources(skill_path, resources)
-    delete_unused_examples(skill_path)
-
-    validation = execute_script("package_skill.py", skill_path)
-
-    if not validation.passed:
-        return {"status": "validation_failed", "errors": validation.errors}
-
-    quality = document_quality_mode(f"{skill_path}/SKILL.md")
-
-    return {
-        "status": "complete",
-        "skill_path": skill_path,
-        "package": validation.package_path,
-        "quality_scores": quality["scores"]
-    }
-```
-
 ---
 
-## 3. 🛠️ WHEN TO USE
+## 4. 🛠️ WHEN TO USE
 
 ### Navigation Guide
 

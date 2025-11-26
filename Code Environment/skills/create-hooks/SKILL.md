@@ -51,7 +51,51 @@ Load resources progressively based on your current step in the creation workflow
 
 ---
 
-## 2. 🗂️ REFERENCES
+## 2. 🧭 SMART ROUTING
+
+```python
+def route_hook_resources(task):
+    # hook type selection and capabilities
+    if task.choosing_hook_type:
+        return load("references/hook_types.md")  # all 6 types with payloads
+    
+    # step-by-step creation process
+    if task.creating_new_hook:
+        load("references/hook_creation_guide.md")  # planning to deployment
+        return load("assets/hook_template.sh")  # base template
+    
+    # payload parsing patterns
+    if task.parsing_payload:
+        return load("references/payload_structures.md")  # JSON schemas, jq patterns
+    
+    # security and performance patterns
+    if task.needs_security or task.needs_performance:
+        return load("references/best_practices.md")  # optimization, sanitization
+    
+    # hook examples by type
+    if task.hook_type == "PreCompact":
+        return load("assets/precompact_example.sh")  # context preservation
+    if task.hook_type == "UserPromptSubmit":
+        return load("assets/userpromptssubmit_example.sh")  # keyword detection
+    if task.hook_type == "PreToolUse":
+        return load("assets/pretooluse_example.sh")  # validation/blocking
+    if task.hook_type == "PostToolUse":
+        return load("assets/posttooluse_example.sh")  # auto-fix/formatting
+    
+    # validation and testing
+    if task.validating_hook:
+        return execute("scripts/validate_hook.sh")  # syntax, permissions, bash 3.2
+    if task.testing_hook:
+        return execute("scripts/test_hook.sh")  # payloads, performance, exit codes
+    
+    # testing strategy
+    if task.needs_testing_guide:
+        return load("references/testing_guide.md")  # three-phase testing
+```
+
+---
+
+## 3. 🗂️ REFERENCES
 
 ### Core Framework
 
@@ -119,75 +163,9 @@ What do you need to automate?
    (cleanup, archiving)
 ```
 
-### Smart Routing Logic
-
-```python
-def hook_creation_workflow(automation_need):
-    hook_type_mapping = {
-        "before_compaction": "PreCompact",
-        "user_submits_message": "UserPromptSubmit",
-        "before_tool_runs": "PreToolUse",
-        "after_tool_completes": "PostToolUse",
-        "session_starts": "PreSessionStart",
-        "session_ends": "PostSessionEnd"
-    }
-
-    selected_type = hook_type_mapping.get(select_hook_type(automation_need))
-    capabilities = load_hook_capabilities(selected_type)
-
-    hook_path = f".claude/hooks/{selected_type}/my-hook.sh"
-    copy_template(load_template("assets/hook_template.sh"), hook_path)
-
-    implement_hook_logic(hook_path, automation_need)
-
-    if needs_payload_parsing(automation_need):
-        extract_required_fields_with_jq(hook_path, load_payload_patterns())
-
-    if needs_security_patterns(automation_need):
-        implement_sanitization(hook_path, load_security_patterns())
-
-    validation = execute_validation_script("scripts/validate_hook.sh", hook_path)
-    while not validation.passed:
-        fix_validation_issues(hook_path, validation.issues)
-        validation = execute_validation_script("scripts/validate_hook.sh", hook_path)
-
-    test_payload = create_test_payload(selected_type, "test.json")
-    testing_strategies = load_testing_guide()
-
-    test_results = execute_test_script("scripts/test_hook.sh", hook_path, test_payload)
-    while not test_results.passed:
-        debug_hook_logic(hook_path, test_results.failures)
-        test_results = execute_test_script("scripts/test_hook.sh", hook_path, test_payload)
-
-    performance = check_performance(hook_path)
-    if not performance.acceptable:
-        optimize_performance(hook_path, load_best_practices())
-
-    deploy_hook(hook_path, chmod="+x")
-    setup_production_monitoring(hook_path)
-
-    return {
-        "status": "complete",
-        "hook_type": selected_type,
-        "hook_path": hook_path,
-        "validation": "passed",
-        "tests": "passed",
-        "performance": "optimized"
-    }
-
-HOOK_TYPES = {
-    "PreCompact": "Before compaction (save context, backup)",
-    "UserPromptSubmit": "User submits message (keyword triggers, validation)",
-    "PreToolUse": "Before tool runs (validation, safety checks)",
-    "PostToolUse": "After tool completes (auto-fix, formatting)",
-    "PreSessionStart": "Session starts (environment setup)",
-    "PostSessionEnd": "Session ends (cleanup, archiving)"
-}
-```
-
 ---
 
-## 3. 🛠️ WHEN TO USE
+## 4. 🛠️ WHEN TO USE
 
 This skill provides comprehensive documentation and tooling for creating custom Claude Code hooks. Use this skill when you need to understand hook types, create custom automation, implement validation workflows, or test hooks before deployment.
 

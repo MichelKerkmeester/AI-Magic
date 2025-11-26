@@ -59,7 +59,41 @@ Preserve comprehensive conversation context in human-readable markdown files. Cr
 
 ---
 
-## 2. 🗂️ REFERENCES
+## 2. 🧭 SMART ROUTING
+
+```python
+def route_save_context_resources(task):
+    # context generation script
+    if task.generating_context:
+        return execute("scripts/generate-context.js")  # main generator
+    
+    # flowchart pattern selection
+    if task.needs_flowchart:
+        if task.phase_count <= 4:
+            return load("assets/workflow_linear_pattern.md")  # simple linear
+        else:
+            return load("assets/workflow_parallel_pattern.md")  # complex parallel
+    
+    # output format reference
+    if task.needs_output_format:
+        return load("references/output_format.md")  # timestamp, naming, structure
+    
+    # alignment scoring explanation
+    if task.alignment_questions:
+        return load("references/alignment_scoring.md")  # topic/file/phase weights
+    
+    # trigger configuration
+    if task.configuring_triggers:
+        return load("references/trigger_config.md")  # keywords, auto-save interval
+
+# triggers: "save context", "save conversation", "save session", or every 20 messages
+# output: specs/###-feature/memory/{timestamp}__{topic}.md
+# alignment threshold: 70% (warns if lower)
+```
+
+---
+
+## 3. 🗂️ REFERENCES
 
 ### Core Framework & Workflows
 | Document                                | Purpose                                   | Key Insight                                                 |
@@ -75,81 +109,9 @@ Preserve comprehensive conversation context in human-readable markdown files. Cr
 | **templates/context_template.md**           | Output markdown file structure             | Ensures consistent documentation format    |
 | **scripts/generate-context.js**             | Node.js processor (JSON → Markdown)        | **Promise.all() for parallel processing**  |
 
-### Smart Routing Logic
-
-```python
-def save_context_workflow(message):
-    trigger_keywords = ["save context", "save conversation", "save session"]
-    message_count = get_message_count()
-
-    if any(keyword in message.lower() for keyword in trigger_keywords):
-        trigger = "manual"
-    elif message_count >= 20 and message_count % 20 == 0:
-        trigger = "auto"
-    else:
-        return
-
-    log_trigger(trigger, message_count)
-
-    conversation_data = analyze_conversation_history(
-        extract_user_requests=True,
-        extract_decisions=True,
-        extract_files_modified=True,
-        extract_commands_run=True,
-        extract_phase_transitions=True
-    )
-
-    temp_file = write_temp_data_file(generate_json_structure(conversation_data))
-
-    spec_folder = detect_spec_folder()
-    if not spec_folder:
-        spec_folder = prompt_user_for_folder(search_recent_spec_folders(limit=5))
-
-    active_marker = read_spec_active_marker(spec_folder)
-    memory_dir = f"{spec_folder}/{active_marker}/memory" if active_marker else f"{spec_folder}/memory"
-
-    alignment_score = calculate_alignment_score(conversation_data, spec_folder)
-
-    if alignment_score < 0.70:
-        log_warning(f"Low alignment ({alignment_score:.0%}) between conversation and {spec_folder}")
-        if not prompt_user(f"Conversation alignment with {spec_folder} is {alignment_score:.0%}. Continue?"):
-            spec_folder = prompt_user_for_folder(search_recent_spec_folders(limit=5))
-            memory_dir = f"{spec_folder}/memory"
-
-    context_result = execute_context_generator(
-        script="scripts/generate-context.js",
-        input_data=temp_file,
-        output_dir=memory_dir,
-        parallel_processing=True
-    )
-
-    flowchart = (
-        generate_linear_flowchart(conversation_data.phases, "workflow_linear_pattern.md")
-        if len(conversation_data.phases) <= 4
-        else generate_parallel_flowchart(conversation_data.phases, "workflow_parallel_pattern.md")
-    )
-
-    timestamp = get_timestamp_format()
-    topic = extract_topic_name(conversation_data)
-    context_file_path = f"{memory_dir}/{timestamp}__{topic}.md"
-
-    write_context_file(context_file_path, context_result.markdown, flowchart)
-
-    update_metadata(memory_dir, f"{timestamp}__{topic}.md", message_count, len(conversation_data.phases), alignment_score, timestamp)
-
-    log_success(f"Context saved to {context_file_path}")
-    return {"status": "complete", "file": context_file_path}
-
-def calculate_alignment_score(conversation_data, spec_folder):
-    topic_overlap = calculate_topic_similarity(conversation_data.topic, spec_folder)
-    file_overlap = calculate_file_overlap(conversation_data.files, spec_folder)
-    phase_consistency = check_phase_consistency(conversation_data.phases, spec_folder)
-    return (topic_overlap * 0.5) + (file_overlap * 0.3) + (phase_consistency * 0.2)
-```
-
 ---
 
-## 3. 🛠️ HOW TO USE
+## 4. 🛠️ HOW TO USE
 
 This skill is **standalone** - it does NOT use claude-mem MCP or external memory systems. Claude creates the conversation summary directly from the current session.
 

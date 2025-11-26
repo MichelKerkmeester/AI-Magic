@@ -180,7 +180,45 @@ Browser testing across viewports before completion claims.
 
 ---
 
-## 2. 🗂️ REFERENCES
+## 2. 🧭 SMART ROUTING
+
+```python
+def route_frontend_resources(task):
+    # Phase 1: Implementation
+    if task.phase == "implementation":
+        if task.has_async_loading:
+            load("assets/wait_patterns.js")  # async waiting patterns
+        if task.needs_validation:
+            load("assets/validation_patterns.js")  # validation templates
+        if task.has_animations:
+            return load("references/animation_workflows.md")  # CSS vs Motion.dev
+        if task.webflow_specific:
+            return load("references/webflow_patterns.md")  # platform limits
+        if task.security_concerns:
+            return load("references/security_patterns.md")  # OWASP Top 10
+        return load("references/implementation_workflows.md")  # general patterns
+    
+    # Phase 2: Debugging
+    if task.phase == "debugging":
+        load("assets/debugging_checklist.md")  # step-by-step workflow
+        load("references/devtools_guide.md")  # DevTools reference
+        return load("references/debugging_workflows.md")  # root cause tracing
+    
+    # Phase 3: Verification (MANDATORY)
+    if task.phase == "verification" or task.claiming_complete:
+        return load("references/verification_workflows.md")  # browser testing
+        load("assets/verification_checklist.md")  # mandatory steps
+    
+    # quick lookup
+    if task.needs_quick_reference:
+        return load("references/quick_reference.md")  # one-page cheat sheet
+
+# iron law: NO completion claims without loading verification_workflows.md
+```
+
+---
+
+## 3. 🗂️ REFERENCES
 
 ### Core Framework & Workflows
 | Document | Purpose | Key Insight |
@@ -210,69 +248,9 @@ Browser testing across viewports before completion claims.
 | **assets/debugging_checklist.md** | Debugging workflow checklist | Phase 2 step-by-step verification |
 | **assets/verification_checklist.md** | Browser testing checklist | Phase 3 mandatory verification steps |
 
-### Smart Routing Logic
-
-```python
-def frontend_development_workflow(task):
-    phase = determine_starting_phase(task)
-
-    if phase == "implementation":
-        code = implement_feature(task, async_patterns=True, validation_rules=apply_validation())
-        review_code_quality(code)
-        if check_for_errors(code):
-            phase = "debugging"
-
-    if phase == "debugging":
-        while has_errors():
-            reproduction = reproduce_in_browser(task, ["chrome", "firefox", "safari"])
-            if not reproduction.success:
-                raise VerificationError("Cannot reproduce")
-
-            evidence = gather_devtools_evidence()
-            root_cause = analyze_root_cause(evidence)
-            fix = apply_fix(root_cause)
-
-            if verify_fix_in_browser(fix).success:
-                break
-
-    browser_results = launch_browser_verification(
-        task,
-        browsers=["chrome", "firefox", "safari"],
-        viewports=["mobile:375x667", "tablet:768x1024", "desktop:1920x1080"],
-        cache_mode="hard_refresh"
-    )
-
-    test_results = test_in_browser(browser_results.browsers, generate_test_cases(task))
-
-    if not test_results.all_passed:
-        gather_fresh_evidence([t for t in test_results if not t.passed])
-        return frontend_development_workflow(task)
-
-    evidence = document_verification_evidence(test_results, browser_results, get_current_timestamp())
-
-    if not is_evidence_fresh(evidence):
-        raise VerificationError("Evidence stale - re-test required")
-
-    return {
-        "status": "complete",
-        "evidence": evidence,
-        "verified_browsers": browser_results.browsers,
-        "timestamp": evidence.timestamp
-    }
-
-
-def determine_starting_phase(task):
-    if task.needs_implementation:
-        return "implementation"
-    elif task.has_errors:
-        return "debugging"
-    else:
-        return "verification"
-```
-
 ---
 
-## 3. 🛠️ HOW IT WORKS
+## 4. 🛠️ HOW IT WORKS
 
 ### Development Lifecycle
 
@@ -679,7 +657,7 @@ The workflows-code skill integrates with Chrome DevTools MCP for automated testi
 ```markdown
 1. Navigate to page:
    [Use tool: mcp__chrome_devtools_2__navigate_page]
-   - url: "https://example.com"
+   - url: "https://anobel.com"
 
 2. Check for errors:
    [Use tool: mcp__chrome_devtools_2__list_console_messages]

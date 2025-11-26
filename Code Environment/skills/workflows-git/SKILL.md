@@ -46,7 +46,42 @@ Use this orchestrator when:
 
 ---
 
-## 2. 🗂️ REFERENCES
+## 2. 🧭 SMART ROUTING
+
+```python
+def route_git_resources(task):
+    # Phase 1: workspace setup
+    if task.needs_isolated_workspace or "worktree" in task.keywords:
+        return load("references/worktree_workflows.md")  # 7-step creation workflow
+    
+    # Phase 2: commit workflow
+    if task.has_staged_changes or "commit" in task.keywords:
+        load("references/commit_workflows.md")  # 6-step commit workflow
+        if task.needs_message_help:
+            return load("assets/commit_message_template.md")  # Conventional Commits examples
+    
+    # Phase 3: completion/integration
+    if task.ready_to_integrate or "merge" in task.keywords or "pr" in task.keywords:
+        load("references/finish_workflows.md")  # 5-step completion workflow
+        if task.creating_pr:
+            return load("assets/pr_template.md")  # PR description template
+    
+    # quick lookup
+    if task.needs_quick_reference:
+        return load("references/quick_reference.md")  # one-page cheat sheet
+    
+    # shared patterns (branch naming, commands, conventions)
+    if task.needs_command_reference or task.needs_conventions:
+        return load("references/shared_patterns.md")
+    
+    # validation checklist
+    if task.setting_up_worktree:
+        return load("assets/worktree_checklist.md")  # step-by-step validation
+```
+
+---
+
+## 3. 🗂️ REFERENCES
 
 ### Core Framework & Workflow Phases
 | Document                             | Purpose                                    | Key Insight                                              |
@@ -67,37 +102,9 @@ Use this orchestrator when:
 | **assets/pr_template.md**             | Pull request templates                          | Structured PR descriptions with examples                            |
 | **assets/worktree_checklist.md**      | Step-by-step worktree creation checklist        | Validation checkpoints for workspace setup                          |
 
-### Smart Routing Logic
-
-```yaml
-git_workflow:
-  phase_1_setup:
-    resource: worktree_workflows.md
-    action: create_isolated_workspace
-
-  phase_2_commit:
-    resource: commit_workflows.md
-    actions:
-      - analyze_changes
-      - filter_artifacts
-      - create_conventional_commit
-
-  phase_3_finish:
-    resource: finish_workflows.md
-    actions:
-      - run_tests
-      - choose_integration_method
-    on_test_failure: return_to_phase_2
-    integration_options:
-      - merge
-      - pr
-      - keep
-      - discard
-```
-
 ---
 
-## 3. 🛠️ HOW TO USE
+## 4. 🛠️ HOW TO USE
 
 ### Git Development Lifecycle Map
 

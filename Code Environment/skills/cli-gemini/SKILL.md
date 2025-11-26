@@ -75,7 +75,37 @@ Enable Claude Code to effectively orchestrate Gemini CLI (v0.16.0+) with Gemini 
 
 ---
 
-## 2. 🗂️ REFERENCES
+## 2. 🧭 SMART ROUTING
+
+```python
+def route_gemini_resources(task):
+    # command syntax and flags
+    if task.needs_command_help or task.first_time:
+        return load("references/reference.md")  # CLI flags and syntax
+    
+    # web search / current info (Google Search grounding)
+    if task.needs_current_info or task.web_search:
+        return load("references/tools.md")  # google_web_search tool docs
+    
+    # codebase architecture analysis
+    if task.architecture_analysis:
+        return load("references/tools.md")  # codebase_investigator tool
+    
+    # code review or generation tasks
+    if task.type in ["code_review", "test_generation", "doc_generation"]:
+        return load("references/templates.md")  # prompt templates by use case
+    
+    # advanced orchestration patterns
+    if task.multi_step or task.generate_review_fix:
+        return load("references/patterns.md")  # Generate-Review-Fix pattern
+    
+    # simple tasks: skip Gemini, handle directly with Claude
+    # parallel tasks: run gemini in background with monitoring
+```
+
+---
+
+## 3. 🗂️ REFERENCES
 
 ### Core Framework & Workflows
 | Document                         | Purpose                        | Key Insight                             |
@@ -92,42 +122,9 @@ Enable Claude Code to effectively orchestrate Gemini CLI (v0.16.0+) with Gemini 
 | **references/templates.md**  | Prompt templates               | Load for copy-paste prompts      |
 | **references/tools.md**      | Built-in tools (google_web_search, codebase_investigator) | Load when using Gemini-specific tools |
 
-### Smart Routing Logic
-
-```yaml
-use_case_routing:
-  explicit_request:
-    resource: reference.md
-    action: verify_gemini_installed
-
-  web_search_needed:
-    resource: tools.md
-    tool: google_web_search
-
-  code_review:
-    resource: templates.md
-    template: code_review_template.md
-
-  architecture_analysis:
-    resource: tools.md
-    tool: codebase_investigator
-
-  parallel_processing:
-    execution: background
-    monitor: true
-
-  simple_task:
-    action: handle_directly_with_claude
-
-  specialized_generation:
-    resource: templates.md
-    types: [tests, docs, types]
-    validation: required
-```
-
 ---
 
-## 3. 🛠️ HOW TO USE
+## 4. 🛠️ HOW TO USE
 
 ### Verify Installation
 

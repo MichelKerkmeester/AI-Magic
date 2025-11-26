@@ -66,52 +66,40 @@ Execute TypeScript code with direct access to 200+ MCP tools through progressive
 
 ---
 
-## 2. 📖 REFERENCES
+## 2. 🧭 SMART ROUTING
 
-### Smart Routing Logic
-
-```yaml
-problem_to_resource:
-  tool_naming_error:
-    resource: naming_convention.md
-    priority: CRITICAL
-
-  tool_not_found:
-    resource: naming_convention.md
-    priority: CRITICAL
-
-  setup_config:
-    resource: configuration.md
-    priority: HIGH
-
-  env_vars_not_loading:
-    resource: configuration.md
-    priority: HIGH
-
-  what_tools_available:
-    resource: tool_catalog.md
-    priority: MEDIUM
-
-  mcp_servers_list:
-    resource: tool_catalog.md
-    priority: MEDIUM
-
-  multi_tool_workflow:
-    resource: workflows.md
-    priority: MEDIUM
-
-  error_handling:
-    resource: workflows.md
-    priority: MEDIUM
-
-  how_it_works:
-    resource: architecture.md
-    priority: LOW
-
-  token_economics:
-    resource: architecture.md
-    priority: LOW
+```python
+def route_code_mode_resources(task):
+    # CRITICAL: tool naming errors (most common issue)
+    if task.error_contains("tool not found") or task.error_contains("naming"):
+        return load("references/naming_convention.md")  # priority: CRITICAL
+    
+    # configuration and setup
+    if task.needs_setup or task.env_vars_not_loading:
+        load("references/configuration.md")  # .utcp_config.json and .env setup
+        load("assets/config_template.md")  # template file
+        return load("assets/env_template.md")  # env template
+    
+    # validate config before deploying
+    if task.validating_config:
+        return execute("scripts/validate_config.py")  # syntax + env var checks
+    
+    # discover available tools
+    if task.needs_tool_list or "what tools" in task.query:
+        return load("references/tool_catalog.md")  # 200+ available tools
+    
+    # multi-tool workflows and error handling
+    if task.multi_tool_workflow or task.needs_error_handling:
+        return load("references/workflows.md")  # 4 workflow examples
+    
+    # architecture and token economics
+    if task.how_it_works or task.token_questions:
+        return load("references/architecture.md")  # system internals
 ```
+
+---
+
+## 3. 📖 REFERENCES
 
 ### References (Deep-Dive Documentation)
 
@@ -149,7 +137,7 @@ problem_to_resource:
 
 ---
 
-## 3. 🛠️ HOW IT WORKS
+## 4. 🛠️ HOW IT WORKS
 
 ### Critical Naming Pattern
 

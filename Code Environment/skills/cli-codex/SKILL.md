@@ -75,7 +75,38 @@ Enable Claude Code to effectively orchestrate OpenAI Codex CLI (v0.58.0+) with G
 
 ---
 
-## 2. 🗂️ REFERENCES
+## 2. 🧭 SMART ROUTING
+
+```python
+def route_codex_resources(task):
+    # command syntax and flags
+    if task.needs_command_help or task.first_time:
+        return load("references/reference.md")  # CLI flags and syntax
+    
+    # reasoning-heavy or deep analysis tasks
+    if task.needs_deep_reasoning or task.complex_algorithm:
+        return load("references/tools.md")  # codex-reasoning model, sandbox modes
+    
+    # code review or architecture analysis
+    if task.type in ["code_review", "architecture_analysis"]:
+        return load("references/templates.md")  # prompt templates
+    
+    # comparing implementations or alternative approaches
+    if task.wants_alternative or task.compare_solutions:
+        return load("references/patterns.md")  # comparison workflows
+    
+    # specialized generation (tests, types, refactoring)
+    if task.type in ["test_generation", "type_generation", "refactoring"]:
+        load("references/templates.md")  # generation templates
+        return load("references/tools.md")  # sandbox mode required
+    
+    # simple tasks: skip Codex, handle directly with Claude
+    # parallel tasks: run codex in background with monitoring
+```
+
+---
+
+## 3. 🗂️ REFERENCES
 
 ### Core Framework
 | Document | Purpose | Key Insight |
@@ -90,46 +121,9 @@ Enable Claude Code to effectively orchestrate OpenAI Codex CLI (v0.58.0+) with G
 | **references/templates.md** | Prompt templates and examples for different use cases | Load for copy-paste prompt starters |
 | **references/tools.md** | Codex-specific tools documentation (sandbox modes, session management) | Load when using Codex's specialized features |
 
-### Smart Routing Logic
-
-```yaml
-use_case_routing:
-  explicit_request:
-    resource: reference.md
-    action: verify_codex_installed
-
-  reasoning_heavy:
-    resource: tools.md
-    model: codex-reasoning
-
-  code_review:
-    resource: templates.md
-    template: code_review_template.md
-
-  architecture_analysis:
-    resource: templates.md
-    template: architecture_analysis_template.md
-
-  alternative_approach:
-    resource: patterns.md
-    action: compare_implementations
-
-  parallel_processing:
-    execution: background
-    monitor: true
-
-  simple_task:
-    action: handle_directly_with_claude
-
-  specialized_generation:
-    resources: [templates.md, tools.md]
-    types: [tests, types, refactoring]
-    validation: sandbox_required
-```
-
 ---
 
-## 3. 🛠️ HOW TO USE
+## 4. 🛠️ HOW TO USE
 
 ### Verify Installation
 

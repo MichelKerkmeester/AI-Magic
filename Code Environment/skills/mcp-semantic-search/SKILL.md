@@ -111,7 +111,33 @@ Semantic code search for CLI AI agents that enables AI-powered codebase explorat
 
 ---
 
-## 2. 🗂️ REFERENCES
+## 2. 🧭 SMART ROUTING
+
+```python
+def route_semantic_search_resources(task):
+    # tool selection guidance
+    if task.unsure_which_tool:
+        return load("references/tool_comparison.md")  # semantic vs grep vs glob decision
+    
+    # query writing help
+    if task.needs_query_examples or task.query_not_working:
+        load("references/query_patterns.md")  # effective query writing guide
+        return load("assets/query_examples.md")  # 9 categories of real queries
+    
+    # architecture/system understanding
+    if task.needs_architecture_info:
+        return load("references/architecture.md")  # indexer + MCP server + vector DB
+    
+    # tool decision:
+    # - know exact file path → use Read() tool directly
+    # - know exact symbol name → use Grep() tool directly
+    # - know file pattern → use Glob() tool directly
+    # - know what code DOES → use search_codebase() with natural language
+```
+
+---
+
+## 3. 🗂️ REFERENCES
 
 ### Core Framework
 
@@ -128,35 +154,9 @@ Semantic code search for CLI AI agents that enables AI-powered codebase explorat
 | **references/query_patterns.md** | Effective query writing guide | Describe behavior in natural language for best results |
 | **assets/query_examples.md** | Categorized example queries | 9 categories of real-world query patterns |
 
-### Smart Routing Logic
-
-```
-START
-  ↓
-[User asks for code discovery]
-  ↓
-Know exact file path? ─── YES ──→ [Use Read() tool]
-  │                                    ↓
-  NO                           [Return content]
-  ↓                                    ↓
-Know what code does? ─── YES ──→ [search_codebase("intent")]
-  │                                    ↓
-  NO                           [Get ranked results]
-  ↓                                    ↓
-Searching for exact symbol? ─ YES ─→ [Use Grep() tool]
-  │                                    ↓
-  NO                           [Return matches]
-  ↓                                    ↓
-[Default: search_codebase]     ←──────┘
-  ↓
-[Combine with Read() for full context]
-  ↓
-COMPLETE
-```
-
 ---
 
-## 3. 🛠️ HOW IT WORKS
+## 4. 🛠️ HOW IT WORKS
 
 ### Tool Overview
 
@@ -441,7 +441,7 @@ Read("src/components/hero_section.js")
 - Run `codesql index` to create .codebase/vectors.db
 - Indexer watches files for automatic updates
 
-**Example project index:**
+**Current anobel.com index (as of 2025-11-25):**
 
 - 249 files indexed
 - 496 code blocks
