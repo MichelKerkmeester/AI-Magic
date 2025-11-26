@@ -11,17 +11,17 @@ Request → Analyze Complexity → Check Thresholds → Dispatch or Direct
 ```
 
 ### Complexity Score Thresholds
-- **<40%**: Direct handling (too simple)
-- **40-49%**: Ask user preference
-- **≥50%**: Consider dispatch
+- **<25%**: Direct handling (too simple)
+- **25-34%**: Ask user preference
+- **≥35%**: Consider dispatch
 
 ### Quick Complexity Calculator
 ```
-Domain Count × 30%     (1=0, 2=0.5, 3+=1.0)
+Domain Count × 35%     (1=0, 2=0.5, 3+=1.0)
 File Count × 25%       (1-2=0, 3-5=0.5, 6+=1.0)
-LOC Estimate × 20%     (<50=0, 50-200=0.5, 200+=1.0)
-Parallel Opp × 15%     (none=0, some=0.5, high=1.0)
-Task Type × 10%        (trivial=0, moderate=0.5, complex=1.0)
+LOC Estimate × 15%     (<50=0, 50-200=0.5, 200+=1.0)
+Parallel Opp × 20%     (none=0, some=0.5, high=1.0)
+Task Type × 5%         (trivial=0, moderate=0.5, complex=1.0)
 ───────────────────────────────────────────────────
 Total Score = Sum of weighted components (0-100%)
 ```
@@ -30,7 +30,7 @@ Total Score = Sum of weighted components (0-100%)
 
 ## 2. ✅ WHEN TO DISPATCH
 
-### AUTO-DISPATCH (Score ≥50%)
+### AUTO-DISPATCH (Score ≥35%)
 ✓ Multi-domain tasks (code + docs + git)
 ✓ 3+ independent failures to debug
 ✓ Parallel execution opportunities
@@ -61,7 +61,7 @@ Total Score = Sum of weighted components (0-100%)
 
 ---
 
-## 4. 🤝 COLLABORATIVE ZONE (40-49%)
+## 4. 🤝 COLLABORATIVE ZONE (25-34%)
 
 ### Ask User:
 ```markdown

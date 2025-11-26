@@ -87,51 +87,51 @@ workflow:
   step_1_request_analysis:
     purpose: Analyze research request and define investigation scope
     activities:
-      - Analyze all user inputs thoroughly
-      - Define research scope and objectives
-      - Verify or create spec folder structure
-      - Check for existing research artifacts
-      - Establish investigation boundaries
-      - Identify key questions to answer
+    - Analyze all user inputs thoroughly
+    - Define research scope and objectives
+    - Verify or create spec folder structure
+    - Check for existing research artifacts
+    - Establish investigation boundaries
+    - Identify key questions to answer
     deep_analysis:
       focus: comprehensive_research_scoping
       outputs:
-        - feature_summary
-        - research_objectives
-        - investigation_priorities
-        - key_questions
-        - success_criteria
+      - feature_summary
+      - research_objectives
+      - investigation_priorities
+      - key_questions
+      - success_criteria
     validation: understanding_confirmed
 
   step_2_pre_work_review:
     purpose: Review knowledge base and project standards
     activities:
-      - Read and review AGENTS.md
-      - Check knowledge base (.claude/knowledge/) or skills folder (.claude/skills/) for relevant coding standards
-      - Extract relevant coding standards
-      - Identify architectural patterns
-      - Document project conventions
-      - Note constraints relevant to research
+    - Read and review AGENTS.md
+    - Check knowledge base (.claude/knowledge/) or skills folder (.claude/skills/) for relevant coding standards
+    - Extract relevant coding standards
+    - Identify architectural patterns
+    - Document project conventions
+    - Note constraints relevant to research
     required_documents:
-      - AGENTS.md
-      - Knowledge base or skills folder (if available)
+    - AGENTS.md
+    - Knowledge base or skills folder (if available)
     verification: MUST_REVIEW
     validation: principles_established
 
   step_3_codebase_investigation:
     purpose: Explore existing codebase for patterns and implementations
     activities:
-      - Search for related code patterns
-      - Analyze existing implementations
-      - Document current architecture
-      - Identify integration points
-      - Map dependencies
-      - Note technical debt or limitations
+    - Search for related code patterns
+    - Analyze existing implementations
+    - Document current architecture
+    - Identify integration points
+    - Map dependencies
+    - Note technical debt or limitations
     outputs:
-      - current_state_analysis
-      - existing_patterns
-      - integration_points
-      - dependency_map
+    - current_state_analysis
+    - existing_patterns
+    - integration_points
+    - dependency_map
     chrome_devtools:
       when: staging_url_provided
       approach: Navigate → Inspect → Document
@@ -141,130 +141,130 @@ workflow:
   step_4_external_research:
     purpose: Research external documentation and best practices
     activities:
-      - Search official documentation
-      - Review API references
-      - Analyze community best practices
-      - Identify relevant libraries/tools
-      - Document limitations and constraints
-      - Compare alternative approaches
+    - Search official documentation
+    - Review API references
+    - Analyze community best practices
+    - Identify relevant libraries/tools
+    - Document limitations and constraints
+    - Compare alternative approaches
     outputs:
-      - best_practices_summary
-      - api_documentation
-      - library_comparison
-      - constraint_documentation
+    - best_practices_summary
+    - api_documentation
+    - library_comparison
+    - constraint_documentation
     web_research:
       approach: Search → Verify → Document
       sources:
-        - official_documentation
-        - technical_blogs
-        - github_examples
-        - stack_overflow
+      - official_documentation
+      - technical_blogs
+      - github_examples
+      - stack_overflow
     validation: external_research_complete
 
   step_5_technical_analysis:
     purpose: Perform feasibility assessment and technical analysis
     activities:
-      - Evaluate technical feasibility
-      - Assess performance implications
-      - Analyze security considerations
-      - Review scalability requirements
-      - Document trade-offs
-      - Identify risks and mitigations
+    - Evaluate technical feasibility
+    - Assess performance implications
+    - Analyze security considerations
+    - Review scalability requirements
+    - Document trade-offs
+    - Identify risks and mitigations
     outputs:
-      - technical_specifications
-      - feasibility_assessment
-      - performance_analysis
-      - security_review
-      - risk_assessment
+    - technical_specifications
+    - feasibility_assessment
+    - performance_analysis
+    - security_review
+    - risk_assessment
     validation: technical_analysis_complete
 
   step_6_quality_checklist:
     purpose: Generate validation checklist for research quality
     activities:
-      - Load checklist_template.md
-      - Generate research-specific validation items
-      - Include completeness checks
-      - Include accuracy verification items
-      - Include documentation quality checks
+    - Load checklist_template.md
+    - Generate research-specific validation items
+    - Include completeness checks
+    - Include accuracy verification items
+    - Include documentation quality checks
     outputs:
-      - quality_checklist: generated
+    - quality_checklist: generated
     template: .opencode/speckit/templates/checklist_template.md
     validation: checklist_generated
 
   step_7_solution_design:
     purpose: Design solution architecture based on research findings
     activities:
-      - Synthesize research findings
-      - Design recommended architecture
-      - Define implementation patterns
-      - Create integration approach
-      - Document decision rationale
-      - Outline implementation strategy
+    - Synthesize research findings
+    - Design recommended architecture
+    - Define implementation patterns
+    - Create integration approach
+    - Document decision rationale
+    - Outline implementation strategy
     outputs:
-      - solution_architecture
-      - implementation_patterns
-      - integration_approach
-      - decision_rationale
+    - solution_architecture
+    - implementation_patterns
+    - integration_approach
+    - decision_rationale
     optional_documents:
-      - decision-record-[name].md: "For significant architecture decisions"
+    - decision-record-[name].md: "For significant architecture decisions"
     template: .opencode/speckit/templates/decision_record_template.md
     validation: solution_designed
 
   step_8_research_compilation:
     purpose: Compile all research into comprehensive documentation
     activities:
-      - Load research_template.md
-      - Fill all 17 sections systematically
-      - Include executive overview
-      - Document core architecture
-      - Add technical specifications
-      - Include constraints and limitations
-      - Document integration patterns
-      - Provide implementation guide
-      - Add code examples
-      - Include testing strategies
-      - Document performance considerations
-      - Add security section
-      - Include troubleshooting guide
-      - Add API reference
-      - Include acknowledgements
-      - Add appendix and changelog
+    - Load research_template.md
+    - Fill all 17 sections systematically
+    - Include executive overview
+    - Document core architecture
+    - Add technical specifications
+    - Include constraints and limitations
+    - Document integration patterns
+    - Provide implementation guide
+    - Add code examples
+    - Include testing strategies
+    - Document performance considerations
+    - Add security section
+    - Include troubleshooting guide
+    - Add API reference
+    - Include acknowledgements
+    - Add appendix and changelog
     outputs:
-      - research.md: comprehensive_technical_documentation
+    - research.md: comprehensive_technical_documentation
     template: .opencode/speckit/templates/research_template.md
     research_sections:
-      - metadata
-      - investigation_report
-      - executive_overview
-      - core_architecture
-      - technical_specifications
-      - constraints_limitations
-      - integration_patterns
-      - implementation_guide
-      - code_examples
-      - testing_debugging
-      - performance
-      - security
-      - maintenance
-      - api_reference
-      - troubleshooting
-      - acknowledgements
-      - appendix_changelog
+    - metadata
+    - investigation_report
+    - executive_overview
+    - core_architecture
+    - technical_specifications
+    - constraints_limitations
+    - integration_patterns
+    - implementation_guide
+    - code_examples
+    - testing_debugging
+    - performance
+    - security
+    - maintenance
+    - api_reference
+    - troubleshooting
+    - acknowledgements
+    - appendix_changelog
     validation: research_documented
 
   step_9_save_context:
     purpose: Save conversation context for documentation
     activities:
-      - Invoke workflows-save-context skill using Skill tool
-      - Preserve research decisions and rationale
-      - Preserve technical findings
-      - Preserve code analysis results
+    - Invoke workflows-save-context skill using Skill tool
+    - Preserve research decisions and rationale
+    - Preserve technical findings
+    - Preserve code analysis results
     tool_invocation:
       tool: Skill
       parameter: skill="workflows-save-context"
       note: "Use the Skill tool with skill parameter to activate context saving"
     outputs:
-      - context_file: "specs/[NNN-feature]/memory/[DD-MM-YY_HH-MM]__research_session.md"
+    - context_file: "specs/[NNN-feature]/memory/[DD-MM-YY_HH-MM]__research_session.md"
     validation: context_saved_successfully
 
 # ─────────────────────────────────────────────────────────────────
@@ -274,9 +274,9 @@ termination:
   after_step: 9
   message: "Research phase completed successfully. Workflow terminated after step 9 (save context)."
   next_steps:
-    - Review research.md findings
-    - Validate technical recommendations
-    - Run /speckit.plan or /speckit.complete to proceed with development
+  - Review research.md findings
+  - Validate technical recommendations
+  - Run /speckit.plan or /speckit.complete to proceed with development
 
 # ─────────────────────────────────────────────────────────────────
 # AUTONOMOUS EXECUTION GUIDANCE
@@ -285,34 +285,47 @@ autonomous_execution:
   principle: "Execute research workflow autonomously with comprehensive documentation"
 
   decision_making:
-    - Research thoroughly before conclusions
-    - Document all findings systematically
-    - Make informed technical recommendations
-    - Document reasoning and alternatives
-    - Proceed with best judgment
+  - Research thoroughly before conclusions
+  - Document all findings systematically
+  - Make informed technical recommendations
+  - Document reasoning and alternatives
+  - Proceed with best judgment
 
   validation_approach:
-    - Self-validate research completeness
-    - Verify findings against multiple sources
-    - Ensure documentation quality
-    - Validate against checklist
+  - Self-validate research completeness
+  - Verify findings against multiple sources
+  - Ensure documentation quality
+  - Validate against checklist
+
+# ─────────────────────────────────────────────────────────────────
+# ERROR RECOVERY
+# ─────────────────────────────────────────────────────────────────
+error_recovery:
+  research_scope_unclear:
+    action: "Ask clarifying questions, narrow focus"
+  external_sources_unavailable:
+    action: "Document limitation, continue with available info"
+  conflicting_findings:
+    action: "Document both perspectives with analysis, flag for review"
+  technical_dead_end:
+    action: "Document findings, recommend alternative approach"
 
 # ─────────────────────────────────────────────────────────────────
 # RULES
 # ─────────────────────────────────────────────────────────────────
 rules:
   ALWAYS:
-    - follow_workflow_sequence
-    - document_all_findings
-    - validate_before_completion
-    - cite_sources_and_references
-    - self_validate_and_proceed
-    - do_not_prompt_for_user_approval
-    - generate_comprehensive_documentation
+  - follow_workflow_sequence
+  - document_all_findings
+  - validate_before_completion
+  - cite_sources_and_references
+  - self_validate_and_proceed
+  - do_not_prompt_for_user_approval
+  - generate_comprehensive_documentation
 
   NEVER:
-    - skip_workflow_steps
-    - make_unsupported_claims
-    - proceed_without_verification
-    - submit_incomplete_research
-    - expand_scope_beyond_request
+  - skip_workflow_steps
+  - make_unsupported_claims
+  - proceed_without_verification
+  - submit_incomplete_research
+  - expand_scope_beyond_request

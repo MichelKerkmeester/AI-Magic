@@ -48,7 +48,7 @@ Parse the raw text from `$ARGUMENTS` and transform into structured user_inputs f
 | `git_branch` | "branch: X", "on branch X", "feature/X" | Auto-create feature-{NNN} |
 | `spec_folder` | "specs/NNN", "spec folder X", "in specs/X" | Auto-create next available |
 | `context` | "using X", "with Y", "tech stack:", "constraints:" | Infer from request |
-| `issues` | "issue:", "bug:", "problem:", "error:" | Discover during workflow |
+| `issues` | "issue:", "bug:", "problem:", "error:", "question:", "unknown:" | Discover during workflow |
 | `request` | Primary task description (REQUIRED) | ERROR if completely empty |
 | `environment` | URLs starting with http(s)://, "staging:", "production:" | Skip browser testing |
 | `scope` | File paths, glob patterns, "files:" | Default to specs/** |
@@ -57,8 +57,8 @@ Parse the raw text from `$ARGUMENTS` and transform into structured user_inputs f
 
 Based on detected/selected mode:
 
-- **AUTONOMOUS**: Load and execute `.claude/prompts/spec_kit/spec_kit_plan_auto.yaml`
-- **INTERACTIVE**: Load and execute `.claude/prompts/spec_kit/spec_kit_plan_confirm.yaml`
+- **AUTONOMOUS**: Load and execute `.opencode/prompts/spec_kit/spec_kit_plan_auto.yaml`
+- **INTERACTIVE**: Load and execute `.opencode/prompts/spec_kit/spec_kit_plan_confirm.yaml`
 
 ## Workflow Overview (7 Steps)
 
@@ -149,4 +149,21 @@ Next Steps:
 - Review planning documentation
 - Validate technical approach with stakeholders
 - Run /speckit.implement:auto or /speckit.implement:confirm to begin implementation
+```
+
+## Examples
+
+**Example 1: Simple Planning (autonomous)**
+```
+/speckit.plan:auto Add dark mode toggle to the settings page
+```
+
+**Example 2: Complex Planning (interactive)**
+```
+/speckit.plan:confirm Redesign the checkout flow with multi-step form and payment integration
+```
+
+**Example 3: With Context**
+```
+/speckit.plan "Build analytics dashboard" tech stack: React, Chart.js, existing API
 ```

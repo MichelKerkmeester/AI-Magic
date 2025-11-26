@@ -26,6 +26,38 @@
 |:---------|:------------|
 {{#FILES}}| `{{FILE_PATH}}` | {{DESCRIPTION}} |
 {{/FILES}}
+{{#HAS_IMPLEMENTATION_SUMMARY}}
+
+### Implementation Summary
+
+**Task:** {{IMPL_TASK}}
+
+**Solution:** {{IMPL_SOLUTION}}
+{{#HAS_IMPL_FILES_CREATED}}
+
+#### Files Created
+{{#IMPL_FILES_CREATED}}- `{{path}}` — {{description}}
+{{/IMPL_FILES_CREATED}}
+{{/HAS_IMPL_FILES_CREATED}}
+{{#HAS_IMPL_FILES_MODIFIED}}
+
+#### Files Modified
+{{#IMPL_FILES_MODIFIED}}- `{{path}}` — {{description}}
+{{/IMPL_FILES_MODIFIED}}
+{{/HAS_IMPL_FILES_MODIFIED}}
+{{#HAS_IMPL_DECISIONS}}
+
+#### User Decisions
+{{#IMPL_DECISIONS}}- **{{question}}**: {{choice}}
+{{/IMPL_DECISIONS}}
+{{/HAS_IMPL_DECISIONS}}
+{{#HAS_IMPL_OUTCOMES}}
+
+#### Key Outcomes
+{{#IMPL_OUTCOMES}}- {{.}}
+{{/IMPL_OUTCOMES}}
+{{/HAS_IMPL_OUTCOMES}}
+{{/HAS_IMPLEMENTATION_SUMMARY}}
 
 ---
 {{#HAS_WORKFLOW_DIAGRAM}}
@@ -167,10 +199,6 @@ This session followed a **{{FLOW_PATTERN}}** conversation pattern with **{{PHASE
 {{^PHASES}}
 - Single continuous phase
 {{/PHASES}}
-
-```
-{{AUTO_GENERATED_FLOW}}
-```
 
 ---
 

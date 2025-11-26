@@ -132,9 +132,9 @@ This directory contains skills that provide structured guidance for complex deve
 - **Flexible Dispatch**: Parallel, sequential, or hybrid execution strategies
 
 **Decision Thresholds**:
-- **<40% complexity**: Direct handling (no orchestration overhead)
-- **40-69%**: Asks user preference (collaborative decision)
-- **≥70%**: Auto-dispatch sub-agents (maximum efficiency)
+- **<25% complexity**: Direct handling (no orchestration overhead)
+- **25-34%**: Asks user preference (collaborative decision)
+- **≥35%**: Auto-dispatch sub-agents (maximum efficiency)
 
 **Key References**:
 - `complexity_scoring.md` - Task complexity heuristics and scoring algorithm

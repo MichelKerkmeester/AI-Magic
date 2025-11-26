@@ -11,7 +11,7 @@ Implementation plan defining technical approach, project structure, and executio
 ### Metadata
 - **Category**: Plan
 - **Tags**: [YOUR_VALUE_HERE: feature-name], [YOUR_VALUE_HERE: area]
-- **Priority**: [NEEDS CLARIFICATION: P0-critical | P1-high | P2-medium | P3-low]
+- **Priority**: [NEEDS CLARIFICATION: What is the implementation priority? (a) P0-critical - blocks launch, must ship (b) P1-high - core MVP, essential (c) P2-medium - important enhancement (d) P3-low - nice to have, can defer]
 - **Branch**: `[FORMAT: ###-feature-name]`
 - **Date**: [FORMAT: YYYY-MM-DD]
 - **Spec**: [OPTIONAL: link to spec.md if exists]
@@ -29,7 +29,7 @@ Feature specification from `/specs/[###-feature-name]/spec.md`
 - **Storage**: [example: PostgreSQL, CoreData, files] [OPTIONAL: N/A if none]
 - **Testing**: [example: pytest, XCTest, cargo test]
 - **Target Platform**: [example: Linux server, iOS 15+, WASM]
-- **Project Type**: [NEEDS CLARIFICATION: single-project | web-app | mobile-app - determines source structure]
+- **Project Type**: [NEEDS CLARIFICATION: What project structure applies? (a) single-project - monolithic src/ (b) web-app - frontend/ + backend/ (c) mobile-app - api/ + ios/ or android/ (d) monorepo - packages/*]
 - **Performance Goals**: [example: 1000 req/s, 10k lines/sec, 60 fps] [OPTIONAL: N/A if not performance-critical]
 - **Constraints**: [example: <200ms p95, <100MB memory, offline-capable] [OPTIONAL: N/A if none]
 - **Scale/Scope**: [example: 10k users, 1M LOC, 50 screens]

@@ -48,7 +48,7 @@ Parse the raw text from `$ARGUMENTS` and transform into structured user_inputs f
 | `git_branch` | "branch: X", "on branch X", "feature/X" | Auto-create feature-{NNN} |
 | `spec_folder` | "specs/NNN", "spec folder X", "in specs/X" | Auto-create next available |
 | `context` | "using X", "with Y", "tech stack:", "investigating:" | Infer from request |
-| `issues` | "issue:", "question:", "problem:", "unknown:" | Topics to investigate |
+| `issues` | "issue:", "bug:", "problem:", "error:", "question:", "unknown:" | Topics to investigate |
 | `request` | Research topic description (REQUIRED) | ERROR if completely empty |
 | `environment` | URLs, "staging:", "example:" | Skip browser analysis |
 | `scope` | File paths, glob patterns, "focus:" | Default to specs/** |
@@ -57,8 +57,8 @@ Parse the raw text from `$ARGUMENTS` and transform into structured user_inputs f
 
 Based on detected/selected mode:
 
-- **AUTONOMOUS**: Load and execute `.claude/prompts/spec_kit/spec_kit_research_auto.yaml`
-- **INTERACTIVE**: Load and execute `.claude/prompts/spec_kit/spec_kit_research_confirm.yaml`
+- **AUTONOMOUS**: Load and execute `.opencode/prompts/spec_kit/spec_kit_research_auto.yaml`
+- **INTERACTIVE**: Load and execute `.opencode/prompts/spec_kit/spec_kit_research_confirm.yaml`
 
 ## Workflow Overview (9 Steps)
 

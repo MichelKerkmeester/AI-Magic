@@ -46,6 +46,7 @@ This reference file provides Level 3 deep-dive technical guidance on structure v
 **Exceptions** (never modify):
 - `README.md` (standard convention)
 - `SKILL.md` (in `.claude/skills/` only)
+- Files in `~/.claude/plans/` (Claude Code system files with hyphenated names)
 
 **Detection**: PostToolUse hook auto-fixes filename violations after Write/Edit operations
 

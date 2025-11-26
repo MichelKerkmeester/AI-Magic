@@ -30,7 +30,7 @@ Tasks MUST be organized by user story so each story can be:
 ### Metadata
 - **Category**: Tasks
 - **Tags**: [YOUR_VALUE_HERE: feature-name], [YOUR_VALUE_HERE: area]
-- **Priority**: [NEEDS CLARIFICATION: P0-critical | P1-high | P2-medium | P3-low]
+- **Priority**: [NEEDS CLARIFICATION: What is the task priority? (a) P0-critical - must complete first (b) P1-high - core functionality (c) P2-medium - important but not blocking (d) P3-low - can defer]
 
 ### Input
 Design documents from `/specs/[###-feature-name]/`

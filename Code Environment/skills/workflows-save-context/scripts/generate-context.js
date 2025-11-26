@@ -12,6 +12,16 @@ const fsSync = require('fs');
 const path = require('path');
 const readline = require('readline');
 
+// Content filtering for noise removal, deduplication, and quality scoring
+const { createFilterPipeline, getFilterStats } = require('./lib/content-filter');
+
+// Semantic summarization for meaningful implementation summaries
+const {
+  generateImplementationSummary,
+  formatSummaryAsMarkdown,
+  extractFileChanges
+} = require('./lib/semantic-summarizer');
+
 // ───────────────────────────────────────────────────────────────
 // CONFIGURATION
 // ───────────────────────────────────────────────────────────────
@@ -601,10 +611,10 @@ async function main() {
         // Generate use case title from cached spec folder name
         const useCaseTitle = specFolderName.replace(/^\d+-/, '').replace(/-/g, ' ');
 
-        console.log(`   ✓ Workflow flowchart generated (${patternType})`);
+        console.log(`   ✓ Workflow data generated (${patternType}) - flowchart disabled for cleaner output`);
         return {
           WORKFLOW_FLOWCHART: flowchart,
-          HAS_WORKFLOW_DIAGRAM: flowchart !== null,
+          HAS_WORKFLOW_DIAGRAM: false, // Disabled: bullets-only mode per user preference
           PATTERN_TYPE: patternType.charAt(0).toUpperCase() + patternType.slice(1),
           PATTERN_LINEAR: patternType === 'linear',
           PATTERN_PARALLEL: patternType === 'parallel',
@@ -618,6 +628,49 @@ async function main() {
     ]);
 
     console.log('\n   ✅ All extraction complete (parallel execution)\n');
+
+    // Step 7.5: Generate semantic implementation summary
+    console.log('🧠 Step 7.5: Generating semantic summary...');
+
+    // Collect all messages for semantic analysis
+    const allMessages = conversations.MESSAGES.map(m => ({
+      prompt: m.CONTENT,
+      content: m.CONTENT,
+      timestamp: m.TIMESTAMP
+    }));
+
+    // Generate implementation summary with semantic understanding
+    const implementationSummary = generateImplementationSummary(
+      allMessages,
+      collectedData?.observations || []
+    );
+
+    // Enhance FILES with semantic descriptions from the summarizer
+    const semanticFileChanges = extractFileChanges(allMessages, collectedData?.observations || []);
+
+    // Merge semantic file descriptions into sessionData.FILES
+    const enhancedFiles = sessionData.FILES.map(file => {
+      const filePath = file.FILE_PATH;
+      // Try to find semantic description
+      for (const [path, info] of semanticFileChanges) {
+        if (path.includes(filePath) || filePath.includes(path.split('/').pop())) {
+          return {
+            FILE_PATH: file.FILE_PATH,
+            DESCRIPTION: info.description !== 'Modified during session' ? info.description : file.DESCRIPTION,
+            ACTION: info.action === 'created' ? 'Created' : 'Modified'
+          };
+        }
+      }
+      return file;
+    });
+
+    // Build implementation summary markdown
+    const IMPLEMENTATION_SUMMARY = formatSummaryAsMarkdown(implementationSummary);
+    const HAS_IMPLEMENTATION_SUMMARY = implementationSummary.filesCreated.length > 0 ||
+                                       implementationSummary.filesModified.length > 0 ||
+                                       implementationSummary.decisions.length > 0;
+
+    console.log(`   ✓ Generated summary: ${implementationSummary.filesCreated.length} created, ${implementationSummary.filesModified.length} modified, ${implementationSummary.decisions.length} decisions\n`);
 
     // Step 8: Populate templates
     console.log('📝 Step 8: Populating template...');
@@ -633,6 +686,8 @@ async function main() {
         ...sessionData,
         ...conversations,
         ...workflowData,
+        // Override FILES with enhanced semantic descriptions
+        FILES: enhancedFiles,
         MESSAGE_COUNT: conversations.MESSAGES.length,
         DECISION_COUNT: decisions.DECISIONS.length,
         DIAGRAM_COUNT: diagrams.DIAGRAMS.length,
@@ -646,7 +701,20 @@ async function main() {
         FLOW_TYPE: diagrams.FLOW_TYPE,
         AUTO_CONVERSATION_FLOWCHART: diagrams.AUTO_CONVERSATION_FLOWCHART,
         AUTO_DECISION_TREES: diagrams.AUTO_DECISION_TREES,
-        DIAGRAMS: diagrams.DIAGRAMS
+        DIAGRAMS: diagrams.DIAGRAMS,
+        // Semantic implementation summary
+        IMPLEMENTATION_SUMMARY: IMPLEMENTATION_SUMMARY,
+        HAS_IMPLEMENTATION_SUMMARY: HAS_IMPLEMENTATION_SUMMARY,
+        IMPL_TASK: implementationSummary.task,
+        IMPL_SOLUTION: implementationSummary.solution,
+        IMPL_FILES_CREATED: implementationSummary.filesCreated,
+        IMPL_FILES_MODIFIED: implementationSummary.filesModified,
+        IMPL_DECISIONS: implementationSummary.decisions,
+        IMPL_OUTCOMES: implementationSummary.outcomes,
+        HAS_IMPL_FILES_CREATED: implementationSummary.filesCreated.length > 0,
+        HAS_IMPL_FILES_MODIFIED: implementationSummary.filesModified.length > 0,
+        HAS_IMPL_DECISIONS: implementationSummary.decisions.length > 0,
+        HAS_IMPL_OUTCOMES: implementationSummary.outcomes.length > 0 && implementationSummary.outcomes[0] !== 'Session completed'
       }),
       'metadata.json': JSON.stringify({
         timestamp: `${sessionData.DATE} ${sessionData.TIME}`,
@@ -654,10 +722,29 @@ async function main() {
         decisionCount: decisions.DECISIONS.length,
         diagramCount: diagrams.DIAGRAMS.length,
         skillVersion: CONFIG.SKILL_VERSION,
-        autoTriggered: shouldAutoSave(sessionData.MESSAGE_COUNT)
+        autoTriggered: shouldAutoSave(sessionData.MESSAGE_COUNT),
+        // Content filtering stats
+        filtering: getFilterStats(),
+        // Semantic summary stats
+        semanticSummary: {
+          task: implementationSummary.task.substring(0, 100),
+          filesCreated: implementationSummary.filesCreated.length,
+          filesModified: implementationSummary.filesModified.length,
+          decisions: implementationSummary.decisions.length,
+          messageStats: implementationSummary.messageStats
+        }
       }, null, 2)
     };
-    console.log(`   ✓ Template populated\n`);
+
+    // Add low-quality warning header if quality score is below threshold
+    const filterStats = getFilterStats();
+    if (filterStats.qualityScore < 20) {
+      const warningHeader = `> **Note:** This session had limited actionable content (quality score: ${filterStats.qualityScore}/100). ${filterStats.noiseFiltered} noise entries and ${filterStats.duplicatesRemoved} duplicates were filtered.\n\n`;
+      files[contextFilename] = warningHeader + files[contextFilename];
+      console.log(`   ⚠️  Low quality session (${filterStats.qualityScore}/100) - warning header added`);
+    }
+
+    console.log(`   ✓ Template populated (quality: ${filterStats.qualityScore}/100)\n`);
 
     // Step 9: Write files with atomic writes and rollback on failure
     console.log('💾 Step 9: Writing files...');
@@ -1285,8 +1372,10 @@ async function extractConversations(collectedData) {
   const MESSAGES = [];
   const phaseTimestamps = new Map(); // Track phase durations
 
-  // Filter out empty prompts (defensive - transform-transcript.js should already filter these)
-  const validPrompts = userPrompts.filter(p => p.prompt?.trim());
+  // Apply content filtering pipeline (noise removal, deduplication, quality scoring)
+  // This is a secondary defense - transform-transcript.js applies the same filters upstream
+  const filterPipeline = createFilterPipeline();
+  const validPrompts = filterPipeline.filter(userPrompts.filter(p => p.prompt?.trim()));
 
   for (let i = 0; i < validPrompts.length; i++) {
     const userPrompt = validPrompts[i];

@@ -1,0 +1,83 @@
+#!/bin/bash
+# ───────────────────────────────────────────────────────────────
+# VALIDATE DISPATCH REQUIREMENT HOOK
+# ───────────────────────────────────────────────────────────────
+# PreToolUse hook that blocks non-Task tools when parallel dispatch
+# is required but not yet executed.
+#
+# PERFORMANCE TARGET: <10ms
+#
+# EXECUTION ORDER: PreToolUse hook (runs BEFORE tool execution)
+#
+# EXIT CODE CONVENTION:
+#   0 = Allow (tool can proceed)
+#   1 = Block (tool blocked, require dispatch first)
+# ───────────────────────────────────────────────────────────────
+
+# Source shared state library
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)"
+source "$SCRIPT_DIR/../lib/shared-state.sh" 2>/dev/null || exit 0
+
+# Read input
+INPUT=$(cat)
+
+# Extract tool name from JSON
+TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty' 2>/dev/null)
+
+# If no tool name, allow
+if [ -z "$TOOL_NAME" ]; then
+  exit 0
+fi
+
+# Tools that are always allowed (even during pending dispatch)
+ALLOWED_TOOLS="Task|AskUserQuestion|Read|Glob|Grep|WebSearch|WebFetch|TodoWrite"
+
+# Check if this is an allowed tool
+if echo "$TOOL_NAME" | grep -qE "^($ALLOWED_TOOLS)$"; then
+  # Task tool clears the pending dispatch requirement
+  if [[ "$TOOL_NAME" == "Task" ]]; then
+    # Clear pending dispatch state when Task tool is used
+    write_hook_state "pending_dispatch" "" 2>/dev/null || true
+  fi
+  exit 0
+fi
+
+# Check for pending dispatch requirement
+DISPATCH_STATE=$(read_hook_state "pending_dispatch" 2>/dev/null)
+
+# If no pending dispatch, allow the tool
+if [ -z "$DISPATCH_STATE" ] || [ "$DISPATCH_STATE" == "{}" ] || [ "$DISPATCH_STATE" == "" ]; then
+  exit 0
+fi
+
+# Parse dispatch state
+REQUIRED=$(echo "$DISPATCH_STATE" | jq -r '.required // false' 2>/dev/null)
+
+if [[ "$REQUIRED" == "true" ]]; then
+  # Extract details for error message
+  COMPLEXITY=$(echo "$DISPATCH_STATE" | jq -r '.complexity // "unknown"' 2>/dev/null)
+  AGENTS=$(echo "$DISPATCH_STATE" | jq -r '.agents // "unknown"' 2>/dev/null)
+
+  # Block the tool and show error
+  {
+    echo ""
+    echo "┌─────────────────────────────────────────────────────────────┐"
+    echo "│ 🔴 BLOCKED: Parallel Dispatch Required                     │"
+    echo "├─────────────────────────────────────────────────────────────┤"
+    echo "│ The ${TOOL_NAME} tool is blocked because parallel dispatch  │"
+    echo "│ is required for this high-complexity task.                 │"
+    echo "│                                                             │"
+    echo "│ Complexity: ${COMPLEXITY}% | Required Agents: ${AGENTS}         │"
+    echo "│                                                             │"
+    echo "│ Options:                                                   │"
+    echo "│ 1. Use Task tool to dispatch sub-agents                    │"
+    echo "│ 2. Say 'proceed anyway' to override and handle directly    │"
+    echo "└─────────────────────────────────────────────────────────────┘"
+    echo ""
+  } >&2
+
+  exit 1
+fi
+
+# Default: allow
+exit 0

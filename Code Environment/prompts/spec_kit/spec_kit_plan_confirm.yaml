@@ -87,14 +87,14 @@ available_templates:
 # ─────────────────────────────────────────────────────────────────
 checkpoint_options:
   standard:
-    - label: "Approve"
-      description: "Approve this step and proceed to next"
-    - label: "Review Details"
-      description: "Show more details about what was done"
-    - label: "Modify"
-      description: "Request changes before proceeding"
-    - label: "Skip"
-      description: "Skip this step (if optional)"
+  - label: "Approve"
+    description: "Approve this step and proceed to next"
+  - label: "Review Details"
+    description: "Show more details about what was done"
+  - label: "Modify"
+    description: "Request changes before proceeding"
+  - label: "Skip"
+    description: "Skip this step (if optional)"
 
 # ─────────────────────────────────────────────────────────────────
 # WORKFLOW (7 STEPS WITH CHECKPOINTS)
@@ -103,19 +103,19 @@ workflow:
   step_1_request_analysis:
     purpose: Analyze inputs and define planning scope
     activities:
-      - Analyze all user inputs thoroughly
-      - Define development scope for the spec folder
-      - Verify or create spec folder structure
-      - Check for existing artifacts
-      - Establish planning scope
+    - Analyze all user inputs thoroughly
+    - Define development scope for the spec folder
+    - Verify or create spec folder structure
+    - Check for existing artifacts
+    - Establish planning scope
     deep_analysis:
       focus: comprehensive_requirement_analysis
       outputs:
-        - requirement_summary
-        - approach_overview
-        - complexity_assessment
-        - key_objectives
-        - success_criteria
+      - requirement_summary
+      - approach_overview
+      - complexity_assessment
+      - key_objectives
+      - success_criteria
     validation: understanding_confirmed
     checkpoint:
       question: "Step 1 Complete: Request analyzed. How would you like to proceed?"
@@ -125,14 +125,14 @@ workflow:
   step_2_pre_work_review:
     purpose: Review knowledge base and project standards
     activities:
-      - Read and review AGENTS.md
-      - Check knowledge base (.claude/knowledge/) or skills folder (.claude/skills/) for relevant coding standards
-      - Extract coding standards summary
-      - Identify architectural patterns
-      - Document project conventions
+    - Read and review AGENTS.md
+    - Check knowledge base (.claude/knowledge/) or skills folder (.claude/skills/) for relevant coding standards
+    - Extract coding standards summary
+    - Identify architectural patterns
+    - Document project conventions
     required_documents:
-      - AGENTS.md
-      - Knowledge base or skills folder (if available)
+    - AGENTS.md
+    - Knowledge base or skills folder (if available)
     verification: MUST_REVIEW
     validation: principles_established
     checkpoint:
@@ -143,41 +143,41 @@ workflow:
   step_3_specification:
     purpose: Create comprehensive feature specification
     activities:
-      - Generate concise short name for branch
-      - Check for existing branches
-      - Run create-new-feature.sh script
-      - Estimate complexity and select documentation level
-      - Load and fill spec_template.md
-      - Generate functional requirements
-      - Define success criteria
+    - Generate concise short name for branch
+    - Check for existing branches
+    - Run create-new-feature.sh script
+    - Estimate complexity and select documentation level
+    - Load and fill spec_template.md
+    - Generate functional requirements
+    - Define success criteria
     outputs:
-      - feature_branch: created
-      - spec.md: acceptance_criteria
+    - feature_branch: created
+    - spec.md: acceptance_criteria
     template: .opencode/speckit/templates/spec_template.md
     validation: spec_complete
     checkpoint:
       question: "Step 3 Complete: Specification created. Review spec.md?"
       use: AskUserQuestion
       options:
-        - label: "Approve Spec"
-          description: "Specification looks good, proceed"
-        - label: "Review Spec"
-          description: "Show spec.md content for review"
-        - label: "Modify Spec"
-          description: "Request changes to specification"
+      - label: "Approve Spec"
+        description: "Specification looks good, proceed"
+      - label: "Review Spec"
+        description: "Show spec.md content for review"
+      - label: "Modify Spec"
+        description: "Request changes to specification"
 
   step_4_clarification:
     purpose: Resolve ambiguities and clarify requirements
     activities:
-      - Extract [NEEDS CLARIFICATION] markers (max 3)
-      - Research codebase for patterns
-      - Resolve ambiguities through investigation
-      - Update spec.md with clarifications
-      - Document assumptions
+    - Extract [NEEDS CLARIFICATION] markers (max 3)
+    - Research codebase for patterns
+    - Resolve ambiguities through investigation
+    - Update spec.md with clarifications
+    - Document assumptions
     outputs:
-      - resolved_ambiguities
-      - clarified_requirements
-      - updated_spec
+    - resolved_ambiguities
+    - clarified_requirements
+    - updated_spec
     validation: requirements_clear
     checkpoint:
       question: "Step 4 Complete: Requirements clarified. How would you like to proceed?"
@@ -187,12 +187,12 @@ workflow:
   step_5_quality_checklist:
     purpose: Generate validation checklist
     activities:
-      - Load checklist_template.md
-      - Generate domain-specific validation items
-      - Create checklist file
-      - Run validation check
+    - Load checklist_template.md
+    - Generate domain-specific validation items
+    - Create checklist file
+    - Run validation check
     outputs:
-      - quality_checklist: generated
+    - quality_checklist: generated
     template: .opencode/speckit/templates/checklist_template.md
     validation: checklist_generated
     checkpoint:
@@ -203,57 +203,57 @@ workflow:
   step_6_planning:
     purpose: Create technical plan with implementation approach
     activities:
-      - Run setup-plan.sh --json
-      - Load plan_template.md
-      - Fill Technical Context
-      - Fill Constitution Check section
-      - Phase 0: Generate research.md to resolve unknowns
-      - Phase 1: Generate data-model.md, contracts/
-      - Generate Testing Strategy
-      - Generate Success Metrics
-      - Import Risk Matrix from spec
-      - Generate Dependencies Tables
-      - Generate Phase 2-4 outlines
-      - Create planning-summary.md
+    - Run setup-plan.sh --json
+    - Load plan_template.md
+    - Fill Technical Context
+    - Fill Constitution Check section
+    - Phase 0: Generate research.md to resolve unknowns
+    - Phase 1: Generate data-model.md, contracts/
+    - Generate Testing Strategy
+    - Generate Success Metrics
+    - Import Risk Matrix from spec
+    - Generate Dependencies Tables
+    - Generate Phase 2-4 outlines
+    - Create planning-summary.md
     outputs:
-      - plan.md: technical_approach
-      - planning-summary.md: overview
-      - research.md: resolved_unknowns
+    - plan.md: technical_approach
+    - planning-summary.md: overview
+    - research.md: resolved_unknowns
     template: .opencode/speckit/templates/plan_template.md
     validation: approach_defined
     checkpoint:
       question: "Step 6 Complete: Technical plan created. Review plan.md?"
       use: AskUserQuestion
       options:
-        - label: "Approve Plan"
-          description: "Plan looks good, proceed to save context"
-        - label: "Review Plan"
-          description: "Show plan.md content for detailed review"
-        - label: "Modify Plan"
-          description: "Request changes to technical plan"
+      - label: "Approve Plan"
+        description: "Plan looks good, proceed to save context"
+      - label: "Review Plan"
+        description: "Show plan.md content for detailed review"
+      - label: "Modify Plan"
+        description: "Request changes to technical plan"
 
   step_7_save_context:
     purpose: Save conversation context for planning documentation
     activities:
-      - Invoke workflows-save-context skill
-      - Preserve requirements analysis and clarifications
-      - Preserve technical approach decisions
-      - Preserve architecture discussions
+    - Invoke workflows-save-context skill
+    - Preserve requirements analysis and clarifications
+    - Preserve technical approach decisions
+    - Preserve architecture discussions
     tool_invocation:
       tool: Skill
       parameter: skill="workflows-save-context"
       note: "Use the Skill tool with skill parameter to activate context saving"
     outputs:
-      - context_file: specs/[NNN-feature]/memory/[DD-MM-YY_HH-MM]__planning_session.md
+    - context_file: specs/[NNN-feature]/memory/[DD-MM-YY_HH-MM]__planning_session.md
     validation: context_saved_successfully
     checkpoint:
       question: "Step 7 Complete: Planning workflow finished!"
       use: AskUserQuestion
       options:
-        - label: "Done"
-          description: "Complete the planning workflow"
-        - label: "View Summary"
-          description: "Show planning summary"
+      - label: "Done"
+        description: "Complete the planning workflow"
+      - label: "View Summary"
+        description: "Show planning summary"
 
 # ─────────────────────────────────────────────────────────────────
 # WORKFLOW TERMINATION
@@ -262,9 +262,9 @@ termination:
   after_step: 7
   message: "Planning phase completed successfully. Workflow terminated after step 7 (save context)."
   next_steps:
-    - Review planning documentation
-    - Validate technical approach
-    - Use /speckit.implement:auto or /speckit.implement:confirm for implementation
+  - Review planning documentation
+  - Validate technical approach
+  - Use /speckit.implement:auto or /speckit.implement:confirm for implementation
 
 # ─────────────────────────────────────────────────────────────────
 # INTERACTIVE EXECUTION GUIDANCE
@@ -273,12 +273,12 @@ interactive_execution:
   principle: "Execute planning workflow with user approval at each checkpoint"
 
   checkpoint_behavior:
-    - Complete step activities
-    - Present results summary
-    - Use AskUserQuestion for approval
-    - Wait for user response
-    - Process user feedback
-    - Proceed or modify as directed
+  - Complete step activities
+  - Present results summary
+  - Use AskUserQuestion for approval
+  - Wait for user response
+  - Process user feedback
+  - Proceed or modify as directed
 
   user_feedback_handling:
     approve: "Proceed to next step"
@@ -287,19 +287,32 @@ interactive_execution:
     skip: "Skip optional step and proceed"
 
 # ─────────────────────────────────────────────────────────────────
+# ERROR RECOVERY
+# ─────────────────────────────────────────────────────────────────
+error_recovery:
+  step_validation_fails:
+    action: "Review requirements, ask clarifying questions, retry step"
+  user_rejects_approach:
+    action: "Present alternatives, modify plan, document decision"
+  spec_ambiguity_persists:
+    action: "Document as assumption, add to risk matrix"
+  environment_unavailable:
+    action: "Skip browser testing, document limitation"
+
+# ─────────────────────────────────────────────────────────────────
 # RULES
 # ─────────────────────────────────────────────────────────────────
 rules:
   ALWAYS:
-    - follow_workflow_sequence
-    - document_all_decisions
-    - validate_before_completion
-    - pause_at_checkpoints_for_approval
-    - respect_user_feedback
+  - follow_workflow_sequence
+  - document_all_decisions
+  - validate_before_completion
+  - pause_at_checkpoints_for_approval
+  - respect_user_feedback
 
   NEVER:
-    - skip_workflow_steps
-    - proceed_beyond_planning
-    - make_unsupported_assumptions
-    - proceed_without_user_approval
-    - ignore_user_modification_requests
+  - skip_workflow_steps
+  - proceed_beyond_planning
+  - make_unsupported_assumptions
+  - proceed_without_user_approval
+  - ignore_user_modification_requests

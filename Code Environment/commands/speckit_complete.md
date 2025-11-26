@@ -48,7 +48,7 @@ Parse the raw text from `$ARGUMENTS` and transform into structured user_inputs f
 | `git_branch` | "branch: X", "on branch X", "feature/X" | Auto-create feature-{NNN} |
 | `spec_folder` | "specs/NNN", "spec folder X", "in specs/X" | Auto-create next available |
 | `context` | "using X", "with Y", "tech stack:", "constraints:" | Infer from request |
-| `issues` | "issue:", "bug:", "problem:", "error:" | Discover during workflow |
+| `issues` | "issue:", "bug:", "problem:", "error:", "question:", "unknown:" | Discover during workflow |
 | `request` | Primary task description (REQUIRED) | ERROR if completely empty |
 | `environment` | URLs starting with http(s)://, "staging:", "production:" | Skip browser testing |
 | `scope` | File paths, glob patterns like `src/**/*.js`, "files:" | Default to specs/** |
@@ -87,8 +87,8 @@ user_inputs:
 
 Based on detected/selected mode:
 
-- **AUTONOMOUS**: Load and execute `.claude/prompts/spec_kit/spec_kit_complete_auto.yaml`
-- **INTERACTIVE**: Load and execute `.claude/prompts/spec_kit/spec_kit_complete_confirm.yaml`
+- **AUTONOMOUS**: Load and execute `.opencode/prompts/spec_kit/spec_kit_complete_auto.yaml`
+- **INTERACTIVE**: Load and execute `.opencode/prompts/spec_kit/spec_kit_complete_confirm.yaml`
 
 ## Workflow Overview (12 Steps)
 
@@ -187,4 +187,21 @@ Implementation:
 Next Steps:
 - Review implementation summary
 - Prepare for code review and PR
+```
+
+## Examples
+
+**Example 1: Simple Feature (autonomous)**
+```
+/speckit.complete:auto Add a newsletter signup form to the footer
+```
+
+**Example 2: Complex Feature (interactive)**
+```
+/speckit.complete:confirm Add user authentication with OAuth2 to the dashboard. Use Passport.js. Staging: https://staging.example.com
+```
+
+**Example 3: With Specific Files**
+```
+/speckit.complete "Refactor the payment processing module" files: src/payments/** src/checkout/**
 ```

@@ -89,112 +89,112 @@ workflow:
   step_1_request_analysis:
     purpose: Analyze inputs and define planning scope
     activities:
-      - Analyze all user inputs thoroughly
-      - Define development scope for the spec folder
-      - Verify or create spec folder structure
-      - Check for existing artifacts
-      - Establish planning scope
+    - Analyze all user inputs thoroughly
+    - Define development scope for the spec folder
+    - Verify or create spec folder structure
+    - Check for existing artifacts
+    - Establish planning scope
     deep_analysis:
       focus: comprehensive_requirement_analysis
       outputs:
-        - requirement_summary
-        - approach_overview
-        - complexity_assessment
-        - key_objectives
-        - success_criteria
+      - requirement_summary
+      - approach_overview
+      - complexity_assessment
+      - key_objectives
+      - success_criteria
     validation: understanding_confirmed
 
   step_2_pre_work_review:
     purpose: Review knowledge base and project standards
     activities:
-      - Read and review AGENTS.md
-      - Check knowledge base (.claude/knowledge/) or skills folder (.claude/skills/) for relevant coding standards
-      - Extract coding standards summary
-      - Identify architectural patterns
-      - Document project conventions
+    - Read and review AGENTS.md
+    - Check knowledge base (.claude/knowledge/) or skills folder (.claude/skills/) for relevant coding standards
+    - Extract coding standards summary
+    - Identify architectural patterns
+    - Document project conventions
     required_documents:
-      - AGENTS.md
-      - Knowledge base or skills folder (if available)
+    - AGENTS.md
+    - Knowledge base or skills folder (if available)
     verification: MUST_REVIEW
     validation: principles_established
 
   step_3_specification:
     purpose: Create comprehensive feature specification
     activities:
-      - Generate concise short name for branch
-      - Check for existing branches
-      - Run create-new-feature.sh script
-      - Estimate complexity and select documentation level
-      - Load and fill spec_template.md
-      - Generate functional requirements
-      - Define success criteria
+    - Generate concise short name for branch
+    - Check for existing branches
+    - Run create-new-feature.sh script
+    - Estimate complexity and select documentation level
+    - Load and fill spec_template.md
+    - Generate functional requirements
+    - Define success criteria
     outputs:
-      - feature_branch: created
-      - spec.md: acceptance_criteria
+    - feature_branch: created
+    - spec.md: acceptance_criteria
     template: .opencode/speckit/templates/spec_template.md
     validation: spec_complete
 
   step_4_clarification:
     purpose: Resolve ambiguities and clarify requirements
     activities:
-      - Extract [NEEDS CLARIFICATION] markers (max 3)
-      - Research codebase for patterns
-      - Resolve ambiguities through investigation
-      - Update spec.md with clarifications
-      - Document assumptions
+    - Extract [NEEDS CLARIFICATION] markers (max 3)
+    - Research codebase for patterns
+    - Resolve ambiguities through investigation
+    - Update spec.md with clarifications
+    - Document assumptions
     outputs:
-      - resolved_ambiguities
-      - clarified_requirements
-      - updated_spec
+    - resolved_ambiguities
+    - clarified_requirements
+    - updated_spec
     validation: requirements_clear
 
   step_5_quality_checklist:
     purpose: Generate validation checklist
     activities:
-      - Load checklist_template.md
-      - Generate domain-specific validation items
-      - Create checklist file
-      - Run validation check
+    - Load checklist_template.md
+    - Generate domain-specific validation items
+    - Create checklist file
+    - Run validation check
     outputs:
-      - quality_checklist: generated
+    - quality_checklist: generated
     template: .opencode/speckit/templates/checklist_template.md
     validation: checklist_generated
 
   step_6_planning:
     purpose: Create technical plan with implementation approach
     activities:
-      - Run setup-plan.sh --json
-      - Load plan_template.md
-      - Fill Technical Context
-      - Fill Constitution Check section
-      - Phase 0: Generate research.md to resolve unknowns
-      - Phase 1: Generate data-model.md, contracts/
-      - Generate Testing Strategy
-      - Generate Success Metrics
-      - Import Risk Matrix from spec
-      - Generate Dependencies Tables
-      - Generate Phase 2-4 outlines
-      - Create planning-summary.md
+    - Run setup-plan.sh --json
+    - Load plan_template.md
+    - Fill Technical Context
+    - Fill Constitution Check section
+    - Phase 0: Generate research.md to resolve unknowns
+    - Phase 1: Generate data-model.md, contracts/
+    - Generate Testing Strategy
+    - Generate Success Metrics
+    - Import Risk Matrix from spec
+    - Generate Dependencies Tables
+    - Generate Phase 2-4 outlines
+    - Create planning-summary.md
     outputs:
-      - plan.md: technical_approach
-      - planning-summary.md: overview
-      - research.md: resolved_unknowns
+    - plan.md: technical_approach
+    - planning-summary.md: overview
+    - research.md: resolved_unknowns
     template: .opencode/speckit/templates/plan_template.md
     validation: approach_defined
 
   step_7_save_context:
     purpose: Save conversation context for planning documentation
     activities:
-      - Invoke workflows-save-context skill using Skill tool
-      - Preserve requirements analysis and clarifications
-      - Preserve technical approach decisions
-      - Preserve architecture discussions
+    - Invoke workflows-save-context skill using Skill tool
+    - Preserve requirements analysis and clarifications
+    - Preserve technical approach decisions
+    - Preserve architecture discussions
     tool_invocation:
       tool: Skill
       parameter: skill="workflows-save-context"
       note: "Use the Skill tool with skill parameter to activate context saving"
     outputs:
-      - context_file: specs/[NNN-feature]/memory/[DD-MM-YY_HH-MM]__planning_session.md
+    - context_file: specs/[NNN-feature]/memory/[DD-MM-YY_HH-MM]__planning_session.md
     validation: context_saved_successfully
 
 # ─────────────────────────────────────────────────────────────────
@@ -204,9 +204,9 @@ termination:
   after_step: 7
   message: "Planning phase completed successfully. Workflow terminated after step 7 (save context)."
   next_steps:
-    - Review planning documentation
-    - Validate technical approach
-    - Use /speckit.implement:auto or /speckit.implement:confirm for implementation
+  - Review planning documentation
+  - Validate technical approach
+  - Use /speckit.implement:auto or /speckit.implement:confirm for implementation
 
 # ─────────────────────────────────────────────────────────────────
 # AUTONOMOUS EXECUTION GUIDANCE
@@ -215,31 +215,44 @@ autonomous_execution:
   principle: "Execute planning workflow autonomously with self-validation at each step"
 
   decision_making:
-    - Analyze requirements thoroughly from user inputs
-    - Explore codebase to understand context
-    - Make informed planning decisions
-    - Document reasoning and alternatives
-    - Proceed with best judgment
+  - Analyze requirements thoroughly from user inputs
+  - Explore codebase to understand context
+  - Make informed planning decisions
+  - Document reasoning and alternatives
+  - Proceed with best judgment
 
   validation_approach:
-    - Self-validate after each planning step
-    - Verify spec completeness and clarity
-    - Ensure technical approach is sound
-    - Validate against quality standards
+  - Self-validate after each planning step
+  - Verify spec completeness and clarity
+  - Ensure technical approach is sound
+  - Validate against quality standards
+
+# ─────────────────────────────────────────────────────────────────
+# ERROR RECOVERY
+# ─────────────────────────────────────────────────────────────────
+error_recovery:
+  step_validation_fails:
+    action: "Review requirements, ask clarifying questions, retry step"
+  spec_ambiguity_persists:
+    action: "Document as assumption, add to risk matrix"
+  environment_unavailable:
+    action: "Skip browser testing, document limitation"
+  unexpected_error:
+    action: "Log error, document state, attempt graceful recovery"
 
 # ─────────────────────────────────────────────────────────────────
 # RULES
 # ─────────────────────────────────────────────────────────────────
 rules:
   ALWAYS:
-    - follow_workflow_sequence
-    - document_all_decisions
-    - validate_before_completion
-    - self_validate_and_proceed
-    - do_not_prompt_for_user_approval
+  - follow_workflow_sequence
+  - document_all_decisions
+  - validate_before_completion
+  - self_validate_and_proceed
+  - do_not_prompt_for_user_approval
 
   NEVER:
-    - skip_workflow_steps
-    - proceed_beyond_planning
-    - make_unsupported_assumptions
-    - proceed_without_self_validation
+  - skip_workflow_steps
+  - proceed_beyond_planning
+  - make_unsupported_assumptions
+  - proceed_without_self_validation

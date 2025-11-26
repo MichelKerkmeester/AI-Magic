@@ -6,9 +6,8 @@ description: Implementation workflow (8 steps) - execute pre-planned work. Requi
 
 **Purpose**: Execute implementation of a pre-planned feature. Requires existing spec.md and plan.md from a prior `/speckit.plan` workflow.
 
-> **Step Numbering**: Steps are numbered 10-17 to indicate continuation from `/speckit.plan` (steps 1-7).
-> This shows the logical sequence: Plan creates spec/plan artifacts (steps 1-7), Implement executes them (steps 10-17).
-> Steps 8-9 are reserved for future intermediate steps.
+> **Note**: This is a standalone workflow (8 steps) that assumes spec.md and plan.md already exist.
+> Run `/speckit.plan` first if you need to create planning artifacts.
 
 ## User Input
 
@@ -63,7 +62,7 @@ Parse the raw text from `$ARGUMENTS` and transform into structured user_inputs f
 | `git_branch` | "branch: X", "on branch X", "feature/X" | Use existing branch from spec folder |
 | `spec_folder` | "specs/NNN", "spec folder X", "in specs/X" | REQUIRED - must specify or detect |
 | `context` | "using X", "with Y", "constraints:" | Infer from spec folder |
-| `issues` | "issue:", "bug:", "problem:" | Discover during workflow |
+| `issues` | "issue:", "bug:", "problem:", "error:", "question:", "unknown:" | Discover during workflow |
 | `request` | Additional instructions | "Conduct comprehensive review and implement" |
 | `environment` | URLs, "staging:", "production:" | Skip browser testing |
 | `scope` | File paths, glob patterns | Default to specs/** |
@@ -72,23 +71,21 @@ Parse the raw text from `$ARGUMENTS` and transform into structured user_inputs f
 
 Based on detected/selected mode:
 
-- **AUTONOMOUS**: Load and execute `.claude/prompts/spec_kit/spec_kit_implement_auto.yaml`
-- **INTERACTIVE**: Load and execute `.claude/prompts/spec_kit/spec_kit_implement_confirm.yaml`
+- **AUTONOMOUS**: Load and execute `.opencode/prompts/spec_kit/spec_kit_implement_auto.yaml`
+- **INTERACTIVE**: Load and execute `.opencode/prompts/spec_kit/spec_kit_implement_confirm.yaml`
 
 ## Workflow Overview (8 Steps)
 
 | Step | Name | Purpose | Outputs |
 |------|------|---------|---------|
-| 10 | Review Plan & Spec | Understand requirements | requirements_summary |
-| 11 | Task Breakdown | Create/validate tasks.md | tasks.md |
-| 12 | Analysis | Verify consistency | consistency_report |
-| 13 | Quality Checklist | Validate checklists | checklist_status |
-| 14 | Implementation Check | Verify prerequisites | greenlight |
-| 15 | Development | Execute implementation | code changes |
-| 16 | Completion | Generate summary | implementation-summary.md |
-| 17 | Save Context | Preserve conversation | memory/*.md |
-
-**Note**: Step numbers continue from planning workflow (10-17) to indicate this is a continuation.
+| 1 | Review Plan & Spec | Understand requirements | requirements_summary |
+| 2 | Task Breakdown | Create/validate tasks.md | tasks.md |
+| 3 | Analysis | Verify consistency | consistency_report |
+| 4 | Quality Checklist | Validate checklists | checklist_status |
+| 5 | Implementation Check | Verify prerequisites | greenlight |
+| 6 | Development | Execute implementation | code changes |
+| 7 | Completion | Generate summary | implementation-summary.md |
+| 8 | Save Context | Preserve conversation | memory/*.md |
 
 ## Key Differences from /speckit.complete
 
@@ -196,4 +193,21 @@ Next Steps:
 - Review implementation summary
 - Run final tests
 - Prepare for code review and PR submission
+```
+
+## Examples
+
+**Example 1: Execute Existing Plan (autonomous)**
+```
+/speckit.implement:auto specs/042-user-auth/
+```
+
+**Example 2: With Review (interactive)**
+```
+/speckit.implement:confirm specs/042-user-auth/
+```
+
+**Example 3: With Staging Environment**
+```
+/speckit.implement "specs/042-user-auth/" staging: https://staging.example.com
 ```

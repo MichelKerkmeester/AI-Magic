@@ -88,14 +88,14 @@ available_templates:
 # ─────────────────────────────────────────────────────────────────
 checkpoint_options:
   standard:
-    - label: "Approve"
-      description: "Approve this step and proceed to next"
-    - label: "Review Details"
-      description: "Show more details about what was done"
-    - label: "Modify"
-      description: "Request changes before proceeding"
-    - label: "Skip"
-      description: "Skip this step (if optional)"
+  - label: "Approve"
+    description: "Approve this step and proceed to next"
+  - label: "Review Details"
+    description: "Show more details about what was done"
+  - label: "Modify"
+    description: "Request changes before proceeding"
+  - label: "Skip"
+    description: "Skip this step (if optional)"
 
 # ─────────────────────────────────────────────────────────────────
 # WORKFLOW (12 STEPS WITH CHECKPOINTS)
@@ -104,19 +104,19 @@ workflow:
   step_1_request_analysis:
     purpose: Analyze inputs and define development scope
     activities:
-      - Analyze all user inputs thoroughly
-      - Define development scope for the spec folder
-      - Verify or create spec folder structure
-      - Check for existing artifacts
-      - Establish development scope
+    - Analyze all user inputs thoroughly
+    - Define development scope for the spec folder
+    - Verify or create spec folder structure
+    - Check for existing artifacts
+    - Establish development scope
     deep_analysis:
       focus: comprehensive_requirement_analysis
       outputs:
-        - requirement_summary
-        - approach_overview
-        - complexity_assessment
-        - key_objectives
-        - success_criteria
+      - requirement_summary
+      - approach_overview
+      - complexity_assessment
+      - key_objectives
+      - success_criteria
     validation: understanding_confirmed
     checkpoint:
       question: "Step 1 Complete: Request analysis finished. How would you like to proceed?"
@@ -126,14 +126,14 @@ workflow:
   step_2_pre_work_review:
     purpose: Review knowledge base and project standards
     activities:
-      - Read and review AGENTS.md
-      - Check knowledge base (.claude/knowledge/) or skills folder (.claude/skills/) for relevant coding standards
-      - Extract coding standards summary
-      - Identify architectural patterns
-      - Document project conventions
+    - Read and review AGENTS.md
+    - Check knowledge base (.claude/knowledge/) or skills folder (.claude/skills/) for relevant coding standards
+    - Extract coding standards summary
+    - Identify architectural patterns
+    - Document project conventions
     required_documents:
-      - AGENTS.md
-      - Knowledge base or skills folder (if available)
+    - AGENTS.md
+    - Knowledge base or skills folder (if available)
     verification: MUST_REVIEW
     validation: principles_established
     checkpoint:
@@ -144,16 +144,16 @@ workflow:
   step_3_specification:
     purpose: Create comprehensive feature specification
     activities:
-      - Generate concise short name for branch
-      - Check for existing branches
-      - Run create-new-feature.sh script
-      - Estimate complexity and select documentation level
-      - Load and fill spec_template.md
-      - Generate functional requirements
-      - Define success criteria
+    - Generate concise short name for branch
+    - Check for existing branches
+    - Run create-new-feature.sh script
+    - Estimate complexity and select documentation level
+    - Load and fill spec_template.md
+    - Generate functional requirements
+    - Define success criteria
     outputs:
-      - feature_branch: created
-      - spec.md: acceptance_criteria
+    - feature_branch: created
+    - spec.md: acceptance_criteria
     template: .opencode/speckit/templates/spec_template.md
     validation: spec_complete
     checkpoint:
@@ -164,15 +164,15 @@ workflow:
   step_4_clarification:
     purpose: Resolve ambiguities and clarify requirements
     activities:
-      - Extract [NEEDS CLARIFICATION] markers (max 3)
-      - Research codebase for patterns
-      - Resolve ambiguities through investigation
-      - Update spec.md with clarifications
-      - Document assumptions
+    - Extract [NEEDS CLARIFICATION] markers (max 3)
+    - Research codebase for patterns
+    - Resolve ambiguities through investigation
+    - Update spec.md with clarifications
+    - Document assumptions
     outputs:
-      - resolved_ambiguities
-      - clarified_requirements
-      - updated_spec
+    - resolved_ambiguities
+    - clarified_requirements
+    - updated_spec
     validation: requirements_clear
     checkpoint:
       question: "Step 4 Complete: Requirements clarified. How would you like to proceed?"
@@ -182,12 +182,12 @@ workflow:
   step_5_quality_checklist:
     purpose: Generate validation checklist
     activities:
-      - Load checklist_template.md
-      - Generate domain-specific validation items
-      - Create checklist file
-      - Run validation check
+    - Load checklist_template.md
+    - Generate domain-specific validation items
+    - Create checklist file
+    - Run validation check
     outputs:
-      - quality_checklist: generated
+    - quality_checklist: generated
     template: .opencode/speckit/templates/checklist_template.md
     validation: checklist_generated
     checkpoint:
@@ -198,20 +198,20 @@ workflow:
   step_6_planning:
     purpose: Create technical plan with implementation approach
     activities:
-      - Run setup-plan.sh --json
-      - Load plan_template.md
-      - Fill Technical Context
-      - Fill Constitution Check section
-      - Phase 0: Generate research.md to resolve unknowns
-      - Phase 1: Generate data-model.md, contracts/
-      - Generate Testing Strategy
-      - Generate Success Metrics
-      - Import Risk Matrix from spec
-      - Generate Dependencies Tables
-      - Generate Phase 2-4 outlines
+    - Run setup-plan.sh --json
+    - Load plan_template.md
+    - Fill Technical Context
+    - Fill Constitution Check section
+    - Phase 0: Generate research.md to resolve unknowns
+    - Phase 1: Generate data-model.md, contracts/
+    - Generate Testing Strategy
+    - Generate Success Metrics
+    - Import Risk Matrix from spec
+    - Generate Dependencies Tables
+    - Generate Phase 2-4 outlines
     outputs:
-      - plan.md: technical_approach
-      - research.md: resolved_unknowns
+    - plan.md: technical_approach
+    - research.md: resolved_unknowns
     template: .opencode/speckit/templates/plan_template.md
     validation: approach_defined
     checkpoint:
@@ -222,15 +222,15 @@ workflow:
   step_7_task_breakdown:
     purpose: Break plan into executable tasks
     activities:
-      - Load plan.md for tech stack and architecture
-      - Load spec.md for user stories and priorities
-      - Generate tasks organized by user story
-      - Create dependency graph
-      - Mark parallel-executable tasks with [P]
-      - Define task phases
-      - Generate time estimates
+    - Load plan.md for tech stack and architecture
+    - Load spec.md for user stories and priorities
+    - Generate tasks organized by user story
+    - Create dependency graph
+    - Mark parallel-executable tasks with [P]
+    - Define task phases
+    - Generate time estimates
     outputs:
-      - tasks.md: implementation_breakdown
+    - tasks.md: implementation_breakdown
     template: .opencode/speckit/templates/tasks_template.md
     validation: tasks_documented
     checkpoint:
@@ -241,13 +241,13 @@ workflow:
   step_8_analysis:
     purpose: Verify consistency across all artifacts
     activities:
-      - Build requirements inventory
-      - Build task coverage mapping
-      - Run consistency checks
-      - Generate gap analysis
+    - Build requirements inventory
+    - Build task coverage mapping
+    - Run consistency checks
+    - Generate gap analysis
     outputs:
-      - consistency_report
-      - coverage_verification
+    - consistency_report
+    - coverage_verification
     validation: consistency_verified
     checkpoint:
       question: "Step 8 Complete: Consistency analysis done. How would you like to proceed?"
@@ -257,11 +257,11 @@ workflow:
   step_9_implementation_check:
     purpose: Verify all prerequisites for implementation
     activities:
-      - Run check-prerequisites.sh --json --require-tasks
-      - Verify environment ready
-      - Check API endpoints accessible
-      - Verify dependencies loaded
-      - Confirm no blockers
+    - Run check-prerequisites.sh --json --require-tasks
+    - Verify environment ready
+    - Check API endpoints accessible
+    - Verify dependencies loaded
+    - Confirm no blockers
     checks:
       prerequisites: verified
       blockers: none
@@ -271,58 +271,58 @@ workflow:
       question: "Step 9 Complete: Ready to implement. Proceed with development?"
       use: AskUserQuestion
       options:
-        - label: "Start Development"
-          description: "Begin implementation phase"
-        - label: "Review Plan"
-          description: "Review technical plan before proceeding"
-        - label: "Hold"
-          description: "Pause before implementation"
+      - label: "Start Development"
+        description: "Begin implementation phase"
+      - label: "Review Plan"
+        description: "Review technical plan before proceeding"
+      - label: "Hold"
+        description: "Pause before implementation"
 
   step_10_development:
     purpose: Execute implementation following task plan
     activities:
-      - Parse tasks.md structure
-      - Execute phase by phase
-      - Setup first (structure, dependencies, config)
-      - Follow TDD approach where applicable
-      - Core development (models, services, endpoints)
-      - Integration work (database, middleware, logging)
-      - Update task checklist progressively (mark [X])
-      - Log progress after each task
+    - Parse tasks.md structure
+    - Execute phase by phase
+    - Setup first (structure, dependencies, config)
+    - Follow TDD approach where applicable
+    - Core development (models, services, endpoints)
+    - Integration work (database, middleware, logging)
+    - Update task checklist progressively (mark [X])
+    - Log progress after each task
     approach: incremental_implementation_with_reviews
     requirements:
-      - follow: Check knowledge base or skills folder for coding standards
-      - update: task_checklist_progressively
-      - test: before_commit
-      - validate: continuously
+    - follow: Check knowledge base or skills folder for coding standards
+    - update: task_checklist_progressively
+    - test: before_commit
+    - validate: continuously
     validation: development_complete
     checkpoint:
       question: "Step 10 Complete: Development finished. Review implementation?"
       use: AskUserQuestion
       options:
-        - label: "Review Code"
-          description: "Show code changes for review"
-        - label: "Run Tests"
-          description: "Execute test suite"
-        - label: "Continue"
-          description: "Proceed to completion"
+      - label: "Review Code"
+        description: "Show code changes for review"
+      - label: "Run Tests"
+        description: "Execute test suite"
+      - label: "Continue"
+        description: "Proceed to completion"
 
   step_11_completion:
     purpose: Generate implementation summary
     activities:
-      - Verify all tasks completed
-      - Validate tests pass
-      - Confirm implementation follows plan
-      - Generate implementation-summary.md
-      - Update all task status
+    - Verify all tasks completed
+    - Validate tests pass
+    - Confirm implementation follows plan
+    - Generate implementation-summary.md
+    - Update all task status
     summary_document:
       location: "[SPEC_FOLDER]/implementation-summary.md"
       required_sections:
-        - feature_branch_name
-        - files_modified_created
-        - verification_steps_taken
-        - deviations_from_plan
-        - recommended_next_steps
+      - feature_branch_name
+      - files_modified_created
+      - verification_steps_taken
+      - deviations_from_plan
+      - recommended_next_steps
     validation: implementation_complete
     checkpoint:
       question: "Step 11 Complete: Implementation summary generated. Review summary?"
@@ -332,25 +332,25 @@ workflow:
   step_12_save_context:
     purpose: Save conversation context
     activities:
-      - Invoke workflows-save-context skill
-      - Preserve development decisions
-      - Preserve debugging insights
-      - Preserve code changes
+    - Invoke workflows-save-context skill
+    - Preserve development decisions
+    - Preserve debugging insights
+    - Preserve code changes
     tool_invocation:
       tool: Skill
       parameter: skill="workflows-save-context"
       note: "Use the Skill tool with skill parameter to activate context saving"
     outputs:
-      - context_file: "[SPEC_FOLDER]/memory/[DD-MM-YY_HH-MM]__session.md"
+    - context_file: "[SPEC_FOLDER]/memory/[DD-MM-YY_HH-MM]__session.md"
     validation: context_saved_successfully
     checkpoint:
       question: "Step 12 Complete: Context saved. Workflow finished!"
       use: AskUserQuestion
       options:
-        - label: "Done"
-          description: "Complete the workflow"
-        - label: "View Summary"
-          description: "Show final summary"
+      - label: "Done"
+        description: "Complete the workflow"
+      - label: "View Summary"
+        description: "Show final summary"
 
 # ─────────────────────────────────────────────────────────────────
 # WORKFLOW TERMINATION
@@ -366,12 +366,12 @@ interactive_execution:
   principle: "Execute workflow steps with user approval at each checkpoint"
 
   checkpoint_behavior:
-    - Complete step activities
-    - Present results summary
-    - Use AskUserQuestion for approval
-    - Wait for user response
-    - Process user feedback
-    - Proceed or modify as directed
+  - Complete step activities
+  - Present results summary
+  - Use AskUserQuestion for approval
+  - Wait for user response
+  - Process user feedback
+  - Proceed or modify as directed
 
   user_feedback_handling:
     approve: "Proceed to next step"
@@ -380,22 +380,37 @@ interactive_execution:
     skip: "Skip optional step and proceed"
 
 # ─────────────────────────────────────────────────────────────────
+# ERROR RECOVERY
+# ─────────────────────────────────────────────────────────────────
+error_recovery:
+  step_validation_fails:
+    action: "Review requirements, ask clarifying questions, retry step"
+  user_rejects_approach:
+    action: "Present alternatives, modify plan, document decision"
+  tests_fail:
+    action: "Debug, fix, re-run before marking complete"
+  prerequisites_insufficient:
+    action: "Return to prior workflow phase or ask user for guidance"
+  environment_unavailable:
+    action: "Skip browser testing, document limitation"
+
+# ─────────────────────────────────────────────────────────────────
 # RULES
 # ─────────────────────────────────────────────────────────────────
 rules:
   ALWAYS:
-    - follow_workflow_sequence
-    - document_all_changes
-    - validate_before_completion
-    - use_devtools_for_staging_analysis
-    - pause_at_checkpoints_for_approval
-    - respect_user_feedback
-    - limit_context_to_active_scope
+  - follow_workflow_sequence
+  - document_all_changes
+  - validate_before_completion
+  - use_devtools_for_staging_analysis
+  - pause_at_checkpoints_for_approval
+  - respect_user_feedback
+  - limit_context_to_active_scope
 
   NEVER:
-    - skip_workflow_steps
-    - ignore_blockers
-    - submit_without_validation
-    - skip_browser_testing
-    - proceed_without_user_approval
-    - ignore_user_modification_requests
+  - skip_workflow_steps
+  - ignore_blockers
+  - submit_without_validation
+  - skip_browser_testing
+  - proceed_without_user_approval
+  - ignore_user_modification_requests

@@ -12,7 +12,7 @@ Calculate complexity objectively across multiple dimensions to determine whether
 
 You MUST evaluate ALL five dimensions before making a dispatch decision.
 
-### Dimension 1: Domain Count (30% weight)
+### Dimension 1: Domain Count (35% weight)
 
 **Purpose**: Identifies distinct functional domains that could benefit from specialized agents
 
@@ -92,7 +92,7 @@ Estimate: 6-8 files (routes, controllers, models, tests, docs)
 **Validation**: `file_scope_estimated`
 
 
-### Dimension 3: Lines of Code (20% weight)
+### Dimension 3: Lines of Code (15% weight)
 
 **Purpose**: Rough estimate of implementation volume
 
@@ -118,7 +118,7 @@ IF LOC >= 200:
 **Validation**: `loc_estimated`
 
 
-### Dimension 4: Parallel Opportunity (15% weight)
+### Dimension 4: Parallel Opportunity (20% weight)
 
 **Purpose**: Identifies independent tasks that can execute concurrently
 
@@ -173,7 +173,7 @@ Parallel score: 1.0 (three independent fixes)
 **Validation**: `parallel_opportunity_assessed`
 
 
-### Dimension 5: Task Type (10% weight)
+### Dimension 5: Task Type (5% weight)
 
 **Purpose**: Categorizes inherent task complexity
 
@@ -222,11 +222,11 @@ const typeScore = scoreType(request);           // 0, 0.5, or 1.0
 
 // Apply weights
 const weightedScores = {
-  domain: domainScore * 0.30,
+  domain: domainScore * 0.35,
   file: fileScore * 0.25,
-  loc: locScore * 0.20,
-  parallel: parallelScore * 0.15,
-  type: typeScore * 0.10
+  loc: locScore * 0.15,
+  parallel: parallelScore * 0.20,
+  type: typeScore * 0.05
 };
 
 // Total score (0-1.0, convert to percentage)
@@ -242,15 +242,15 @@ const complexityScore = Object.values(weightedScores).reduce((a, b) => a + b) * 
 
 **Decision Logic**:
 ```markdown
-IF complexityScore < 40:
+IF complexityScore < 25:
   → Decision: DIRECT (low complexity)
   → Rationale: Overhead exceeds benefit
 
-IF complexityScore >= 40 AND complexityScore < 50:
+IF complexityScore >= 25 AND complexityScore < 35:
   → Decision: COLLABORATIVE (medium complexity)
   → Rationale: Borderline case, user preference
 
-IF complexityScore >= 50:
+IF complexityScore >= 35:
   → Decision: DISPATCH (high complexity)
   → Rationale: Clear efficiency gain from sub-agents
 ```
@@ -265,39 +265,39 @@ IF complexityScore >= 50:
 
 ### Dimension Analysis:
 
-**1. Domain Count (30%)**:
+**1. Domain Count (35%)**:
 - Domains identified: code, testing, documentation, git (4 domains)
 - Score: 1.0 (≥3 domains)
-- Weighted: 1.0 × 30% = **30%**
+- Weighted: 1.0 × 35% = **35%**
 
 **2. File Count (25%)**:
 - Estimated: 8-12 files (auth module + tests + docs + commit)
 - Score: 1.0 (≥6 files)
 - Weighted: 1.0 × 25% = **25%**
 
-**3. LOC Estimate (20%)**:
+**3. LOC Estimate (15%)**:
 - New authentication feature: ~300-500 LOC
 - Score: 1.0 (≥200 LOC)
-- Weighted: 1.0 × 20% = **20%**
+- Weighted: 1.0 × 15% = **15%**
 
-**4. Parallel Opportunity (15%)**:
+**4. Parallel Opportunity (20%)**:
 - Docs can be parallel, tests depend on code
 - Score: 0.5 (some parallelization)
-- Weighted: 0.5 × 15% = **7.5%**
+- Weighted: 0.5 × 20% = **10%**
 
-**5. Task Type (10%)**:
+**5. Task Type (5%)**:
 - Complex (new authentication system)
 - Score: 1.0 (complex task)
-- Weighted: 1.0 × 10% = **10%**
+- Weighted: 1.0 × 5% = **5%**
 
 ### Final Calculation:
 ```
-Total Score = 30% + 25% + 20% + 7.5% + 10% = 92.5%
+Total Score = 35% + 25% + 15% + 10% + 5% = 90%
 ```
 
 ### Decision:
 ```
-Score: 92.5% → AUTO-DISPATCH
+Score: 90% → AUTO-DISPATCH
 Rationale: High complexity across all dimensions, clear parallelization opportunities
 Expected agents: 3-4 (code, test, docs, git)
 ```
@@ -327,18 +327,18 @@ IF token_budget < 20%:
   → Override: DIRECT (regardless of complexity)
   → Rationale: Insufficient resources for sub-agent dispatch
 
-IF token_budget >= 20% AND token_budget < 40%:
+IF token_budget >= 20% AND token_budget < 25%:
   → Override: LIMIT_2 (maximum 2 sub-agents)
   → Rationale: Limited resources, reduce agent count
 ```
 
 ### User Preference (Collaborative Zone)
 
-Medium complexity (40-49%) always asks (50%+ auto-dispatches):
+Medium complexity (25-34%) always asks (35%+ auto-dispatches):
 
 ```markdown
-Complexity: 45%
-Prompt: "This task has medium complexity (45%).
+Complexity: 30%
+Prompt: "This task has medium complexity (30%).
 Would you prefer:
 A) Handle directly (simpler, sequential)
 B) Dispatch sub-agents (parallel, potentially faster)"

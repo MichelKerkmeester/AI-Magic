@@ -9,7 +9,7 @@ Time-boxed research and experimentation to answer a technical question or valida
 ## 1. METADATA
 
 - **Spike ID**: SPIKE-[FORMAT: ###]
-- **Status**: [NEEDS CLARIFICATION: Proposed | In Progress | Completed | Abandoned]
+- **Status**: [NEEDS CLARIFICATION: What is the spike status? (a) Proposed - not yet started (b) In Progress - actively investigating (c) Completed - findings documented, hypothesis tested (d) Abandoned - stopped early, explain why in notes]
 - **Date Started**: [FORMAT: YYYY-MM-DD]
 - **Date Completed**: [FORMAT: YYYY-MM-DD] [OPTIONAL: empty if in progress]
 - **Time Box**: [YOUR_VALUE_HERE: X hours/days]
@@ -194,7 +194,7 @@ Time-boxed research and experimentation to answer a technical question or valida
 [YOUR_VALUE_HERE: why are we recommending this approach? Example: Experiments show WebSocket + Web Workers handles 2000+ messages/sec with <10ms UI lag, meeting performance targets]
 
 ### Confidence Level
-- **Overall Confidence**: [NEEDS CLARIFICATION: High | Medium | Low]
+- **Overall Confidence**: [NEEDS CLARIFICATION: How confident are you in these findings? (a) High - strong evidence, repeatable results (b) Medium - reasonable evidence, some uncertainty (c) Low - preliminary findings, needs more investigation]
 - **Reasoning**: [Why this confidence level]
 
 ### Alternative Approaches

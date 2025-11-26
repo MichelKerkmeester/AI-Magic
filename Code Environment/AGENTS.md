@@ -25,7 +25,7 @@
 - Before **initialization code**: Follow initialization pattern in .claude/skills/workflows-code/references/code_quality_standards.md
 - Before **animation implementation**: See .claude/skills/workflows-code/references/animation_workflows.md
 - Before **searching codebase**: Use mcp-semantic-search skill for intent-based code discovery
-- Before **complex multi-domain tasks**: Consider create-parallel-sub-agents skill for orchestration (≥50% complexity + ≥2 domains auto-dispatch; see `.claude/skills/create-parallel-sub-agents/`)
+- Before **complex multi-domain tasks**: Consider create-parallel-sub-agents skill for orchestration (≥35% complexity + ≥2 domains auto-dispatch; see `.claude/skills/create-parallel-sub-agents/`)
 - Before **spec folder creation**: workflows-conversation skill enforces template structure and sub-folder organization
 - Before **conversation milestones**: workflows-save-context auto-triggers every 20 messages for context preservation
 - **If conflict exists**: Code quality standards override general practices
@@ -115,7 +115,7 @@ Example: `I'M UNCERTAIN ABOUT THIS: The endpoint may require auth scope "read:fo
 | 4 | **Skipping Process** | "I already know this" | Follow checklist anyway |
 | 5 | **No Skill Check** | Starting work without checking skills | Check `.claude/skills/` first |
 | 6 | **Retaining Legacy** | "just in case", "don't change too much" | Remove unused code, ask if unsure |
-| 7 | **Skipping Parallel Dispatch** | Multi-domain task (≥2 domains) + complexity ≥50% | Use Task tool with sub-agents |
+| 7 | **Skipping Parallel Dispatch** | Multi-domain task (≥2 domains) + complexity ≥35% | Use Task tool with sub-agents |
 
 **Enforcement Protocol:** If you detect ANY pattern above:
 1. **STOP** - Do not proceed
@@ -580,13 +580,13 @@ Request: "Add loading spinner to form submission"
    - Screenshot capture and element inspection
 
 5. **Parallel Sub-Agents - MANDATORY FOR COMPLEX MULTI-DOMAIN TASKS**
-   - **REQUIRED when:** Complexity ≥50% AND 2+ domains detected
+   - **REQUIRED when:** Complexity ≥35% AND 2+ domains detected
    - **Domains:** code, docs, git, testing, devops
    - **Thresholds:**
-     - <40%: Handle directly (overhead exceeds benefit)
-     - 40-49%: Ask user preference (borderline case)
-     - ≥50% + 2+ domains: **DISPATCH** sub-agents via Task tool
-   - **Formula:** Domain(30%) + Files(25%) + LOC(20%) + Parallel(15%) + TaskType(10%)
+     - <25%: Handle directly (overhead exceeds benefit)
+     - 25-34%: Ask user preference (borderline case)
+     - ≥35% + 2+ domains: **DISPATCH** sub-agents via Task tool
+   - **Formula:** Domain(35%) + Files(25%) + LOC(15%) + Parallel(20%) + TaskType(5%)
    - **See:** `.claude/skills/create-parallel-sub-agents/` for orchestration patterns
    - **Enforcement:** `orchestrate-skill-validation.sh` BLOCKS all tools except Task when dispatch required
    - **Detection:** About to implement auth + tests + docs + git in one response? → STOP, dispatch sub-agents
@@ -602,7 +602,7 @@ Request: "Add loading spinner to form submission"
 | workflows-code | Frontend code changes | `.claude/skills/workflows-code/` |
 | mcp-semantic-search | "Find code that...", "How does..." | Section 5, Tool #3 |
 | mcp-code-mode | ANY MCP tool call | Section 5, Tool #2 |
-| create-parallel-sub-agents | Complexity ≥50% + 2+ domains | `.claude/skills/create-parallel-sub-agents/` |
+| create-parallel-sub-agents | Complexity ≥35% + 2+ domains | `.claude/skills/create-parallel-sub-agents/` |
 | create-documentation | Creating/editing docs or skills | `.claude/skills/create-documentation/` |
 
 #### The Iron Law (workflows-code)
@@ -622,17 +622,17 @@ External MCP tools? → call_tool_chain() [Code Mode - MANDATORY]
 ```
 
 #### Dispatch Decision (create-parallel-sub-agents)
-- <40% complexity: Handle directly (overhead exceeds benefit)
-- 40-49%: Ask user preference (borderline - let user decide)
-- ≥50% + 2+ domains: **DISPATCH** sub-agents via Task tool (BLOCKING)
+- <25% complexity: Handle directly (overhead exceeds benefit)
+- 25-34%: Ask user preference (borderline - let user decide)
+- ≥35% + 2+ domains: **DISPATCH** sub-agents via Task tool (BLOCKING)
 
 **Complexity Quick-Calc:**
 | Factor | Weight | Low (0) | Med (0.5) | High (1.0) |
 |--------|--------|---------|-----------|------------|
-| Domains | 30% | 1 | 2 | 3+ |
+| Domains | 35% | 1 | 2 | 3+ |
 | Files | 25% | 1-2 | 3-5 | 6+ |
-| LOC | 20% | <50 | 50-200 | 200+ |
-| Parallel | 15% | None | Some | High |
-| Task Type | 10% | Trivial | Moderate | Complex |
+| LOC | 15% | <50 | 50-200 | 200+ |
+| Parallel | 20% | None | Some | High |
+| Task Type | 5% | Trivial | Moderate | Complex |
 
-**Example:** Auth + tests + docs = 3 domains (30%) + 8 files (25%) + 300 LOC (20%) + high parallel (15%) + complex (10%) = **100%** → DISPATCH REQUIRED
+**Example:** Auth + tests + docs = 3 domains (35%) + 8 files (25%) + 300 LOC (15%) + high parallel (20%) + complex (5%) = **100%** → DISPATCH REQUIRED

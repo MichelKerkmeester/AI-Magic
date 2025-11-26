@@ -62,12 +62,12 @@ request_handling:
 # ─────────────────────────────────────────────────────────────────
 prerequisites:
   required_artifacts:
-    - "[SPEC_FOLDER]/spec.md"
-    - "[SPEC_FOLDER]/plan.md"
+  - "[SPEC_FOLDER]/spec.md"
+  - "[SPEC_FOLDER]/plan.md"
   optional_artifacts:
-    - "[SPEC_FOLDER]/tasks.md"
-    - "[SPEC_FOLDER]/planning-summary.md"
-    - "[SPEC_FOLDER]/research.md"
+  - "[SPEC_FOLDER]/tasks.md"
+  - "[SPEC_FOLDER]/planning-summary.md"
+  - "[SPEC_FOLDER]/research.md"
   verification: MUST EXIST BEFORE PROCEEDING
   note: This workflow assumes planning completed via /speckit.plan
 
@@ -79,104 +79,104 @@ available_templates:
   checklist: .opencode/speckit/templates/checklist_template.md
 
 # ─────────────────────────────────────────────────────────────────
-# WORKFLOW (8 STEPS - NUMBERED 10-17 TO INDICATE CONTINUATION)
+# WORKFLOW (8 STEPS - STANDALONE IMPLEMENTATION)
 # ─────────────────────────────────────────────────────────────────
 workflow:
-  step_10_review_plan_and_spec:
+  step_1_review_plan_and_spec:
     purpose: Review spec and planning artifacts
     activities:
-      - Run check-prerequisites.sh --json --require-tasks
-      - Verify spec.md and plan.md exist
-      - Load and review all planning artifacts
-      - Understand feature requirements
-      - Analyze technical approach
-      - Identify dependencies
-      - Note implementation constraints
+    - Run check-prerequisites.sh --json --require-tasks
+    - Verify spec.md and plan.md exist
+    - Load and review all planning artifacts
+    - Understand feature requirements
+    - Analyze technical approach
+    - Identify dependencies
+    - Note implementation constraints
     required_documents:
-      - "[SPEC_FOLDER]/spec.md"
-      - "[SPEC_FOLDER]/plan.md"
+    - "[SPEC_FOLDER]/spec.md"
+    - "[SPEC_FOLDER]/plan.md"
     optional_documents:
-      - planning-summary.md
-      - research.md
-      - research-spike-*.md
-      - decision-record-*.md
+    - planning-summary.md
+    - research.md
+    - research-spike-*.md
+    - decision-record-*.md
     deep_analysis:
       focus: comprehensive_plan_review
       outputs:
-        - requirements_summary
-        - technical_approach_understanding
-        - identified_dependencies
-        - potential_challenges
+      - requirements_summary
+      - technical_approach_understanding
+      - identified_dependencies
+      - potential_challenges
     validation: planning_artifacts_understood
 
-  step_11_task_breakdown:
+  step_2_task_breakdown:
     purpose: Create or validate tasks.md
     activities:
-      - Load plan.md for tech stack and architecture
-      - Load spec.md for user stories and priorities
-      - Generate tasks organized by user story
-      - Create dependency graph
-      - Mark parallel-executable tasks with [P]
-      - Define task phases
-      - Generate time estimates
+    - Load plan.md for tech stack and architecture
+    - Load spec.md for user stories and priorities
+    - Generate tasks organized by user story
+    - Create dependency graph
+    - Mark parallel-executable tasks with [P]
+    - Define task phases
+    - Generate time estimates
     outputs:
-      - tasks.md: implementation_breakdown
+    - tasks.md: implementation_breakdown
     template: .opencode/speckit/templates/tasks_template.md
     validation: tasks_documented
 
-  step_12_analysis:
+  step_3_analysis:
     purpose: Verify consistency across all artifacts
     activities:
-      - Build requirements inventory
-      - Build task coverage mapping
-      - Run consistency checks
-      - Generate gap analysis
+    - Build requirements inventory
+    - Build task coverage mapping
+    - Run consistency checks
+    - Generate gap analysis
     outputs:
-      - consistency_report
-      - coverage_verification
+    - consistency_report
+    - coverage_verification
     validation: consistency_verified
 
-  step_13_quality_checklist:
+  step_4_quality_checklist:
     purpose: Validate checklists before implementation
     activities:
-      - Scan all checklist files
-      - Count total/completed/incomplete items
-      - Generate status table
-      - Determine if ready to proceed
+    - Scan all checklist files
+    - Count total/completed/incomplete items
+    - Generate status table
+    - Determine if ready to proceed
     outputs:
-      - checklist_status: pass_or_fail
+    - checklist_status: pass_or_fail
     validation: checklists_verified
 
-  step_14_implementation_check:
+  step_5_implementation_check:
     purpose: Verify all prerequisites for implementation
     activities:
-      - Verify environment ready
-      - Check API endpoints accessible
-      - Verify dependencies loaded
-      - Confirm no blockers
+    - Verify environment ready
+    - Check API endpoints accessible
+    - Verify dependencies loaded
+    - Confirm no blockers
     checks:
       prerequisites: verified
       blockers: none
       environment: ready
     validation: prerequisites_verified
 
-  step_15_development:
+  step_6_development:
     purpose: Execute implementation following task plan
     activities:
-      - Parse tasks.md structure
-      - Execute phase by phase
-      - Setup first (structure, dependencies, config)
-      - Follow TDD approach where applicable
-      - Core development (models, services, endpoints)
-      - Integration work (database, middleware, logging)
-      - Update task checklist progressively (mark [X])
-      - Log progress after each task
+    - Parse tasks.md structure
+    - Execute phase by phase
+    - Setup first (structure, dependencies, config)
+    - Follow TDD approach where applicable
+    - Core development (models, services, endpoints)
+    - Integration work (database, middleware, logging)
+    - Update task checklist progressively (mark [X])
+    - Log progress after each task
     approach: autonomous_implementation_with_checkpoints
     requirements:
-      - follow: Check knowledge base or skills folder for coding standards
-      - update: task_checklist_progressively
-      - test: before_commit
-      - validate: continuously
+    - follow: Check knowledge base or skills folder for coding standards
+    - update: task_checklist_progressively
+    - test: before_commit
+    - validate: continuously
     checkpoints:
       major_changes:
         action: log_progress
@@ -186,49 +186,49 @@ workflow:
         validation: verify_fix
     validation: development_complete
 
-  step_16_completion:
+  step_7_completion:
     purpose: Generate implementation summary
     activities:
-      - Verify all tasks completed
-      - Validate tests pass
-      - Confirm implementation follows plan
-      - Generate implementation-summary.md
-      - Update all task status
+    - Verify all tasks completed
+    - Validate tests pass
+    - Confirm implementation follows plan
+    - Generate implementation-summary.md
+    - Update all task status
     summary_document:
       location: "[SPEC_FOLDER]/implementation-summary.md"
       required_sections:
-        - feature_branch_name
-        - files_modified_created
-        - verification_steps_taken
-        - deviations_from_plan
-        - recommended_next_steps
+      - feature_branch_name
+      - files_modified_created
+      - verification_steps_taken
+      - deviations_from_plan
+      - recommended_next_steps
     validation: implementation_complete
 
-  step_17_save_context:
+  step_8_save_context:
     purpose: Save conversation context
     activities:
-      - Invoke workflows-save-context skill using Skill tool
-      - Preserve development decisions
-      - Preserve debugging insights
-      - Preserve code changes
+    - Invoke workflows-save-context skill using Skill tool
+    - Preserve development decisions
+    - Preserve debugging insights
+    - Preserve code changes
     tool_invocation:
       tool: Skill
       parameter: skill="workflows-save-context"
       note: "Use the Skill tool with skill parameter to activate context saving"
     outputs:
-      - context_file: "[SPEC_FOLDER]/memory/[DD-MM-YY_HH-MM]__implementation_session.md"
+    - context_file: "[SPEC_FOLDER]/memory/[DD-MM-YY_HH-MM]__implementation_session.md"
     validation: context_saved_successfully
 
 # ─────────────────────────────────────────────────────────────────
 # WORKFLOW TERMINATION
 # ─────────────────────────────────────────────────────────────────
 termination:
-  after_step: 17
-  message: "Implementation phase completed successfully. Workflow terminated after step 17 (save context)."
+  after_step: 8
+  message: "Implementation phase completed successfully. Workflow terminated after step 8 (save context)."
   next_steps:
-    - Review implementation-summary.md
-    - Verify all changes in staging environment
-    - Prepare for code review and PR submission
+  - Review implementation-summary.md
+  - Verify all changes in staging environment
+  - Prepare for code review and PR submission
 
 # ─────────────────────────────────────────────────────────────────
 # AUTONOMOUS EXECUTION GUIDANCE
@@ -237,33 +237,48 @@ autonomous_execution:
   principle: "Execute implementation autonomously with self-validation at each checkpoint"
 
   decision_making:
-    - Follow technical plan from planning phase
-    - Make informed implementation decisions
-    - Document reasoning for deviations
-    - Proceed with best judgment
+  - Follow technical plan from planning phase
+  - Make informed implementation decisions
+  - Document reasoning for deviations
+  - Proceed with best judgment
 
   validation_approach:
-    - Self-validate after each code change
-    - Test incrementally before proceeding
-    - Verify against acceptance criteria
-    - Ensure quality standards met
+  - Self-validate after each code change
+  - Test incrementally before proceeding
+  - Verify against acceptance criteria
+  - Ensure quality standards met
+
+# ─────────────────────────────────────────────────────────────────
+# ERROR RECOVERY
+# ─────────────────────────────────────────────────────────────────
+error_recovery:
+  step_validation_fails:
+    action: "Review requirements, ask clarifying questions, retry step"
+  tests_fail:
+    action: "Debug, fix, re-run before marking complete"
+  prerequisites_insufficient:
+    action: "Return to /speckit.plan workflow or ask user for guidance"
+  environment_unavailable:
+    action: "Skip browser testing, document limitation"
+  unexpected_error:
+    action: "Log error, document state, attempt graceful recovery"
 
 # ─────────────────────────────────────────────────────────────────
 # RULES
 # ─────────────────────────────────────────────────────────────────
 rules:
   ALWAYS:
-    - follow_workflow_sequence
-    - document_all_changes
-    - validate_before_completion
-    - update_task_checklist_progressively
-    - self_validate_and_proceed
-    - do_not_prompt_for_user_approval
-    - test_incrementally
+  - follow_workflow_sequence
+  - document_all_changes
+  - validate_before_completion
+  - update_task_checklist_progressively
+  - self_validate_and_proceed
+  - do_not_prompt_for_user_approval
+  - test_incrementally
 
   NEVER:
-    - skip_workflow_steps
-    - ignore_blockers
-    - submit_without_validation
-    - expand_scope_beyond_spec
-    - proceed_without_self_validation
+  - skip_workflow_steps
+  - ignore_blockers
+  - submit_without_validation
+  - expand_scope_beyond_spec
+  - proceed_without_self_validation

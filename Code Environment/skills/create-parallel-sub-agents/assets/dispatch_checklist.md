@@ -57,7 +57,7 @@ Systematic validation before dispatching sub-agents to ensure success.
 | Check | Go | No-Go | Action if No-Go |
 |-------|-----|-------|-----------------|
 | Token budget >20% | ✅ | ❌ | Handle directly |
-| Complexity ≥50% | ✅ | ❌ | Consider direct or ask user |
+| Complexity ≥35% | ✅ | ❌ | Consider direct or ask user |
 | Domains ≥2 | ✅ | ❌ | Handle directly |
 | Parallel possible | ✅ | ❌ | Consider sequential |
 | Skills available | ✅ | ❌ | Use basic skill set |

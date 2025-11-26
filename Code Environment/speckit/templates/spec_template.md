@@ -27,9 +27,9 @@ Complete feature specification defining requirements, user stories, and success 
 
 ### Assumptions
 
-- [NEEDS CLARIFICATION: Assumption about environment/platform - example: "Assuming users have modern browsers with ES6 support"]
-- [NEEDS CLARIFICATION: Assumption about users/data - example: "Assuming max 10,000 records per export"]
-- [NEEDS CLARIFICATION: Assumption about scope/constraints - example: "Assuming existing auth system handles permissions"]
+- [NEEDS CLARIFICATION: What browser/platform requirements must be supported? (a) ES6+ modern browsers only (b) IE11+ legacy support (c) Mobile-first responsive (d) Other - specify]
+- [NEEDS CLARIFICATION: What are the expected data volume limits? (a) <1,000 records (b) 1,000-10,000 records (c) 10,000-100,000 records (d) 100,000+ records]
+- [NEEDS CLARIFICATION: What existing systems can this feature depend on? (a) Existing auth (b) Existing database (c) Existing API gateway (d) None - greenfield]
 
 **Assumptions Validation Checklist**:
 - [ ] All assumptions reviewed with stakeholders
@@ -171,33 +171,33 @@ Map User Stories to Functional Requirements to ensure all stories are supported 
 
 ### Performance
 
-- **NFR-P01**: [NEEDS CLARIFICATION: Response time requirement - example: "API endpoints respond in <200ms at p95 under normal load"]
-- **NFR-P02**: [NEEDS CLARIFICATION: Throughput requirement - example: "System handles 10,000 requests/second sustained"]
-- **NFR-P03**: [NEEDS CLARIFICATION: Load requirement - example: "Supports 50,000 concurrent users without degradation"]
+- **NFR-P01**: [NEEDS CLARIFICATION: What is the acceptable API response time? (a) <100ms p95 - real-time interactive (b) <200ms p95 - standard web (c) <500ms p95 - background tasks (d) Best effort]
+- **NFR-P02**: [NEEDS CLARIFICATION: What throughput must the system handle? (a) <100 req/sec - low traffic (b) 100-1,000 req/sec - moderate (c) 1,000-10,000 req/sec - high (d) Not performance critical]
+- **NFR-P03**: [NEEDS CLARIFICATION: How many concurrent users must be supported? (a) <100 - small team (b) 100-1,000 - department (c) 1,000-10,000 - enterprise (d) 10,000+ - public scale]
 
 ### Security
 
-- **NFR-S01**: [NEEDS CLARIFICATION: Authentication requirement - example: "All endpoints require valid JWT tokens with exp claim"]
-- **NFR-S02**: [NEEDS CLARIFICATION: Data protection - example: "PII encrypted at rest using AES-256 and in transit via TLS 1.3"]
-- **NFR-S03**: [NEEDS CLARIFICATION: Compliance - example: "GDPR compliant data handling with right-to-delete support"]
+- **NFR-S01**: [NEEDS CLARIFICATION: What authentication method is required? (a) JWT tokens (b) OAuth 2.0/OIDC (c) Session-based (d) API keys (e) Existing system auth]
+- **NFR-S02**: [NEEDS CLARIFICATION: What data protection is required? (a) TLS only (b) TLS + encrypted at rest (c) TLS + AES-256 at rest + field-level encryption (d) Follow existing standards]
+- **NFR-S03**: [NEEDS CLARIFICATION: What compliance requirements apply? (a) None specific (b) GDPR (c) SOC2 (d) HIPAA (e) PCI-DSS (f) Multiple - specify]
 
 ### Reliability
 
-- **NFR-R01**: [NEEDS CLARIFICATION: Uptime requirement - example: "99.9% uptime SLA measured monthly"]
-- **NFR-R02**: [NEEDS CLARIFICATION: Error rate - example: "<0.1% error rate for critical user paths"]
-- **NFR-R03**: [NEEDS CLARIFICATION: Recovery time - example: "RTO <1 hour, RPO <5 minutes for critical data"]
+- **NFR-R01**: [NEEDS CLARIFICATION: What uptime SLA is required? (a) 99% - ~7h downtime/month (b) 99.9% - ~43min downtime/month (c) 99.99% - ~4min downtime/month (d) Best effort]
+- **NFR-R02**: [NEEDS CLARIFICATION: What error rate is acceptable? (a) <1% - standard (b) <0.1% - high reliability (c) <0.01% - mission critical (d) Not specified]
+- **NFR-R03**: [NEEDS CLARIFICATION: What recovery requirements apply? (a) RTO <24h/RPO <24h - standard (b) RTO <1h/RPO <1h - business critical (c) RTO <5min/RPO <5min - real-time (d) Follow existing DR plan]
 
 ### Usability
 
-- **NFR-U01**: [NEEDS CLARIFICATION: Accessibility - example: "WCAG 2.1 Level AA compliant with keyboard navigation"]
-- **NFR-U02**: [NEEDS CLARIFICATION: Browser support - example: "Supports Chrome, Firefox, Safari, Edge (latest 2 versions)"]
-- **NFR-U03**: [NEEDS CLARIFICATION: Mobile responsiveness - example: "Fully responsive design for screens ≥320px wide"]
+- **NFR-U01**: [NEEDS CLARIFICATION: What accessibility level is required? (a) Basic keyboard support (b) WCAG 2.1 Level A (c) WCAG 2.1 Level AA (d) WCAG 2.1 Level AAA (e) Not specified]
+- **NFR-U02**: [NEEDS CLARIFICATION: What browsers must be supported? (a) Latest Chrome only (b) Chrome, Firefox, Safari, Edge latest 2 versions (c) Including IE11 (d) Follow project standards]
+- **NFR-U03**: [NEEDS CLARIFICATION: What mobile support is required? (a) Desktop only (b) Responsive design ≥768px (c) Full mobile support ≥320px (d) Native mobile app required]
 
 ### Operability
 
-- **NFR-O01**: [NEEDS CLARIFICATION: Monitoring - example: "Exposes /health endpoint and Prometheus metrics"]
-- **NFR-O02**: [NEEDS CLARIFICATION: Deployment - example: "Zero-downtime deployment via blue-green strategy"]
-- **NFR-O03**: [NEEDS CLARIFICATION: Logging - example: "Structured JSON logs with correlation IDs and log levels"]
+- **NFR-O01**: [NEEDS CLARIFICATION: What monitoring is required? (a) Basic /health endpoint (b) Prometheus metrics (c) Full APM integration (d) Follow existing monitoring setup]
+- **NFR-O02**: [NEEDS CLARIFICATION: What deployment strategy is required? (a) Manual deploy with downtime (b) Blue-green zero-downtime (c) Canary/progressive rollout (d) Follow existing CI/CD]
+- **NFR-O03**: [NEEDS CLARIFICATION: What logging requirements apply? (a) Basic console logs (b) Structured JSON logs (c) Centralized logging with correlation IDs (d) Follow existing logging standards]
 
 ---
 
@@ -229,10 +229,10 @@ Map User Stories to Functional Requirements to ensure all stories are supported 
 
 ### Measurable Outcomes
 
-- **SC-001**: [NEEDS CLARIFICATION: User task completion - example: "Users complete account creation in under 2 minutes (average)"]
-- **SC-002**: [NEEDS CLARIFICATION: Performance metric - example: "System handles 1000 concurrent users with <200ms latency"]
-- **SC-003**: [NEEDS CLARIFICATION: User satisfaction - example: "90% of users successfully complete primary task on first attempt"]
-- **SC-004**: [NEEDS CLARIFICATION: Business metric - example: "Reduce support tickets related to feature X by 50% within 3 months"]
+- **SC-001**: [NEEDS CLARIFICATION: What is the primary user task and acceptable completion time? (a) <1 min simple action (b) <2 min standard workflow (c) <5 min complex process (d) Specify custom target]
+- **SC-002**: [NEEDS CLARIFICATION: What is the primary performance target? (a) <100ms p95 latency (b) <200ms p95 latency (c) <500ms p95 latency (d) Throughput-focused instead]
+- **SC-003**: [NEEDS CLARIFICATION: What first-attempt success rate is acceptable? (a) >80% - standard usability (b) >90% - good usability (c) >95% - excellent usability (d) Not measured]
+- **SC-004**: [NEEDS CLARIFICATION: What business impact should this feature achieve? (a) Reduce support tickets by X% (b) Increase conversion by X% (c) Decrease time-to-value by X% (d) Define custom metric]
 
 ### KPI Targets
 
@@ -240,10 +240,10 @@ Select relevant KPIs and define measurable targets:
 
 | Category | Metric | Target | Measurement Method |
 |----------|--------|--------|-------------------|
-| Adoption | % of target users using feature | [NEEDS CLARIFICATION: target %] | [YOUR_VALUE_HERE: Analytics tracking method] |
-| Quality | P0/P1 defect rate | 0 within [NEEDS CLARIFICATION: N days] | [YOUR_VALUE_HERE: Bug tracking system] |
-| Performance | p95 latency | ≤ [NEEDS CLARIFICATION: X ms] | [YOUR_VALUE_HERE: APM tool name] |
-| Reliability | Error budget impact | ≤ [NEEDS CLARIFICATION: Y%] | [YOUR_VALUE_HERE: Monitoring system] |
+| Adoption | % of target users using feature | [NEEDS CLARIFICATION: (a) 25% (b) 50% (c) 75% (d) 90%+?] | [YOUR_VALUE_HERE: Analytics tool - GA4, Mixpanel, Amplitude, etc.] |
+| Quality | P0/P1 defect rate | 0 within [NEEDS CLARIFICATION: (a) 7 days (b) 14 days (c) 30 days (d) 90 days?] | [YOUR_VALUE_HERE: Jira, Linear, GitHub Issues, etc.] |
+| Performance | p95 latency | ≤ [NEEDS CLARIFICATION: (a) 100ms (b) 200ms (c) 500ms (d) 1000ms?] | [YOUR_VALUE_HERE: DataDog, New Relic, Grafana, etc.] |
+| Reliability | Error budget impact | ≤ [NEEDS CLARIFICATION: (a) 1% (b) 5% (c) 10% (d) N/A?] | [YOUR_VALUE_HERE: PagerDuty, Prometheus, CloudWatch, etc.] |
 
 ---
 

@@ -11,7 +11,7 @@ Purpose and organization documentation for a sub-folder within a larger spec fol
 - **Parent Spec**: [OPTIONAL: link to parent spec folder - example: `../` or `specs/###-parent-name/`]
 - **Sub-Folder Purpose**: [YOUR_VALUE_HERE: brief description of why this sub-folder exists - 1 sentence]
 - **Created**: [FORMAT: YYYY-MM-DD]
-- **Status**: [NEEDS CLARIFICATION: Active | Complete | Archived]
+- **Status**: [NEEDS CLARIFICATION: What is this sub-folder's status? (a) Active - current work lives here (b) Complete - work finished, reference only (c) Archived - historical, superseded by newer sub-folder]
 - **Owner**: [YOUR_VALUE_HERE: team/individual]
 
 ---
@@ -53,15 +53,15 @@ Purpose and organization documentation for a sub-folder within a larger spec fol
 
 **[YOUR_VALUE_HERE: document-1-name]** - [Brief description and purpose]
 - Location: `./[filename.md]`
-- Status: [NEEDS CLARIFICATION: Draft | In Review | Complete]
+- Status: [NEEDS CLARIFICATION: What is this document's status? (a) Draft - initial work (b) In Review - awaiting feedback (c) Complete - finalized]
 
 **[YOUR_VALUE_HERE: document-2-name]** - [Brief description and purpose]
 - Location: `./[filename.md]`
-- Status: [NEEDS CLARIFICATION: Draft | In Review | Complete]
+- Status: [NEEDS CLARIFICATION: What is this document's status? (a) Draft - initial work (b) In Review - awaiting feedback (c) Complete - finalized]
 
 **[YOUR_VALUE_HERE: document-3-name]** - [Brief description and purpose]
 - Location: `./[filename.md]`
-- Status: [NEEDS CLARIFICATION: Draft | In Review | Complete]
+- Status: [NEEDS CLARIFICATION: What is this document's status? (a) Draft - initial work (b) In Review - awaiting feedback (c) Complete - finalized]
 
 ---
 

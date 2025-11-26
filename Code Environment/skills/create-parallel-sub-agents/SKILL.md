@@ -62,7 +62,7 @@ Autonomous agent orchestration system that analyzes task complexity, receives sk
 
 1. **Single File Changes**
    - Request: "Fix typo in README"
-   - Complexity: < 40%
+   - Complexity: < 25%
    - Action: Handle directly, no dispatch
 
 2. **Sequential Dependencies**
@@ -105,9 +105,9 @@ def orchestrate_task(request):
     analysis = analyze_task(request)
     score = calculate_complexity(analysis)
 
-    if score < 40:
+    if score < 25:
         return execute_directly(request)
-    elif score < 50:
+    elif score < 35:
         if ask_user_preference() == "direct":
             return execute_directly(request)
 
@@ -137,11 +137,11 @@ def orchestrate_task(request):
 
 def calculate_complexity(analysis):
     weights = {
-        'domains': 30 * (0 if len(analysis.domains) == 1 else 0.5 if len(analysis.domains) == 2 else 1.0),
+        'domains': 35 * (0 if len(analysis.domains) == 1 else 0.5 if len(analysis.domains) == 2 else 1.0),
         'files': 25 * (0 if analysis.files <= 2 else 0.5 if analysis.files <= 5 else 1.0),
-        'loc': 20 * (0 if analysis.loc < 50 else 0.5 if analysis.loc <= 200 else 1.0),
-        'parallel': 15 * (0 if analysis.parallel == "none" else 0.5 if analysis.parallel == "some" else 1.0),
-        'type': 10 * (0 if analysis.type == "trivial" else 0.5 if analysis.type == "moderate" else 1.0)
+        'loc': 15 * (0 if analysis.loc < 50 else 0.5 if analysis.loc <= 200 else 1.0),
+        'parallel': 20 * (0 if analysis.parallel == "none" else 0.5 if analysis.parallel == "some" else 1.0),
+        'type': 5 * (0 if analysis.type == "trivial" else 0.5 if analysis.type == "moderate" else 1.0)
     }
     return round(sum(weights.values()))
 ```
@@ -161,12 +161,12 @@ This orchestrator operates in three primary modes:
 
 **Mode 2: Intelligent Sub-Agent Creation**
 - Creates ephemeral agents with targeted skill subsets
-- Use when: Complexity score >= 50% (high complexity), 2+ distinct domains identified, hook recommendations available, parallel execution beneficial
+- Use when: Complexity score >= 35% (high complexity), 2+ distinct domains identified, hook recommendations available, parallel execution beneficial
 - See: [skill_clustering.md](./references/skill_clustering.md), [sub_agent_lifecycle.md](./references/sub_agent_lifecycle.md)
 
 **Mode 3: Direct Task Handling**
 - Handles tasks directly without sub-agent overhead
-- Use when: Complexity score < 40% (low complexity), single domain task, sequential dependencies exist, quick fixes or trivial updates
+- Use when: Complexity score < 25% (low complexity), single domain task, sequential dependencies exist, quick fixes or trivial updates
 - See: [dispatch_decision.md](./references/dispatch_decision.md)
 
 ### Step 1: Task Analysis
@@ -200,11 +200,11 @@ AI Agent Reads:
 ### Step 3: Dispatch Decision
 
 ```markdown
-IF complexity_score >= 50% AND domains >= 2:
+IF complexity_score >= 35% AND domains >= 2:
   → DISPATCH sub-agents
-ELSE IF complexity_score < 40% OR domains == 1:
+ELSE IF complexity_score < 25% OR domains == 1:
   → HANDLE directly
-ELSE (40-49%):
+ELSE (25-34%):
   → COLLABORATIVE decision (ask user preference)
 ```
 
@@ -240,7 +240,7 @@ Use the provided assets to keep specs consistent:
 
 ### Step 6: Mandatory Dispatch Announcement
 
-> **ENFORCEMENT**: When complexity ≥50% + ≥2 domains, the hook BLOCKS (exit 1) until dispatch or override.
+> **ENFORCEMENT**: When complexity ≥35% + ≥2 domains, the hook BLOCKS (exit 1) until dispatch or override.
 
 When dispatching parallel sub-agents via Task tool, you **MUST** announce visibly:
 
@@ -392,13 +392,13 @@ User Prompt: "Would you like me to handle this directly or split into parallel a
 
 **ALWAYS calculate complexity score before deciding**:
 - Analyze domains, file count, LOC estimate, parallel opportunities, and task type
-- Use weighted formula: Domain (30%) + Files (25%) + LOC (20%) + Parallel (15%) + Type (10%)
+- Use weighted formula: Domain (35%) + Files (25%) + LOC (15%) + Parallel (20%) + Type (5%)
 - Reference [complexity_scoring.md](./references/complexity_scoring.md) for calculation details
 
 **ALWAYS check token budget before dispatch** *(Future Enhancement)*:
 - If budget < 20%: Fall back to direct handling
-- If budget < 40%: Limit to 2 sub-agents maximum
-- If budget > 40%: Normal operation (3-5 agents)
+- If budget < 25%: Limit to 2 sub-agents maximum
+- If budget > 25%: Normal operation (3-5 agents)
 - *Note: Token budget checking is not yet implemented in hooks; this is a recommended best practice for AI agents to follow manually*
 
 **ALWAYS use hook recommendations for skill selection**:
@@ -412,7 +412,7 @@ User Prompt: "Would you like me to handle this directly or split into parallel a
 
 ### ❌ NEVER 
 
-**NEVER dispatch for trivial tasks (complexity < 40%)**:
+**NEVER dispatch for trivial tasks (complexity < 25%)**:
 - Dispatch overhead exceeds benefit
 - Handle directly for single-file changes, typos, quick fixes
 
@@ -426,10 +426,10 @@ User Prompt: "Would you like me to handle this directly or split into parallel a
 
 ### ⚠️ ESCALATE IF
 
-**ESCALATE IF complexity score is borderline (40-49%)**:
+**ESCALATE IF complexity score is borderline (25-34%)**:
 - Ask user preference: "Handle directly or dispatch sub-agents?"
 - Explain trade-offs: simplicity vs potential speed
-- Note: 50%+ with ≥2 domains auto-dispatches
+- Note: 35%+ with ≥2 domains auto-dispatches
 
 **ESCALATE IF resource constraints detected mid-dispatch**:
 - Token budget drops below 20%
@@ -442,26 +442,26 @@ User Prompt: "Would you like me to handle this directly or split into parallel a
 ### Complexity Scoring Weights
 
 ```
-Domain Count:        30% (1 domain=0, 2=0.5, 3+=1.0)
+Domain Count:        35% (1 domain=0, 2=0.5, 3+=1.0)
 File Count:          25% (1-2=0, 3-5=0.5, 6+=1.0)
-LOC Estimate:        20% (<50=0, 50-200=0.5, 200+=1.0)
-Parallel Opportunity: 15% (none=0, some=0.5, high=1.0)
-Task Type:           10% (trivial=0, moderate=0.5, complex=1.0)
+LOC Estimate:        15% (<50=0, 50-200=0.5, 200+=1.0)
+Parallel Opportunity: 20% (none=0, some=0.5, high=1.0)
+Task Type:           5% (trivial=0, moderate=0.5, complex=1.0)
 ─────────────────────────────────────────────────────
 Total Score:         0-100%
 ```
 
 Multiply each weight by the bucket multiplier (0 / 0.5 / 1.0) and sum, then round to the nearest whole percent.
 
-*Example*: 3 domains (30×1.0=30) + 4 files (25×0.5=12.5) + 120 LOC (20×0.5=10) + some parallelism (15×0.5=7.5) + moderate task (10×0.5=5) → **65%**, so treat as a collaborative decision.
+*Example*: 3 domains (35×1.0=35) + 4 files (25×0.5=12.5) + 120 LOC (15×0.5=7.5) + some parallelism (20×0.5=10) + moderate task (5×0.5=2.5) → **67.5%**, so dispatch sub-agents.
 
 ### Dispatch Thresholds
 
 | Score Range | Action | Rationale |
 |-------------|--------|-----------|
-| 0-39% | Direct handling | Overhead exceeds benefit |
-| 40-49% | Collaborative | Borderline, user preference |
-| 50-100% | Auto-dispatch | Clear efficiency gain |
+| 0-24% | Direct handling | Overhead exceeds benefit |
+| 25-34% | Collaborative | Borderline, user preference |
+| 35-100% | Auto-dispatch | Clear efficiency gain |
 
 ### Skill Priority Filtering
 
@@ -477,8 +477,8 @@ Multiply each weight by the bucket multiplier (0 / 0.5 / 1.0) and sum, then roun
 ```
 - Check remaining context before dispatch
 - If budget < 20%: Fall back to direct handling
-- If budget < 40%: Limit to 2 sub-agents max
-- If budget > 40%: Normal operation (3-5 agents)
+- If budget < 25%: Limit to 2 sub-agents max
+- If budget > 25%: Normal operation (3-5 agents)
 
 Note: Token budget checking is not implemented in hooks.
 These are recommended guidelines for AI agents.
