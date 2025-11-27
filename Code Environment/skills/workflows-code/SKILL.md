@@ -621,58 +621,51 @@ Platform limits enforced by Webflow that affect architecture decisions:
 - **Git** - Version control for checking changes
 - **Motion.dev** - Animation library (CDN: jsdelivr.net/npm/motion@12.15.0)
 
-### Chrome DevTools MCP Integration
+### Browser Verification Tools (Choose One)
 
-**Automated browser testing and debugging using MCP tools:**
+**The workflows-code skill supports multiple browser verification approaches:**
 
-The workflows-code skill integrates with Chrome DevTools MCP for automated testing workflows.
+**Option 1: Chrome DevTools MCP (Automated, IDE-based)**
+- **Recommended for**: IDE users, MCP infrastructure available, multi-tool workflows
+- **Tools**: mcp__chrome_devtools_1__*, mcp__chrome_devtools_2__* (26 tools each)
+- **Benefits**: Type-safe, structured data, multi-agent concurrency
+- **Integration**: Phase 2 (Debugging) + Phase 3 (Verification)
+- **See**: [verification_workflows.md Section 2.5](./references/verification_workflows.md) for complete MCP tool reference and automation patterns
 
-**Available Instances (Multi-Agent Concurrency):**
-- `mcp__chrome_devtools_1__*` - Instance 1 (26 tools)
-- `mcp__chrome_devtools_2__*` - Instance 2 (26 tools)
+**Option 2: cli-chrome-devtools (Automated, Terminal-based)**
+- **Recommended for**: CLI users, no MCP setup, token efficiency priority
+- **Tool**: browser-debugger-cli (bdg) via Bash execution
+- **Benefits**: Self-documenting, Unix composability, minimal setup
+- **Installation**: `npm install -g browser-debugger-cli@alpha`
+- **Usage**: Direct CDP access via terminal (644 methods across 53 domains)
+- **See**: .claude/skills/cli-chrome-devtools/SKILL.md (complete CLI skill reference)
 
-**Phase 2 (Debugging) Integration:**
-- `list_console_messages` - Automated console error capture
-- `list_network_requests` - Network request monitoring
-- `evaluate_script` - Live JavaScript testing
-- `take_snapshot` - DOM structure inspection
+**Option 3: Manual Browser Testing**
+- **Recommended for**: Visual quality checks, accessibility testing, animation feel
+- **Tools**: Chrome DevTools (manual), Firefox DevTools, Safari Web Inspector
+- **Benefits**: Real perception, tactile feedback, cross-browser
+- **See**: [verification_workflows.md Section 2](./references/verification_workflows.md) for The Gate Function
 
-**Phase 3 (Verification) Integration:**
-- `navigate_page` - Navigate to URL
-- `take_screenshot` - Multi-viewport visual testing
-- `resize_page` - Set viewport dimensions
-- `list_console_messages` - Console error validation
-- `performance_start_trace` / `performance_stop_trace` - Core Web Vitals measurement
-- `list_network_requests` - Failed request detection
+**Integration with Phase 3 (Verification):**
 
-**Key Tools:**
-- Navigation: `navigate_page`, `new_page`, `select_page`, `close_page`
-- Interaction: `click`, `fill`, `hover`, `drag`, `press_key`, `wait_for`
-- Analysis: `list_console_messages`, `list_network_requests`, `evaluate_script`
-- Capture: `take_screenshot`, `take_snapshot`
-- Performance: `performance_start_trace`, `performance_stop_trace`
-- Emulation: `resize_page`, `emulate`
+All three options satisfy "The Iron Law" browser verification requirement:
+- Evidence before claims (manual observation OR automated data)
+- Multi-viewport testing (1920px + 375px minimum)
+- Console error checking (manual DevTools OR automated capture)
+- Interaction verification (click, hover, scroll testing)
 
-**Usage Pattern:**
-```markdown
-1. Navigate to page:
-   [Use tool: mcp__chrome_devtools_2__navigate_page]
-   - url: "https://anobel.com"
-
-2. Check for errors:
-   [Use tool: mcp__chrome_devtools_2__list_console_messages]
-   - Filter response for type === "error"
-
-3. Capture screenshot:
-   [Use tool: mcp__chrome_devtools_2__resize_page]
-   - width: 375, height: 667
-   [Use tool: mcp__chrome_devtools_2__take_screenshot]
+**Decision Tree:**
+```
+Need browser verification? → Choose approach:
+├─ Automated + MCP infrastructure available → Chrome DevTools MCP (Option 1)
+├─ Automated + terminal-first workflow → cli-chrome-devtools (Option 2)
+└─ Visual quality / accessibility focus → Manual browser (Option 3)
 ```
 
 **See Also:**
-- [debugging_workflows.md](./references/debugging_workflows.md) - Automated debugging examples
-- [verification_workflows.md](./references/verification_workflows.md) - Automated verification workflows (Section 2.5)
-- [shared_patterns.md](./references/shared_patterns.md) - Common automation patterns
+- [debugging_workflows.md](./references/debugging_workflows.md) - Debugging examples (MCP + CLI)
+- [verification_workflows.md](./references/verification_workflows.md) - Verification workflows (Section 2.5: MCP + CLI options)
+- [shared_patterns.md](./references/shared_patterns.md) - Automation patterns (MCP + CLI)
 
 ### Hook System Integration
 

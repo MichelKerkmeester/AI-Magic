@@ -180,6 +180,50 @@ console.trace();
 debugger;
 ```
 
+### Browser Verification (CLI Alternative)
+
+**Automated browser testing via cli-chrome-devtools skill:**
+
+```bash
+# Console error checking
+bdg https://anobel.com 2>&1
+bdg console logs 2>&1 | jq '.[] | select(.level=="error")'
+bdg stop 2>&1
+
+# Multi-viewport screenshots
+bdg https://anobel.com 2>&1
+bdg screenshot desktop.png 2>&1  # Default: ~1920x1080
+
+# Mobile viewport (requires Emulation.setDeviceMetricsOverride first)
+bdg cdp Emulation.setDeviceMetricsOverride '{"width":375,"height":667,"deviceScaleFactor":2,"mobile":true}' 2>&1
+bdg screenshot mobile.png 2>&1
+bdg stop 2>&1
+
+# DOM inspection
+bdg https://anobel.com 2>&1
+bdg dom query ".header-nav" 2>&1
+bdg js "document.title" 2>&1
+bdg stop 2>&1
+
+# Network monitoring
+bdg https://anobel.com 2>&1
+bdg network cookies 2>&1
+bdg har export network-trace.har 2>&1
+bdg stop 2>&1
+
+# Performance metrics
+bdg https://anobel.com 2>&1
+bdg cdp Performance.getMetrics 2>&1
+bdg stop 2>&1
+```
+
+**Installation:**
+```bash
+npm install -g browser-debugger-cli@alpha
+```
+
+**See:** `.claude/skills/cli-chrome-devtools/SKILL.md` for complete CLI workflows
+
 ---
 
 ## 3. 📋 DEBUGGING CHECKLIST

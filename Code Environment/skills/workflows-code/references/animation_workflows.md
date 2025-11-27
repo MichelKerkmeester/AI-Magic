@@ -529,6 +529,183 @@ if (prefersReducedMotion) {
 - **No long tasks** - All main thread work <50ms
 - **Minimal layout** - Only 1-2 layout recalculations per animation
 
+### Automated Animation Testing (MCP & CLI)
+
+**Automated testing enables visual regression detection and objective performance measurement:**
+
+#### Visual State Capture (Before/After Animation)
+
+**Option 1: Chrome DevTools MCP**
+```markdown
+1. Navigate to page:
+   [Use tool: mcp__chrome_devtools_2__navigate_page]
+   - url: "https://anobel.com"
+
+2. Capture before state:
+   [Use tool: mcp__chrome_devtools_2__take_screenshot]
+   - Save as "animation-before.png"
+
+3. Trigger animation (via evaluate_script or user interaction)
+
+4. Capture after state:
+   [Use tool: mcp__chrome_devtools_2__take_screenshot]
+   - Save as "animation-after.png"
+
+5. Compare screenshots visually
+```
+
+**Option 2: cli-chrome-devtools (Terminal-based)**
+```bash
+# Visual regression testing workflow
+bdg https://anobel.com 2>&1
+
+# Capture initial state
+bdg screenshot animation-before.png 2>&1
+
+# Trigger animation (wait for completion)
+sleep 2
+
+# Capture final state
+bdg screenshot animation-after.png 2>&1
+
+# Stop session
+bdg stop 2>&1
+
+# Compare screenshots (use diff tool)
+compare animation-before.png animation-after.png animation-diff.png
+```
+
+#### Animation Performance Metrics
+
+**CLI Performance Profiling:**
+```bash
+# Navigate to page
+bdg https://anobel.com 2>&1
+
+# Trigger animation and capture metrics immediately after
+bdg js "document.querySelector('.animated-element').classList.add('animate')" 2>&1
+sleep 1  # Wait for animation to complete
+
+# Get performance metrics
+bdg cdp Performance.getMetrics 2>&1 > animation-metrics.json
+
+# Check for layout thrashing
+jq '.result.metrics[] | select(.name == "LayoutCount" or .name == "RecalcStyleCount")' animation-metrics.json
+
+# Check timing metrics
+jq '.result.metrics[] | select(.name | contains("Duration"))' animation-metrics.json
+
+# Stop session
+bdg stop 2>&1
+```
+
+**Key animation metrics:**
+```json
+{
+  "name": "LayoutCount",
+  "value": 2  // Should be ≤3 per animation
+},
+{
+  "name": "RecalcStyleCount",
+  "value": 1  // Should be minimal
+},
+{
+  "name": "TaskDuration",
+  "value": 145  // Total task time in ms
+}
+```
+
+**Performance Assertion Example:**
+```bash
+#!/bin/bash
+# Assert animation performance meets targets
+
+bdg https://anobel.com 2>&1
+
+# Trigger animation
+bdg js "document.querySelector('.hero').classList.add('animate-in')" 2>&1
+sleep 0.6  # Animation duration
+
+# Get metrics
+METRICS=$(bdg cdp Performance.getMetrics 2>&1)
+bdg stop 2>&1
+
+# Extract layout count
+LAYOUT_COUNT=$(echo "$METRICS" | jq '.result.metrics[] | select(.name=="LayoutCount") | .value')
+
+# Assert performance target
+if [ "$LAYOUT_COUNT" -gt 3 ]; then
+  echo "❌ FAIL: Too many layouts ($LAYOUT_COUNT > 3)"
+  exit 1
+else
+  echo "✅ PASS: Layout count within target ($LAYOUT_COUNT ≤ 3)"
+fi
+```
+
+#### Multi-Viewport Animation Testing
+
+**Automated cross-viewport testing:**
+```bash
+#!/bin/bash
+# Test animations at all viewports
+
+VIEWPORTS=("1920:1080:desktop" "768:1024:tablet" "375:667:mobile")
+URL="https://anobel.com"
+
+for viewport in "${VIEWPORTS[@]}"; do
+  IFS=':' read -r width height name <<< "$viewport"
+
+  echo "Testing $name viewport (${width}x${height})..."
+
+  bdg "$URL" 2>&1
+
+  # Set viewport
+  bdg cdp Emulation.setDeviceMetricsOverride "{\"width\":$width,\"height\":$height,\"deviceScaleFactor\":2,\"mobile\":false}" 2>&1
+
+  # Capture before animation
+  bdg screenshot "animation-${name}-before.png" 2>&1
+
+  # Trigger animation
+  bdg js "document.querySelector('.animated-element').classList.add('animate')" 2>&1
+  sleep 1
+
+  # Capture after animation
+  bdg screenshot "animation-${name}-after.png" 2>&1
+
+  # Get performance metrics
+  bdg cdp Performance.getMetrics 2>&1 > "animation-${name}-metrics.json"
+
+  bdg stop 2>&1
+
+  echo "✅ $name viewport captured"
+done
+
+echo "✅ All viewport tests complete"
+```
+
+#### Reduced Motion Testing
+
+**Automated prefers-reduced-motion verification:**
+```bash
+# Test with reduced motion preference
+bdg https://anobel.com 2>&1
+
+# Enable reduced motion emulation
+bdg cdp Emulation.setEmulatedMedia '{"features":[{"name":"prefers-reduced-motion","value":"reduce"}]}' 2>&1
+
+# Check if animations are disabled
+REDUCED_MOTION=$(bdg js "window.matchMedia('(prefers-reduced-motion: reduce)').matches" 2>&1)
+
+echo "Reduced motion active: $REDUCED_MOTION"
+
+# Capture screenshot in reduced motion mode
+bdg screenshot animation-reduced-motion.png 2>&1
+
+bdg stop 2>&1
+```
+
+**See:** `.claude/skills/cli-chrome-devtools/` for complete CLI automation patterns
+
 ---
 
 ## 6. 🐛 COMMON ISSUES AND SOLUTIONS

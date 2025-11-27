@@ -82,6 +82,19 @@ Instead of manually opening DevTools, capture console output programmatically:
 }
 ```
 
+**CLI Alternative (browser-debugger-cli):**
+
+For terminal-first workflows, use bdg CLI tool (cli-chrome-devtools skill):
+
+```bash
+# Capture console errors
+bdg https://anobel.com 2>&1
+bdg console logs 2>&1 | jq '.[] | select(.level=="error")'
+bdg stop 2>&1
+```
+
+See: .claude/skills/cli-chrome-devtools/ for complete CLI automation patterns
+
 **Step 2: Reproduce Consistently**
 - Can you trigger it reliably?
 - Does it happen on every page load?
@@ -203,6 +216,22 @@ Instead of manually checking Network tab, capture requests programmatically:
 - `status: 404` → Resource not found
 - `status: 500` → Server error
 - `status: 403` → Forbidden/authentication required
+
+**CLI Alternative (browser-debugger-cli):**
+
+For terminal-first workflows, use bdg CLI tool:
+
+```bash
+# Navigate and capture network activity (HAR file)
+bdg https://anobel.com 2>&1
+bdg har export network.har 2>&1
+bdg stop 2>&1
+
+# Analyze HAR file for failures
+jq '.log.entries[] | select(.response.status >= 400 or .response.status == 0)' network.har
+```
+
+See: .claude/skills/cli-chrome-devtools/ for complete CLI automation patterns
 
 **Step 5: Trace Data Flow**
 
@@ -340,6 +369,20 @@ Instead of manually typing in console, execute JavaScript via MCP tools:
 ```
 
 This allows testing hypotheses programmatically without manual console typing.
+
+**CLI Alternative (browser-debugger-cli):**
+
+For terminal-first workflows, use bdg CLI tool:
+
+```bash
+# Navigate and execute JavaScript
+bdg https://anobel.com 2>&1
+bdg Runtime.evaluate --expression "document.querySelector('[video-hero]') !== null" 2>&1
+bdg Runtime.evaluate --expression "typeof Hls" 2>&1
+bdg stop 2>&1
+```
+
+See: .claude/skills/cli-chrome-devtools/ for complete CLI automation patterns
 
 **Step 3: Verify Before Continuing**
 - Did it work? Yes → Phase 4
@@ -912,6 +955,148 @@ Solutions:
 - [ ] Compression enabled (gzip/brotli)
 - [ ] HTTP/2 enabled for multiplexing
 ```
+
+### Automated Performance Metrics (MCP & CLI)
+
+**Automated performance measurement enables objective benchmarking and regression detection:**
+
+#### Option 1: Chrome DevTools MCP
+
+**Core Web Vitals Capture:**
+```markdown
+1. Navigate to page:
+   [Use tool: mcp__chrome_devtools_2__navigate_page]
+   - url: "https://anobel.com"
+
+2. Start performance trace:
+   [Use tool: mcp__chrome_devtools_2__performance_start_trace]
+
+3. Interact with page (trigger animations, scroll, etc.)
+
+4. Stop trace and get metrics:
+   [Use tool: mcp__chrome_devtools_2__performance_stop_trace]
+
+5. Analyze trace data:
+   - Look for Long Tasks (>50ms)
+   - Check FCP (First Contentful Paint)
+   - Check LCP (Largest Contentful Paint)
+   - Check CLS (Cumulative Layout Shift)
+```
+
+**Network Performance Metrics:**
+```markdown
+1. Navigate and list network requests:
+   [Use tool: mcp__chrome_devtools_2__list_network_requests]
+
+2. Analyze request timing:
+   - Total page load time
+   - Time to first byte (TTFB)
+   - Resource download times
+   - Failed/slow requests (>500ms)
+```
+
+#### Option 2: cli-chrome-devtools (Terminal-based)
+
+**Performance Metrics Capture:**
+```bash
+# Navigate to page
+bdg https://anobel.com 2>&1
+
+# Get performance metrics
+bdg cdp Performance.getMetrics 2>&1 > performance-metrics.json
+
+# Parse metrics
+jq '.result.metrics[] | select(.name | contains("Layout") or contains("Script") or contains("Paint"))' performance-metrics.json
+
+# Stop session
+bdg stop 2>&1
+```
+
+**Key metrics to monitor:**
+- `LayoutCount` - Number of layout operations
+- `RecalcStyleCount` - Style recalculations
+- `LayoutDuration` - Time spent in layout (ms)
+- `ScriptDuration` - JavaScript execution time (ms)
+- `TaskDuration` - Total task duration (ms)
+
+**Network HAR Analysis:**
+```bash
+# Capture full network trace
+bdg https://anobel.com 2>&1
+bdg har export network-trace.har 2>&1
+bdg stop 2>&1
+
+# Find slow requests (>500ms)
+jq '.log.entries[] | select(.time > 500) | {url: .request.url, time, status: .response.status}' network-trace.har
+
+# Find large resources (>1MB)
+jq '.log.entries[] | select(.response.content.size > 1000000) | {url: .request.url, size: .response.content.size, type: .response.content.mimeType}' network-trace.har
+
+# Calculate total page load time
+jq '[.log.entries[].time] | add' network-trace.har
+```
+
+**Memory Metrics:**
+```bash
+# Get JavaScript heap size
+bdg https://anobel.com 2>&1
+bdg cdp Performance.getMetrics 2>&1 | jq '.result.metrics[] | select(.name | contains("JSHeap"))'
+bdg stop 2>&1
+```
+
+**Example metrics output:**
+```json
+{
+  "name": "JSHeapUsedSize",
+  "value": 12500000
+},
+{
+  "name": "JSHeapTotalSize",
+  "value": 25000000
+}
+```
+
+**DOM Statistics:**
+```bash
+# Get DOM node count
+bdg https://anobel.com 2>&1
+bdg js "document.getElementsByTagName('*').length" 2>&1
+bdg stop 2>&1
+
+# Get specific element counts
+bdg js "document.images.length" 2>&1  # Image count
+bdg js "document.scripts.length" 2>&1  # Script count
+bdg js "document.styleSheets.length" 2>&1  # Stylesheet count
+```
+
+**Performance Baseline Workflow:**
+```bash
+#!/bin/bash
+# Create performance baseline for regression testing
+
+URL="https://anobel.com"
+OUTPUT_DIR="performance-baselines"
+mkdir -p "$OUTPUT_DIR"
+
+# Start session
+bdg "$URL" 2>&1
+
+# Capture metrics
+bdg cdp Performance.getMetrics 2>&1 > "$OUTPUT_DIR/metrics-$(date +%Y%m%d).json"
+
+# Capture HAR
+bdg har export "$OUTPUT_DIR/network-$(date +%Y%m%d).har" 2>&1
+
+# Capture screenshot
+bdg screenshot "$OUTPUT_DIR/screenshot-$(date +%Y%m%d).png" 2>&1
+
+# Stop session
+bdg stop 2>&1
+
+echo "✅ Baseline captured: $OUTPUT_DIR/"
+```
+
+**See:** `.claude/skills/cli-chrome-devtools/` for complete CLI automation patterns
 
 ---
 

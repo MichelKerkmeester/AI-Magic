@@ -55,9 +55,13 @@ Skip any step = lying, not verifying.
 
 ---
 
-## 2.5. 🤖 AUTOMATED VERIFICATION (RECOMMENDED)
+## 2.5. 🤖 AUTOMATED VERIFICATION OPTIONS (MCP OR CLI)
 
-**Chrome DevTools MCP enables automated browser testing for faster, repeatable verification.**
+**Automated browser testing enables faster, repeatable verification.**
+
+**Two automation approaches available:**
+
+### Option 1: Chrome DevTools MCP (IDE-based)
 
 ### Why Use Automated Verification
 
@@ -290,6 +294,58 @@ Both agents can navigate, screenshot, and test without conflicts.
 
 ---
 
+### Option 2: cli-chrome-devtools (CLI-based)
+
+**Lightweight terminal-based verification using browser-debugger-cli (bdg):**
+
+**Benefits**:
+- ✅ No MCP infrastructure required
+- ✅ Direct Bash execution (faster than MCP calls)
+- ✅ Self-documenting tool discovery (--list, --describe, --search)
+- ✅ Unix composability for workflows
+- ✅ Token efficient (minimal context overhead)
+
+**Example Workflow - Console Error Checking**:
+```bash
+# Navigate and capture console
+bdg https://anobel.com 2>&1
+bdg console logs 2>&1 | jq '.[] | select(.level=="error")' > errors.json
+bdg stop 2>&1
+
+# Review errors
+cat errors.json
+```
+
+**Example Workflow - Multi-Viewport Screenshots**:
+```bash
+# Desktop screenshot (default viewport ~1920x1080)
+bdg https://anobel.com 2>&1
+bdg screenshot desktop.png 2>&1
+
+# Mobile screenshot (set viewport first)
+bdg cdp Emulation.setDeviceMetricsOverride '{"width":375,"height":667,"deviceScaleFactor":2,"mobile":true}' 2>&1
+bdg screenshot mobile.png 2>&1
+
+# Reset viewport (optional)
+bdg cdp Emulation.clearDeviceMetricsOverride 2>&1
+bdg stop 2>&1
+```
+
+**See**: .claude/skills/cli-chrome-devtools/SKILL.md for complete CLI automation workflows
+
+**Decision: MCP vs CLI**:
+
+| Factor | Chrome DevTools MCP | cli-chrome-devtools (bdg) |
+|--------|-------------------|--------------------------|
+| Setup | MCP server required | npm install -g bdg |
+| Execution | Via Code Mode (mcp-code-mode skill) | Direct Bash commands |
+| Token Cost | Higher (tool marshalling overhead) | Lower (minimal context) |
+| Discovery | Type definitions in IDE | Self-documenting (--list, --describe) |
+| Workflow | IDE-based, multi-tool integration | Terminal-native, Unix pipes |
+| Best For | Complex automation, IDE users | Quick tasks, CLI users |
+
+---
+
 ## 3. 📋 VERIFICATION REQUIREMENTS
 
 ### Required For Every Claim
@@ -309,7 +365,7 @@ Both agents can navigate, screenshot, and test without conflicts.
 
 ### Browser Testing Matrix
 
-**Chrome DevTools MCP provides automated testing at all viewports:**
+**Automated browser testing (MCP or CLI) enables testing at all viewports:**
 
 **Minimum verification for any frontend claim:**
 ```markdown
@@ -328,7 +384,7 @@ Both agents can navigate, screenshot, and test without conflicts.
 □ Performance acceptable (no jank, smooth animations)
 ```
 
-**Note:** All testing done through Chrome DevTools MCP using viewport emulation. Cross-browser testing beyond Chrome is out of scope (MCP is Chrome-only).
+**Note:** Testing can be done via automated tools (Chrome DevTools MCP or cli-chrome-devtools) or manual browser testing. Cross-browser testing beyond Chrome is out of scope for automated tools.
 
 **Critical fixes require:**
 ```markdown

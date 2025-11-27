@@ -235,6 +235,177 @@ document.querySelectorAll('img[data-src]').forEach(img => {
 - Performance tab (record + analyze)
 - Network tab (check waterfall)
 
+### Automated Performance Measurement (MCP & CLI)
+
+**Automate performance budget enforcement for regression detection:**
+
+#### Option 1: Chrome DevTools MCP
+
+**Core Web Vitals Monitoring:**
+```markdown
+1. Navigate to page:
+   [Use tool: mcp__chrome_devtools_2__navigate_page]
+   - url: "https://anobel.com"
+
+2. Start performance trace:
+   [Use tool: mcp__chrome_devtools_2__performance_start_trace]
+
+3. Wait for page load and interaction
+
+4. Stop trace and analyze:
+   [Use tool: mcp__chrome_devtools_2__performance_stop_trace]
+
+5. Extract metrics:
+   - First Contentful Paint (FCP)
+   - Largest Contentful Paint (LCP)
+   - Cumulative Layout Shift (CLS)
+   - Total Blocking Time (TBT)
+```
+
+#### Option 2: cli-chrome-devtools (Terminal-based)
+
+**Performance Budget Assertion Script:**
+```bash
+#!/bin/bash
+# Enforce performance budgets with assertions
+
+URL="https://anobel.com"
+
+echo "Testing performance for: $URL"
+
+# Start session
+bdg "$URL" 2>&1
+
+# Wait for page load
+sleep 3
+
+# Get performance metrics
+METRICS=$(bdg cdp Performance.getMetrics 2>&1)
+
+# Stop session
+bdg stop 2>&1
+
+# Extract key metrics
+LAYOUT_DURATION=$(echo "$METRICS" | jq '.result.metrics[] | select(.name=="LayoutDuration") | .value')
+SCRIPT_DURATION=$(echo "$METRICS" | jq '.result.metrics[] | select(.name=="ScriptDuration") | .value')
+TASK_DURATION=$(echo "$METRICS" | jq '.result.metrics[] | select(.name=="TaskDuration") | .value')
+
+echo "Performance Metrics:"
+echo "  Layout Duration: ${LAYOUT_DURATION}ms"
+echo "  Script Duration: ${SCRIPT_DURATION}ms"
+echo "  Task Duration: ${TASK_DURATION}ms"
+
+# Assert budgets (example thresholds)
+FAIL=0
+
+if (( $(echo "$TASK_DURATION > 3000" | bc -l) )); then
+  echo "❌ FAIL: Task duration exceeds budget (${TASK_DURATION}ms > 3000ms)"
+  FAIL=1
+fi
+
+if (( $(echo "$SCRIPT_DURATION > 2000" | bc -l) )); then
+  echo "❌ FAIL: Script duration exceeds budget (${SCRIPT_DURATION}ms > 2000ms)"
+  FAIL=1
+fi
+
+if [ $FAIL -eq 0 ]; then
+  echo "✅ PASS: All performance budgets met"
+else
+  echo "❌ FAIL: Performance budget violations detected"
+  exit 1
+fi
+```
+
+**Network Performance Analysis:**
+```bash
+# Capture HAR file
+bdg https://anobel.com 2>&1
+bdg har export performance.har 2>&1
+bdg stop 2>&1
+
+# Calculate page load time
+PAGE_LOAD=$(jq '[.log.entries[].time] | add' performance.har)
+echo "Page load time: ${PAGE_LOAD}ms"
+
+# Find slow requests (>500ms)
+echo "Slow requests:"
+jq '.log.entries[] | select(.time > 500) | {url: .request.url, time}' performance.har
+
+# Calculate total transfer size
+TOTAL_SIZE=$(jq '[.log.entries[].response.bodySize] | add' performance.har)
+echo "Total transfer size: $((TOTAL_SIZE / 1024))KB"
+
+# Assert budgets
+if (( $(echo "$PAGE_LOAD > 3000" | bc -l) )); then
+  echo "❌ FAIL: Page load exceeds budget (${PAGE_LOAD}ms > 3000ms)"
+  exit 1
+fi
+
+if (( $(echo "$TOTAL_SIZE > 1000000" | bc -l) )); then
+  echo "❌ FAIL: Transfer size exceeds budget ($((TOTAL_SIZE / 1024))KB > 1000KB)"
+  exit 1
+fi
+
+echo "✅ PASS: Network performance budgets met"
+```
+
+**Animation Performance Check:**
+```bash
+# Check animation performance (from animation_workflows.md)
+bdg https://anobel.com 2>&1
+
+# Trigger animation
+bdg js "document.querySelector('.animated-element').classList.add('animate')" 2>&1
+sleep 1
+
+# Get layout metrics
+METRICS=$(bdg cdp Performance.getMetrics 2>&1)
+bdg stop 2>&1
+
+LAYOUT_COUNT=$(echo "$METRICS" | jq '.result.metrics[] | select(.name=="LayoutCount") | .value')
+RECALC_COUNT=$(echo "$METRICS" | jq '.result.metrics[] | select(.name=="RecalcStyleCount") | .value')
+
+echo "Animation Metrics:"
+echo "  Layout count: $LAYOUT_COUNT"
+echo "  Style recalc count: $RECALC_COUNT"
+
+# Assert animation budgets
+if [ "$LAYOUT_COUNT" -gt 3 ]; then
+  echo "❌ FAIL: Too many layouts during animation ($LAYOUT_COUNT > 3)"
+  exit 1
+fi
+
+if [ "$RECALC_COUNT" -gt 5 ]; then
+  echo "❌ FAIL: Too many style recalculations ($RECALC_COUNT > 5)"
+  exit 1
+fi
+
+echo "✅ PASS: Animation performance budgets met"
+```
+
+**CI/CD Integration Example:**
+```bash
+#!/bin/bash
+# performance-check.sh - Run in CI pipeline
+
+set -e  # Exit on first failure
+
+echo "🔍 Running performance checks..."
+
+# Performance metrics check
+./scripts/check-performance-metrics.sh
+
+# Network performance check
+./scripts/check-network-performance.sh
+
+# Animation performance check
+./scripts/check-animation-performance.sh
+
+echo "✅ All performance checks passed"
+```
+
+**See:** `.claude/skills/cli-chrome-devtools/` for complete CLI automation patterns
+
 ---
 
 ## 4. 🚫 ANTI-PATTERNS
