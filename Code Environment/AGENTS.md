@@ -11,6 +11,7 @@
 - **Prefer simplicity**, reuse existing patterns, and cite evidence with sources
 - Solve only the stated problem; **avoid over-engineering** and premature optimization
 - **Verify with checks** (simplicity, performance, maintainability, scope) before making changes
+- **Use Sequential Thinking MCP** for complex reasoning tasks when available (Problem Definition → Research → Analysis → Synthesis → Conclusion)
 
 ---
 
@@ -86,6 +87,17 @@ Example: `I'M UNCERTAIN ABOUT THIS: The endpoint may require auth scope "read:fo
 - Fast wrong answers waste more time than admitting limitations
 - Users make critical decisions based on your output - accuracy > speed
 - Preserve truth even when it means saying "I don't know"
+
+#### ⚡ Sequential Thinking (Complex Reasoning)
+When Sequential Thinking MCP is available, use it for complex tasks:
+- Multi-step problem solving or debugging
+- Architecture or design decisions
+- Analyzing requirements or specifications
+- Planning implementations before changes
+
+**The 5 Stages:** Problem Definition → Research → Analysis → Synthesis → Conclusion
+
+**Tools:** `process_thought` (record reasoning), `generate_summary` (review before action)
 
 #### ⚡ Common Failure Patterns & Detection
 
@@ -581,15 +593,25 @@ Request: "Add loading spinner to form submission"
    - Quick content checks
    - **When to use:** Known file paths, exact symbol searches, literal text matching
 
-2. **Code Mode UTCP - MANDATORY FOR ALL MCP TOOL CALLS**
+2. **Sequential Thinking MCP (Complex Reasoning)**
+   - Multi-step problem solving or debugging
+   - Architecture or design decisions
+   - Analyzing requirements or specifications
+   - Planning implementations before changes
+   - **The 5 Stages:** Problem Definition → Research → Analysis → Synthesis → Conclusion
+   - **Tools:** `process_thought` (record reasoning), `generate_summary` (review before action)
+   - **⚠️ EXCEPTION:** Do NOT use Code Mode for Sequential Thinking - call MCP tools directly
+
+3. **Code Mode UTCP - MANDATORY FOR MCP TOOL CALLS (except Sequential Thinking)**
    - **REQUIRED:** All MCP tools (Figma, Chrome DevTools, Webflow, Semantic Search)
+   - **EXCEPTION:** Sequential Thinking MCP tools are called directly, not through Code Mode
    - **Pattern:** `call_tool_chain` with TypeScript, `search_tools` for discovery
    - **Benefits:** 68% fewer tokens, 98.7% context reduction, 60% faster
    - **⚠️ NAMING:** `{manual_name}.{manual_name}_{tool_name}`
      - ✅ `webflow.webflow_sites_list()` | ❌ `webflow.sites_list()`
    - **See:** `.claude/skills/mcp-code-mode/` for examples and full patterns
 
-3. **Semantic Search MCP (Intent-Based Code Discovery) - MANDATORY FOR CLI AI AGENTS**
+4. **Semantic Search MCP (Intent-Based Code Discovery) - MANDATORY FOR CLI AI AGENTS**
    - **REQUIRED when:** Finding code by what it does, exploring unfamiliar areas, locating implementations
    - Finding code by what it does, not what it's called
    - Exploring unfamiliar codebase areas
@@ -601,13 +623,13 @@ Request: "Add loading spinner to form submission"
    - **Availability:** Only CLI AI agents (Claude Code AI, GitHub Copilot CLI, etc.) - NOT IDE integrations
    - **Enforcement:** If you have semantic search access, you MUST use it for code discovery tasks
 
-4. **Chrome DevTools MCP**
+5. **Chrome DevTools MCP**
    - Browser automation and testing
    - Performance analysis
    - Live debugging web applications
    - Screenshot capture and element inspection
 
-5. **Parallel Sub-Agents - MANDATORY FOR COMPLEX MULTI-DOMAIN TASKS**
+6. **Parallel Sub-Agents - MANDATORY FOR COMPLEX MULTI-DOMAIN TASKS**
    - **REQUIRED when:** Complexity ≥35% AND 2+ domains detected
    - **Domains:** code, docs, git, testing, devops
    - **Thresholds:**
@@ -628,8 +650,8 @@ Request: "Add loading spinner to form submission"
 | workflows-conversation | Any file modification | Section 2 |
 | workflows-save-context | Every 20 messages, "save context" | Auto-triggered |
 | workflows-code | Frontend code changes | `.claude/skills/workflows-code/` |
-| mcp-semantic-search | "Find code that...", "How does..." | Section 5, Tool #3 |
-| mcp-code-mode | ANY MCP tool call | Section 5, Tool #2 |
+| mcp-semantic-search | "Find code that...", "How does..." | Section 5, Tool #4 |
+| mcp-code-mode | ANY MCP tool call (except Sequential Thinking) | Section 5, Tool #3 |
 | create-parallel-sub-agents | Complexity ≥35% + 2+ domains | `.claude/skills/create-parallel-sub-agents/` |
 | create-documentation | Creating/editing docs or skills | `.claude/skills/create-documentation/` |
 
@@ -646,7 +668,8 @@ Known file path? → Read()
 Know what code DOES? → search_codebase() [semantic search]
 Exact symbol/keyword? → Grep()
 File structure? → Glob()
-External MCP tools? → call_tool_chain() [Code Mode - MANDATORY]
+Complex reasoning? → process_thought() [Sequential Thinking - direct call]
+External MCP tools? → call_tool_chain() [Code Mode - MANDATORY, except Sequential Thinking]
 ```
 
 #### Dispatch Decision (create-parallel-sub-agents)

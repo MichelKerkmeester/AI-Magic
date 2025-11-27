@@ -13,7 +13,17 @@
         // UTCP configuration file path for tool definitions
         "UTCP_CONFIG_FILE": "/Users/.utcp_config.json"
       },
-      "tools": ["*"] // Expose all available MCP tools (use array of tool names to restrict)
+      "tools": [
+        "*"
+      ] // Expose all available MCP tools (use array of tool names to restrict)
+    },
+    // Advanced Reasoning for non Reasoning Copilot Models
+    "sequential-thinking": {
+      "command": "/Users/username/CloudStorage/MCP Servers/mcp-sequential-thinking/.venv/bin/python3.12",
+      "args": [
+        "-m",
+        "mcp_sequential_thinking.server"
+      ]
     }
   }
 }
