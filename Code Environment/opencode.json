@@ -1,7 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
-    "opencode-skills"
+    "opencode-skills",
+    "@tarquinen/opencode-dcp@0.3.19"
   ],
   "mcp": {
     "code_mode": {
@@ -14,6 +15,14 @@
         "UTCP_CONFIG_FILE": "/path/to/.utcp_config.json"
       },
       "enabled": true
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "/Users/username/CloudStorage/MCP Servers/mcp-sequential-thinking/.venv/bin/python3.12",
+        "-m",
+        "mcp_sequential_thinking.server"
+      ]
     }
   }
 }
