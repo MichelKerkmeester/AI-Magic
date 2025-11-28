@@ -1,0 +1,753 @@
+# ───────────────────────────────────────────────────────────────────
+# PLAN_CLAUDE: SIMPLE MODE WORKFLOW
+# ───────────────────────────────────────────────────────────────────
+# Complete 8-phase planning workflow for features <500 LOC
+# Generates single plan.md file using plan_template.md structure
+# ───────────────────────────────────────────────────────────────────
+
+role: Expert Planning Orchestrator (Opus) for Simple Features
+purpose: Create comprehensive single-file implementation plan
+action: Execute 8-phase planning workflow with single plan.md output
+
+# ───────────────────────────────────────────────────────────────────
+# WORKFLOW METADATA
+# ───────────────────────────────────────────────────────────────────
+workflow_metadata:
+  name: "Simple Mode Planning"
+  mode: "simple"
+  target_features: "Features <500 LOC, straightforward scope"
+  output: "Single plan.md file"
+  phases: 8
+  estimated_duration: "45-90 seconds"
+
+# ───────────────────────────────────────────────────────────────────
+# NOTE: This is a self-contained workflow file merging:
+# - base_phases.yaml (Phases 1-3, 7-8)
+# - exploration.yaml (Phases 4-5)
+# - Phase 6: Simple mode plan creation
+# ───────────────────────────────────────────────────────────────────
+
+# ───────────────────────────────────────────────────────────────────
+# PHASE 1: TASK UNDERSTANDING & SESSION INITIALIZATION
+# ───────────────────────────────────────────────────────────────────
+phase_1_task_understanding:
+  phase_name: "Task Understanding & Session Initialization"
+  emoji: "📋"
+  purpose: "Parse input, validate task description, extract SESSION_ID"
+
+  steps:
+    step_1_parse_input:
+      action: "Extract task description from user input"
+      validation: "Task description must not be empty"
+      on_failure: "Use AskUserQuestion to clarify task"
+      error_message: "STATUS=FAIL ERROR='Task description required'"
+
+    step_2_state_understanding:
+      action: "Clearly articulate what the task requires"
+      outputs:
+      - "Task summary in your own words"
+      - "Identified ambiguities needing clarification"
+      - "Initial scope assessment"
+
+    step_3_extract_session_id:
+      action: "Parse SESSION_ID from input JSON (if available)"
+      sanitization: "tr -cd 'a-zA-Z0-9_-'"
+      storage: "Store for .spec-active marker usage"
+      fallback: "Continue without session isolation (use legacy .spec-active)"
+
+  outputs:
+  - task_description
+  - task_summary
+  - ambiguities_list
+  - session_id
+  - scope_initial
+
+# ───────────────────────────────────────────────────────────────────
+# PHASE 2: SPEC FOLDER SETUP
+# ───────────────────────────────────────────────────────────────────
+phase_2_spec_folder_setup:
+  phase_name: "Spec Folder Setup"
+  emoji: "📁"
+  purpose: "Determine which spec folder to use for planning session"
+  integration: "Works with workflows-conversation system"
+
+  steps:
+    step_4_check_active_folder:
+      action: "Look for active spec folder marker"
+      markers:
+      - ".spec-active.{SESSION_ID} (session-isolated)"
+      - ".spec-active (legacy backward compatibility)"
+      read_marker: "Get active spec folder path from marker content"
+
+    step_5_if_active_exists:
+      condition: "Active spec folder marker found"
+      action: "Use the folder path from marker"
+      notification: "Continuing in active spec folder: specs/###-name/"
+      next_step: "Proceed to step 6 to confirm or create new"
+
+    step_6_if_no_active:
+      condition: "No active spec folder marker found"
+      action: "This is a new planning session"
+      hook_interaction: "The enforce-spec-folder.sh hook will present options (A/B/C/D)"
+      wait_for_hook: "Wait for hook to provide spec folder path"
+      next_step: "Proceed to step 7 with chosen folder"
+
+    step_7_process_hook_response:
+      options:
+        option_a:
+          name: "Use existing"
+          action: "Verify folder exists, confirm to user"
+        option_b:
+          name: "Create new"
+          action: "Execute folder creation, copy templates"
+        option_c:
+          name: "Update related"
+          action: "Navigate to related spec, create subfolder"
+        option_d:
+          name: "Skip documentation"
+          action: "Create .claude/.spec-skip marker, output plan to .claude/plans/ (legacy mode)"
+
+    step_8_store_active_path:
+      action: "Write chosen spec folder path to marker"
+      markers:
+        primary: ".spec-active.{SESSION_ID}"
+        fallback: ".spec-active (if SESSION_ID missing)"
+      path_format:
+        simple: "specs/###-short-name/"
+        subfolder: "specs/###-parent/###-subfolder/"
+
+    step_9_verify_readiness:
+      checks:
+      - "Confirm spec folder directory exists"
+      - "Verify write permissions"
+      - "Note folder path for Phase 6 plan output"
+      - "If Option D: Confirm .claude/plans/ directory exists instead"
+
+  outputs:
+  - spec_folder_path
+  - spec_folder_type # existing/new/related/skip
+  - session_marker_written
+  - ready_for_planning
+
+# ───────────────────────────────────────────────────────────────────
+# PHASE 3: CONTEXT LOADING
+# ───────────────────────────────────────────────────────────────────
+phase_3_context_loading:
+  phase_name: "Context Loading"
+  emoji: "🧠"
+  purpose: "Load previous planning session context when continuing in existing spec folder"
+
+  steps:
+    step_10_detect_memory:
+      action: "Check for memory/ directory in active spec folder"
+      path: "{spec_folder_path}/memory/"
+      if_not_found: "Skip to Phase 4 (no previous context)"
+      if_found: "List recent memory files (up to 3) with relative timestamps"
+
+    step_11_ask_user_preference:
+      tool: "AskUserQuestion"
+      question: "Previous planning sessions found. How would you like to proceed?"
+      options:
+        option_a:
+          label: "Load most recent file only"
+          description: "Quick context refresh from last session"
+          action: "Read most recent memory file"
+        option_b:
+          label: "Load all recent files (up to 3)"
+          description: "Comprehensive context from multiple sessions"
+          action: "Read up to 3 recent files (parallel Read calls)"
+        option_c:
+          label: "List all files and select specific"
+          description: "Browse all memory files and choose"
+          action: "List up to 10 files, wait for user selection, then read"
+        option_d:
+          label: "Skip (start fresh without context)"
+          description: "Ignore previous sessions and start new"
+          action: "Proceed to Phase 4 without loading context"
+
+    step_12_load_memory_files:
+      action: "Use Read tool to load selected files"
+      optimization: "For Option B: Make parallel Read calls for efficiency"
+      integration: "Integrate loaded context into planning session"
+      outputs:
+      - previous_decisions
+      - previous_findings
+      - user_feedback_history
+      - context_summary
+
+  outputs:
+  - memory_loaded # true/false
+  - memory_file_count
+  - context_integrated
+  - previous_session_summary
+
+exploration_philosophy:
+  approach: "Hypothesis-driven exploration with verification"
+  pattern: "Explore (Sonnet agents) → Verify (Opus reasoning)"
+  mandate: "Never assume - verify by reading files. Report findings, not conclusions."
+
+# ───────────────────────────────────────────────────────────────────
+# PHASE 4: PARALLEL EXPLORATION (SONNET AGENTS)
+# ───────────────────────────────────────────────────────────────────
+phase_4_parallel_exploration:
+  phase_name: "Parallel Exploration (Sonnet Agents)"
+  emoji: "📊"
+  purpose: "Spawn 4 Explore agents in parallel to discover codebase patterns"
+  orchestrator_model: "opus"
+  agent_model: "sonnet"
+
+  steps:
+    step_13_spawn_explore_agents:
+      action: "Spawn multiple Explore agents in parallel using Task tool"
+      tool: "Task"
+      parameters:
+        subagent_type: "Explore"
+        model: "sonnet" # REQUIRED - fast, cost-effective exploration
+
+      agents:
+        architecture_explorer:
+          focus: "Project structure, entry points, component connections"
+          purpose: "Understand system architecture"
+          model: "sonnet"
+          prompt_template: |
+            Explore the codebase to find how the system architecture works.
+
+            Return:
+            1. Your hypothesis about the architecture
+            2. Full paths to all relevant files (e.g., /path/to/file.ts:lineNumber)
+            3. Any patterns you noticed (component structure, module organization, etc.)
+
+            Do NOT draw conclusions - just report findings. The main agent will verify.
+
+        feature_explorer:
+          focus: "Similar features, related patterns"
+          purpose: "Find reusable patterns"
+          model: "sonnet"
+          prompt_template: |
+            Explore the codebase to find similar features or related patterns for: {task_description}
+
+            Return:
+            1. Your hypothesis about existing similar features
+            2. Full paths to all relevant files (e.g., /path/to/file.ts:lineNumber)
+            3. Any patterns you noticed (naming conventions, implementation patterns, etc.)
+
+            Do NOT draw conclusions - just report findings. The main agent will verify.
+
+        dependency_explorer:
+          focus: "Imports, modules, affected areas"
+          purpose: "Identify integration points"
+          model: "sonnet"
+          prompt_template: |
+            Explore the codebase to find dependencies and integration points for: {task_description}
+
+            Return:
+            1. Your hypothesis about which modules/files will be affected
+            2. Full paths to all relevant files (e.g., /path/to/file.ts:lineNumber)
+            3. Any patterns you noticed (dependency chains, coupling points, etc.)
+
+            Do NOT draw conclusions - just report findings. The main agent will verify.
+
+        test_explorer:
+          focus: "Test patterns, testing infrastructure"
+          purpose: "Understand verification approach"
+          model: "sonnet"
+          prompt_template: |
+            Explore the codebase to find test patterns and testing infrastructure.
+
+            Return:
+            1. Your hypothesis about how testing works in this project
+            2. Full paths to all relevant test files (e.g., /path/to/file.test.ts:lineNumber)
+            3. Any patterns you noticed (test frameworks, mocking patterns, coverage expectations, etc.)
+
+            Do NOT draw conclusions - just report findings. The main agent will verify.
+
+    step_14_agent_spawn_requirements:
+      important: "All Explore agents MUST specify model: 'sonnet' in Task tool call"
+      rationale: "Fast, cost-effective exploration while Opus orchestrates and synthesizes"
+      pattern: |
+        Task({
+          subagent_type: "Explore",
+          model: "sonnet",  // REQUIRED
+          description: "Architecture exploration",
+          prompt: "[exploration prompt from agent template]"
+        })
+
+  outputs:
+  - architecture_findings # From Architecture Explorer
+  - feature_findings # From Feature Explorer
+  - dependency_findings # From Dependency Explorer
+  - test_findings # From Test Explorer
+  - total_files_identified # Count across all agents
+  - hypothesis_list # Unverified hypotheses from all agents
+
+  success_metrics:
+  - "4 agents spawn successfully"
+  - "All agents complete within timeout"
+  - "At least 10-30 files identified total"
+  - "Clear hypotheses from each agent"
+
+# ───────────────────────────────────────────────────────────────────
+# PHASE 5: HYPOTHESIS VERIFICATION (OPUS REVIEW)
+# ───────────────────────────────────────────────────────────────────
+phase_5_hypothesis_verification:
+  phase_name: "Hypothesis Verification (Opus Review)"
+  emoji: "🔬"
+  purpose: "Opus synthesizes and validates agent findings with deep reasoning"
+  model: "opus"
+
+  steps:
+    step_15_verify_findings:
+      action: "Opus reads files and verifies/refutes each hypothesis"
+      model: "opus"
+      verification_process:
+        read_files:
+          action: "Read each file identified by Sonnet Explore agents"
+          tool: "Read"
+          paths: "Use file paths from agent findings (with line numbers)"
+
+        verify_hypotheses:
+          action: "Verify or refute each hypothesis with deep reasoning"
+          approach:
+          - "Cross-check agent findings against actual code"
+          - "Identify contradictions or gaps in agent hypotheses"
+          - "Validate architectural assumptions"
+          - "Confirm integration points"
+
+        cross_reference:
+          action: "Cross-reference findings across agents for consistency"
+          checks:
+          - "Do dependency findings match architecture findings?"
+          - "Do test patterns align with implementation patterns?"
+          - "Are there conflicting hypotheses between agents?"
+
+        build_mental_model:
+          action: "Build complete mental model of:"
+          components:
+          - current_architecture:
+              description: "How the system is currently structured"
+              verified_patterns: "Architectural patterns confirmed by file reading"
+          - affected_components:
+              description: "Which parts will be modified for this task"
+              impact_assessment: "Extent of changes required"
+          - integration_points:
+              description: "Where new code connects to existing code"
+              dependency_verification: "Confirmed dependencies and imports"
+          - potential_risks:
+              description: "Risks identified during verification"
+              risk_mitigation: "How to mitigate identified risks"
+
+        resolve_conflicts:
+          action: "Resolve any conflicting hypotheses from different agents"
+          approach:
+          - "Read additional files if needed to clarify"
+          - "Prioritize evidence over assumptions"
+          - "Document unresolved ambiguities for user clarification"
+
+  outputs:
+  - verified_architecture # Confirmed architectural understanding
+  - verified_patterns # Confirmed reusable patterns
+  - verified_dependencies # Confirmed integration points
+  - verified_test_approach # Confirmed testing strategy
+  - conflicting_hypotheses # Unresolved conflicts needing clarification
+  - mental_model_complete # Complete understanding of task context
+  - risk_assessment # Identified risks and mitigations
+
+  success_metrics:
+  - "All agent hypotheses verified or refuted"
+  - "Mental model includes all 4 components (architecture, affected, integration, risks)"
+  - "Conflicting hypotheses resolved or documented"
+  - "At least 80% of identified files actually read for verification"
+
+# ───────────────────────────────────────────────────────────────────
+# PHASE 6: PLAN CREATION (SIMPLE MODE)
+# ───────────────────────────────────────────────────────────────────
+phase_6_plan_creation_simple:
+  phase_name: "Plan Creation"
+  emoji: "📝"
+  purpose: "Generate single plan.md file from template with verified findings"
+  mode: "simple"
+  output: "Single plan.md file (500-2000 lines)"
+
+  steps:
+    step_16_create_plan_file:
+      action: "Create plan.md at {spec_folder_path}/plan.md"
+      note: "Path was determined in Phase 2 step 8"
+
+      template_usage:
+        read_template:
+          path: ".opencode/speckit/templates/plan_template.md"
+          purpose: "Base structure for plan"
+          requirement: "Use as skeleton, preserve all section headings"
+
+        fill_placeholders:
+          pattern: "[YOUR_VALUE_HERE: ...]"
+          action: "Replace with actual content from exploration findings"
+          sources:
+          - "Phases 4-5 exploration and verification"
+          - "Phase 1 task understanding"
+          - "Phase 3 loaded context (if any)"
+
+        remove_samples:
+          pattern: "[PLACEHOLDER]"
+          action: "Replace with actual content"
+          requirement: "No placeholder text remaining"
+
+        preserve_structure:
+          action: "Keep all section headings and structure from template"
+          validation: "All template sections present in output"
+
+      content_population:
+        section_1_objective:
+          heading: "## 1. OBJECTIVE"
+          sources:
+          - "Task description from Phase 1"
+          - "Verified findings from Phase 5"
+          content:
+          - "Synthesize task description and verified findings into clear objective"
+          - "Include metadata: Category, Tags, Priority, Branch, Date, Status"
+          - "Define purpose, assumptions, stakeholders"
+
+        section_2_quality_gates:
+          heading: "## 2. QUALITY GATES"
+          sources:
+          - "Test Explorer findings from Phase 4"
+          - "Verification strategy from Phase 5"
+          content:
+          - "Define completion criteria from Test Explorer findings"
+          - "Set verification steps based on test patterns found"
+          - "Include Definition of Ready (DoR) and Definition of Done (DoD)"
+          - "Add rollback guardrails and recovery procedures"
+
+        section_3_project_structure:
+          heading: "## 3. PROJECT STRUCTURE"
+          sources:
+          - "Architecture Explorer findings from Phase 4"
+          - "Verified architecture from Phase 5"
+          content:
+          - "Document affected areas using Architecture Explorer findings"
+          - "Show directory structure for modified files"
+          - "Explain structure decision rationale"
+
+        section_4_implementation_phases:
+          heading: "## 4. IMPLEMENTATION PHASES"
+          sources:
+          - "All Explore agent findings from Phase 4"
+          - "Verified integration points from Phase 5"
+          - "Dependency Explorer findings"
+          - "Test Explorer findings"
+          content:
+          - "Break down solution into phases"
+          - "Include file paths with line numbers (format: path/to/file.ts:123)"
+          - "Reference verified integration points from Dependency Explorer"
+          - "Add test patterns from Test Explorer"
+          - "Specify deliverables, duration, parallel tasks for each phase"
+
+        section_5_testing_strategy:
+          heading: "## 5. TESTING STRATEGY"
+          sources:
+          - "Test Explorer findings from Phase 4"
+          - "Verified test approach from Phase 5"
+          content:
+          - "Use Test Explorer findings to define test approach"
+          - "Include test pyramid (unit/integration/e2e)"
+          - "Specify test coverage targets"
+          - "Define CI quality gates"
+
+        section_6_success_metrics:
+          heading: "## 6. SUCCESS METRICS"
+          content:
+          - "Define measurable outcomes"
+          - "Functional metrics (feature completeness, bug counts)"
+          - "Performance metrics (response times, load capacity)"
+          - "Quality metrics (test coverage, code review pass rate)"
+
+        section_7_risks_mitigations:
+          heading: "## 7. RISKS & MITIGATIONS"
+          sources:
+          - "Risk assessment from Phase 5 verification"
+          - "Potential risks identified during exploration"
+          content:
+          - "Document risks identified during hypothesis verification"
+          - "Include risk matrix (Risk ID, Description, Impact, Likelihood, Mitigation)"
+          - "Add rollback plan"
+
+        section_8_dependencies:
+          heading: "## 8. DEPENDENCIES"
+          sources:
+          - "Dependency Explorer findings from Phase 4"
+          - "Verified dependencies from Phase 5"
+          content:
+          - "List dependencies from Dependency Explorer findings"
+          - "Internal dependencies (files, modules, components)"
+          - "External dependencies (libraries, APIs, services)"
+          - "Dependency status and timeline impacts"
+
+        section_9_communication:
+          heading: "## 9. COMMUNICATION & REVIEW"
+          content:
+          - "Standard review checkpoints"
+          - "Stakeholder communication plan"
+          - "Approval gates"
+
+        section_10_references:
+          heading: "## 10. REFERENCES"
+          sources:
+          - "Spec folder files"
+          - "Agent findings from Phase 4"
+          content:
+          - "Link to related spec folder files"
+          - "Reference agent findings"
+          - "External references (documentation, APIs, examples)"
+
+      validation:
+      - "NO placeholder text remaining ([YOUR_VALUE_HERE:], [PLACEHOLDER])"
+      - "All file paths include line numbers (format: path/to/file.ts:lineNumber)"
+      - "Each phase has clear verification steps"
+      - "Risks identified during exploration are documented"
+      - "All template sections present and filled"
+
+      final_line:
+        content: |
+          ---
+          **USER: Please review this plan. Edit any section directly, then confirm to proceed.**
+
+  outputs:
+  - plan_file_path: "{spec_folder_path}/plan.md"
+  - plan_size_lines: "500-2000 lines typical"
+  - template_validated: true
+  - placeholders_removed: true
+
+# PHASE 7: USER REVIEW & CONFIRMATION
+# ───────────────────────────────────────────────────────────────────
+phase_7_user_review:
+  phase_name: "User Review & Confirmation"
+  emoji: "👤"
+  purpose: "Request approval, wait for edits, re-read plan after user confirmation"
+
+  steps:
+    step_17_request_approval:
+      action: "Inform user plan has been created"
+      notification_format: |
+        Plan created at: {spec_folder_path}/plan.md
+
+        Please review the plan and confirm to proceed.
+        Options:
+          - Review and edit the file directly
+          - Reply "confirm" to proceed with implementation
+          - Reply "cancel" to abort
+      wait_for: "Explicit confirmation (confirm or cancel)"
+      blocking: "DO NOT write implementation files until confirmed"
+
+    step_18_handle_response:
+      on_confirm:
+        action: "Proceed to step 19 (re-read plan)"
+      on_reject:
+        action: "Set STATUS=CANCELLED ACTION=user_rejected"
+        capture: "REASON=[reason from user]"
+
+    step_19_reread_plan:
+      purpose: "User may have edited the plan file"
+      action: "Re-read the plan file completely"
+      tool: "Read"
+      path: "{spec_folder_path}/plan.md"
+      analysis:
+      - "Note any changes the user made"
+      - "Acknowledge the changes before proceeding"
+      - "Begin implementation following the plan exactly"
+
+    step_20_return_status:
+      on_awaiting_review:
+        status: "STATUS=OK ACTION=plan_created PATH={spec_folder_path}/plan.md"
+      on_rejected:
+        status: "STATUS=CANCELLED ACTION=user_rejected REASON=[reason]"
+
+  outputs:
+  - user_decision # confirmed/rejected
+  - plan_edited # true/false
+  - plan_final_content
+  - ready_for_implementation
+
+# ───────────────────────────────────────────────────────────────────
+# PHASE 8: CONTEXT PERSISTENCE
+# ───────────────────────────────────────────────────────────────────
+phase_8_context_persistence:
+  phase_name: "Context Persistence"
+  emoji: "💾"
+  purpose: "Save planning session context to memory/ for future sessions"
+
+  steps:
+    step_21_save_context:
+      action: "Create memory file in spec folder"
+      path: "{spec_folder_path}/memory/DD-MM-YY_HH-MM__topic.md"
+      topic_generation:
+        source: "Task description"
+        transformation: "lowercase, hyphens, max 30 chars"
+        pattern: "sed 's/\\s\\+/-/g; s/[^a-z0-9-]//g' | tr '[:upper:]' '[:lower:]' | cut -c1-30"
+
+      content_structure:
+        header:
+        - "# Planning Session: [Task Description]"
+        - "**Date**: YYYY-MM-DD HH:MM"
+        - "**Spec Folder**: {spec_folder_path}"
+
+        session_summary:
+          heading: "## Session Summary"
+          content: "Brief summary of what was planned"
+
+        key_decisions:
+          heading: "## Key Decisions"
+          content:
+          - "Mode selected (if applicable)"
+          - "Architectural choices"
+          - "Technology decisions"
+
+        exploration_findings:
+          heading: "## Exploration Findings"
+          content:
+          - "Summary from Architecture Explorer"
+          - "Summary from Feature Explorer"
+          - "Summary from Dependency Explorer"
+          - "Summary from Test Explorer"
+
+        user_feedback:
+          heading: "## User Feedback"
+          content: "Any edits or feedback user provided during planning"
+
+    step_22_memory_file_format:
+      template: |
+        # Planning Session: {task_description}
+        **Date**: {timestamp}
+        **Spec Folder**: {spec_folder_path}
+
+        ## Session Summary
+        {planning_summary}
+
+        ## Key Decisions
+        - {decision_1}
+        - {decision_2}
+        ...
+
+        ## Exploration Findings
+        - {finding_1}
+        - {finding_2}
+        ...
+
+        ## User Feedback
+        - {feedback_1}
+        ...
+
+  outputs:
+  - memory_file_created
+  - memory_file_path
+  - context_saved
+
+# SIMPLE MODE CHARACTERISTICS
+# ───────────────────────────────────────────────────────────────────
+simple_mode_features:
+  file_output:
+    type: "Single file"
+    path: "{spec_folder_path}/plan.md"
+    size: "500-2000 lines"
+
+  structure:
+    base: "plan_template.md"
+    sections: 10
+    anchors: "None (future enhancement)"
+
+  target_features:
+    loc: "<500 LOC"
+    iterations: "<4"
+    complexity: "Low to moderate"
+    file_count: "1-10 files"
+
+  advantages:
+  - "Simple to read and edit"
+  - "No file navigation required"
+  - "Familiar single-document format"
+  - "Quick to generate"
+
+  when_to_use:
+  - "Bug fixes"
+  - "Small feature additions"
+  - "Refactoring single components"
+  - "Documentation updates"
+  - "Configuration changes"
+
+# ───────────────────────────────────────────────────────────────────
+# TEMPLATE VALIDATION
+# ───────────────────────────────────────────────────────────────────
+template_validation:
+  pre_write_checks:
+  - check: "All [YOUR_VALUE_HERE:] placeholders filled"
+    tool: "String search"
+    action_if_found: "Fill from exploration findings or mark for user input"
+
+  - check: "All [PLACEHOLDER] markers removed"
+    tool: "String search"
+    action_if_found: "Replace with actual content"
+
+  - check: "All [NEEDS CLARIFICATION:] resolved"
+    tool: "String search"
+    action_if_found: "Either fill with best judgment or keep as open question"
+
+  - check: "File paths include line numbers"
+    pattern: "path/to/file.ext:NNN"
+    action_if_missing: "Add line numbers from agent findings"
+
+  post_write_validation:
+  - check: "Template source marker present"
+    marker: "<!-- SPECKIT_TEMPLATE_SOURCE: plan_template | v1.0 -->"
+    action_if_missing: "Add marker at top of file"
+
+  - check: "All 10 sections present"
+    sections:
+    - "OBJECTIVE"
+    - "QUALITY GATES"
+    - "PROJECT STRUCTURE"
+    - "IMPLEMENTATION PHASES"
+    - "TESTING STRATEGY"
+    - "SUCCESS METRICS"
+    - "RISKS & MITIGATIONS"
+    - "DEPENDENCIES"
+    - "COMMUNICATION & REVIEW"
+    - "REFERENCES"
+    action_if_missing: "Add missing section with placeholder note"
+
+# ───────────────────────────────────────────────────────────────────
+# COMPLETION CRITERIA
+# ───────────────────────────────────────────────────────────────────
+simple_mode_completion:
+  plan_created: true
+  template_compliant: true
+  findings_integrated: true
+  ready_for_review: true
+
+  verification_checklist:
+  - "plan.md file exists at correct path"
+  - "File size 500-2000 lines"
+  - "All placeholders removed"
+  - "Exploration findings integrated"
+  - "Template validation passed"
+  - "User review prompt added at end"
+
+# ───────────────────────────────────────────────────────────────────
+# ERROR HANDLING
+# ───────────────────────────────────────────────────────────────────
+error_handling:
+  template_not_found:
+    action: "Use inline template structure as fallback"
+    notification: "Template file missing at .opencode/speckit/templates/plan_template.md"
+
+  placeholder_filling_incomplete:
+    action: "Mark remaining placeholders as [NEEDS CLARIFICATION: user input required]"
+    notification: "Some placeholders could not be filled from exploration findings"
+
+  write_permission_denied:
+    action: "Return plan content in chat"
+    notification: "Cannot write to {spec_folder_path}/plan.md - permission denied"
+    fallback: "Suggest manual file creation"
+
+  exploration_findings_insufficient:
+    action: "Fill sections with [INSUFFICIENT DATA: user input required]"
+    notification: "Exploration did not find enough information for complete plan"
+    recommendation: "User should clarify requirements or provide more context"

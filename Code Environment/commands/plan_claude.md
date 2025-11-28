@@ -1,7 +1,7 @@
 ---
 description: Create a detailed implementation plan with parallel exploration before any code changes
 model: opus
-argument-hint: <task description>
+argument-hint: <task description> [mode:simple|mode:complex]
 allowed-tools: Read, Write, Edit, Glob, Grep, Task, AskUserQuestion
 ---
 
@@ -13,152 +13,105 @@ Create comprehensive implementation plans using parallel exploration agents to t
 
 ## Purpose
 
-Enter PLANNING MODE to create detailed, verified implementation plans. This command spawns multiple Explore agents in parallel to analyze different aspects of the codebase, then synthesizes their findings into a structured plan that must be approved before implementation begins.
+Enter PLANNING MODE to create detailed, verified implementation plans. This command:
+1. Analyzes task complexity and selects appropriate mode (simple or complex)
+2. Spawns multiple Explore agents in parallel to discover codebase patterns
+3. Synthesizes findings into a structured plan using YAML workflow
+4. Requires user approval before implementation begins
+
+**Modes:**
+- **Simple Mode** (<500 LOC): Single plan.md file using `simple_mode.yaml`
+- **Complex Mode** (≥500 LOC): Multi-file plan/ directory (future - currently falls back to simple mode)
 
 ---
 
 ## Contract
 
-**Inputs:** `$ARGUMENTS` — Task description (REQUIRED)
-**Outputs:** Plan file at `.claude/plans/[task-name].md` + `STATUS=<OK|FAIL|CANCELLED>`
+**Inputs:** `$ARGUMENTS` — Task description (REQUIRED) + optional mode override
+**Outputs:** Plan file at `specs/###-name/plan.md` (or `plan/` for complex mode) + `STATUS=<OK|FAIL|CANCELLED>`
 
 ---
 
 ## Instructions
 
-Execute the following phases:
+Execute the following workflow:
 
-### Phase 1: Task Understanding
+### Step 1: Parse Input & Detect Mode Override
 
-1. **Parse and validate input:**
-   - Extract task description from `$ARGUMENTS`
-   - If task is unclear or empty, use AskUserQuestion to clarify
-   - If still unclear: `STATUS=FAIL ERROR="Task description required"`
+1. **Extract task description from $ARGUMENTS**
+2. **Check for explicit mode override:**
+   - Pattern: `mode:simple` or `mode:complex` in arguments
+   - If found: Use specified mode, skip auto-detection
+   - If not found: Proceed to Step 2 for auto-detection
 
-2. **State your understanding:**
-   - Clearly articulate what the task requires
-   - Identify any ambiguities that need clarification
+### Step 2: Auto-Detect Planning Mode
 
-### Phase 2: Parallel Exploration (Sonnet Agents)
+If no mode override specified, analyze task complexity:
 
-3. **Spawn multiple Explore agents in parallel** using Task tool with `subagent_type='Explore'` and `model: 'sonnet'`:
+3. **Estimate LOC from task description:**
+   - Keywords: "small" = 100, "feature" = 200, "refactor" = 300, "system" = 500, "redesign" = 800
+   - File count indicators: "all", "multiple", "across" = +200 LOC
+   - Default: 300 LOC if unclear
 
-   | Agent | Focus | Purpose | Model |
-   |-------|-------|---------|-------|
-   | Architecture Explorer | Project structure, entry points, component connections | Understand system architecture | sonnet |
-   | Feature Explorer | Similar features, related patterns | Find reusable patterns | sonnet |
-   | Dependency Explorer | Imports, modules, affected areas | Identify integration points | sonnet |
-   | Test Explorer | Test patterns, testing infrastructure | Understand verification approach | sonnet |
+4. **Calculate complexity score (0-100%):**
+   - Domain count (35%): code, docs, git, testing, devops
+   - File count (25%): estimated files modified
+   - LOC estimate (15%): normalized 0-1
+   - Parallel opportunity (20%): can tasks run in parallel?
+   - Task type (5%): implementation complexity
 
-   **Important:** All Explore agents MUST specify `model: "sonnet"` in the Task tool call. This ensures fast, cost-effective exploration while Opus orchestrates and synthesizes.
-
-4. **Agent spawn template:**
-   ```typescript
-   // Example Task tool call for each agent
-   {
-     "subagent_type": "Explore",
-     "model": "sonnet",  // REQUIRED - use sonnet for all exploration
-     "description": "Architecture exploration",
-     "prompt": "Explore the codebase to find [specific aspect]. Return:\n1. Your hypothesis about how [aspect] works\n2. Full paths to all relevant files (e.g., /path/to/file.ts:lineNumber)\n3. Any patterns you noticed\n\nDo NOT draw conclusions - just report findings. The main agent will verify."
-   }
+5. **Select mode:**
+   ```
+   IF loc_estimate < 500:
+     mode = "simple"
+   ELSE IF loc_estimate >= 500 OR iterations >= 4:
+     mode = "complex"  # Falls back to simple until Phase 5 implemented
+   ELSE:
+     mode = "simple"
    ```
 
-### Phase 3: Hypothesis Verification (Opus Review)
+### Step 3: Load & Execute YAML Workflow
 
-5. **Verify agent findings** (Opus synthesizes and validates):
-   - Read each file identified by Sonnet Explore agents
-   - Verify or refute each hypothesis with deep reasoning
-   - Cross-reference findings across agents for consistency
-   - Build complete mental model of:
-     - Current architecture
-     - Affected components
-     - Integration points
-     - Potential risks
-   - Resolve any conflicting hypotheses from different agents
+6. **Read and execute the appropriate YAML workflow prompt:**
 
-### Phase 4: Plan Creation
+   Based on the mode selected in Step 2:
 
-6. **Create plan file** at `.claude/plans/[task-name].md`:
+   - **SIMPLE mode** (<500 LOC): Use the Read tool to load `.opencode/prompts/plan_claude/simple_mode.yaml` and execute all instructions in that file.
 
-   ```markdown
-   # Implementation Plan: [Task Title]
+   - **COMPLEX mode** (≥500 LOC): Use the Read tool to load `.opencode/prompts/plan_claude/complex_mode.yaml`. Note: Complex mode is a stub as of Phase 1.5 and will notify user to fall back to simple mode.
 
-   Created: [Date]
-   Status: PENDING APPROVAL
+7. **YAML workflow executes automatically:**
 
-   ## Summary
-   [2-3 sentences describing what will be accomplished]
+   The loaded YAML prompt contains the complete 8-phase workflow:
+   - **Phases 1-3** (from base_phases.yaml): Task Understanding, Spec Folder Setup, Context Loading
+   - **Phases 4-5** (from exploration.yaml): Parallel Exploration (4 Sonnet agents), Hypothesis Verification (Opus)
+   - **Phase 6** (mode-specific): Plan Creation (simple_mode or complex_mode)
+   - **Phases 7-8** (from base_phases.yaml): User Review & Confirmation, Context Persistence
 
-   ## Scope
-   ### In Scope
-   - [List what will be changed]
+   All phases execute sequentially: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
-   ### Out of Scope
-   - [List what will NOT be changed]
+   **Expected outputs:**
+   - Simple mode: `specs/###-name/plan.md` (500-2000 lines)
+   - Complex mode (future): `specs/###-name/plan/` directory with manifest
 
-   ## Prerequisites
-   - [Any requirements before starting]
+### Step 4: Monitor Progress
 
-   ## Implementation Phases
-
-   ### Phase 1: [Phase Name]
-   **Objective**: [What this phase accomplishes]
-
-   **Files to Modify**:
-   - `path/to/file.ts` - [What changes]
-
-   **New Files to Create**:
-   - `path/to/new.ts` - [Purpose]
-
-   **Steps**:
-   1. [Detailed step]
-   2. [Detailed step]
-
-   **Verification**:
-   - [ ] [How to verify this phase works]
-
-   ### Phase 2: [Phase Name]
-   [Same structure]
-
-   ## Testing Strategy
-   - [Unit tests to add/modify]
-   - [Integration tests]
-   - [Manual testing steps]
-
-   ## Rollback Plan
-   - [How to undo changes if needed]
-
-   ## Risks and Mitigations
-   | Risk | Likelihood | Impact | Mitigation |
-   |------|------------|--------|------------|
-   | [Risk] | Low/Med/High | Low/Med/High | [How to mitigate] |
-
-   ## Open Questions
-   - [Any unresolved questions for the user]
-
-   ---
-   **USER: Please review this plan. Edit any section directly, then confirm to proceed.**
+8. **Display phase progress to user:**
    ```
+   🔍 Planning Mode Activated (Opus Orchestrator)
 
-### Phase 5: User Confirmation
+   Task: {task_description}
+   Mode: {SIMPLE/COMPLEX} ({loc_estimate} LOC estimated)
 
-7. **Request approval:**
-   - Inform user of plan location
-   - Ask them to review and edit if needed
-   - Wait for explicit confirmation
-   - DO NOT write implementation files until confirmed
-
-8. **Return status:**
-   - If plan created and awaiting review: `STATUS=OK ACTION=plan_created PATH=[path]`
-   - If user rejects: `STATUS=CANCELLED ACTION=user_rejected`
-
-### Phase 6: Plan Re-read
-
-9. **After user confirms:**
-   - Re-read the plan file completely (user may have edited it)
-   - Note any changes the user made
-   - Acknowledge the changes before proceeding
-   - Begin implementation following the plan exactly
+   📋 Phase 1: Task Understanding & Session Initialization...
+   📁 Phase 2: Spec Folder Setup...
+   🧠 Phase 3: Context Loading...
+   📊 Phase 4: Parallel Exploration (4 Sonnet agents)...
+   🔬 Phase 5: Hypothesis Verification (Opus review)...
+   📝 Phase 6: Plan Creation...
+   👤 Phase 7: User Review & Confirmation...
+   💾 Phase 8: Context Persistence...
+   ```
 
 ---
 
@@ -166,11 +119,12 @@ Execute the following phases:
 
 | Failure Type | Recovery Action |
 |--------------|-----------------|
-| Task unclear | Use AskUserQuestion to clarify |
-| Explore agents find nothing | Expand search scope, try different patterns |
-| Conflicting findings | Document both perspectives, ask user to decide |
-| User rejects plan | Revise based on feedback, resubmit |
-| Cannot create plan file | Check permissions, use alternative path |
+| Task unclear | Use AskUserQuestion to clarify (handled in YAML Phase 1) |
+| Explore agents find nothing | Expand search scope (handled in YAML Phase 4) |
+| Conflicting findings | Document both perspectives, ask user (YAML Phase 5) |
+| User rejects plan | Revise based on feedback, resubmit (YAML Phase 7) |
+| Cannot create plan file | Check permissions, use alternative path (YAML Phase 6) |
+| YAML prompt not found | Return error with installation suggestion |
 
 ---
 
@@ -179,26 +133,31 @@ Execute the following phases:
 | Condition | Action |
 |-----------|--------|
 | Empty `$ARGUMENTS` | Prompt: "Please describe the task you want to plan" |
-| Explore agents timeout | Continue with available results, note gaps |
-| Plan file exists | Ask to overwrite or create new version |
+| Invalid mode override | Ignore, proceed with auto-detection |
+| YAML file missing | Return error: "Workflow file missing at .opencode/prompts/plan_claude/{mode}_mode.yaml" |
+| Explore agents timeout | Continue with available results (handled in YAML) |
+| Plan file exists | Ask to overwrite or create new version (handled in YAML Phase 6) |
 
 ---
 
 ## Example Usage
 
-### Basic Planning
+### Basic Planning (Auto-Detect Mode)
 ```bash
 /plan_claude Add user authentication with OAuth2
+# Auto-detects: ~300 LOC → SIMPLE mode → simple_mode.yaml
 ```
 
-### Complex Feature
+### Explicit Simple Mode
+```bash
+/plan_claude "Refactor authentication (800 LOC)" mode:simple
+# Forces SIMPLE mode despite LOC estimate
+```
+
+### Future: Complex Mode
 ```bash
 /plan_claude Implement real-time collaboration with conflict resolution
-```
-
-### Refactoring Task
-```bash
-/plan_claude Migrate payment processing from REST to GraphQL
+# Auto-detects: ~800 LOC → COMPLEX mode → Falls back to SIMPLE (stub)
 ```
 
 ---
@@ -209,62 +168,66 @@ Execute the following phases:
 🔍 Planning Mode Activated (Opus Orchestrator)
 
 Task: Add user authentication with OAuth2
+Mode: SIMPLE (300 LOC estimated)
 
-📊 Spawning Sonnet Explore Agents...
-  ├─ [sonnet] Architecture Explorer: analyzing project structure...
-  ├─ [sonnet] Feature Explorer: finding auth patterns...
-  ├─ [sonnet] Dependency Explorer: mapping imports...
-  └─ [sonnet] Test Explorer: reviewing test infrastructure...
+📋 Phase 1: Task Understanding & Session Initialization
+  ✓ Task parsed: Implement OAuth2 authentication flow
+  ✓ SESSION_ID extracted: abc123
 
-✅ Exploration Complete (4 sonnet agents, 23 files identified)
+📁 Phase 2: Spec Folder Setup
+  ✓ Creating new spec folder: specs/042-oauth2-auth/
+  ✓ Marker set: .spec-active.abc123
 
-🔬 Opus Verification Phase...
+🧠 Phase 3: Context Loading
+  ℹ No previous memory files found - starting fresh
+
+📊 Phase 4: Parallel Exploration (4 Sonnet agents)
+  ├─ Architecture Explorer: analyzing project structure...
+  ├─ Feature Explorer: finding auth patterns...
+  ├─ Dependency Explorer: mapping imports...
+  └─ Test Explorer: reviewing test infrastructure...
+  ✅ Exploration Complete (23 files identified)
+
+🔬 Phase 5: Hypothesis Verification (Opus review)
   ├─ Verifying architecture hypotheses...
   ├─ Cross-referencing agent findings...
-  ├─ Resolving 2 conflicting hypotheses...
   └─ Building complete mental model...
+  ✅ Verification Complete
 
-📝 Creating Implementation Plan (Opus)...
+📝 Phase 6: Plan Creation
+  ✓ Plan file created: specs/042-oauth2-auth/plan.md
 
-Plan created at: .claude/plans/oauth2-auth.md
+👤 Phase 7: User Review & Confirmation
+  Please review and confirm to proceed.
+  [User confirms]
+  ✓ Plan re-read (no edits)
 
-Please review the plan and confirm to proceed.
-Options:
-  - Review and edit the plan file directly
-  - Reply "confirm" to proceed with implementation
-  - Reply "cancel" to abort
+💾 Phase 8: Context Persistence
+  ✓ Context saved: specs/042-oauth2-auth/memory/28-11-25_14-30__oauth2-auth.md
 
-STATUS=OK ACTION=plan_created PATH=.claude/plans/oauth2-auth.md
+STATUS=OK ACTION=plan_created PATH=specs/042-oauth2-auth/plan.md
 ```
 
 ---
 
 ## Notes
 
-- **Critical Rules:**
-  - NEVER skip the exploration phase
-  - NEVER write implementation code during planning
-  - NEVER assume - verify by reading files
-  - ALWAYS get user confirmation before implementing
-  - ALWAYS re-read the plan after user confirms (they may have edited it)
+- **YAML Architecture:**
+  - Command file (~150 lines): Mode detection + prompt loading
+  - YAML prompts (~1050 lines): All phase logic
+  - Modular, maintainable, version-friendly
 
-- **Plan Quality:**
-  - Must be detailed enough for another developer to follow
-  - Each phase should be independently verifiable
-  - Include rollback instructions for safety
-
-- **Model Hierarchy (Orchestrator + Workers):**
-
-  | Role | Model | Responsibility |
-  |------|-------|----------------|
-  | **Orchestrator** | `opus` | Understands task, dispatches agents, verifies hypotheses, synthesizes findings, creates plan |
-  | **Explore Agents** | `sonnet` | Fast parallel exploration, file discovery, pattern identification, hypothesis generation |
-
-  - Opus provides deep reasoning for verification and plan creation
-  - Sonnet provides fast, cost-effective exploration (4 agents in parallel)
+- **Model Hierarchy:**
+  - Orchestrator: `opus` (task understanding, verification, synthesis)
+  - Explore Agents: `sonnet` (fast parallel discovery)
   - All Task tool calls for Explore agents MUST include `model: "sonnet"`
-  - This hierarchy balances quality (Opus review) with speed (Sonnet exploration)
 
 - **Integration:**
-  - Works with spec folder system for documentation
-  - Plans can feed into `/spec_kit:implement` workflo
+  - Works with spec folder system (Phase 2)
+  - Memory context enables session continuity (Phases 3 & 8)
+  - Plans feed into `/spec_kit:implement` workflow
+
+- **Future Enhancements:**
+  - Complex mode with multi-file plan/ directory (Phase 5 upgrade)
+  - Anchor system for section navigation (Phase 3 upgrade)
+  - Mode selection refinement based on usage patterns
