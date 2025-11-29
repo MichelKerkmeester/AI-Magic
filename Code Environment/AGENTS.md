@@ -266,12 +266,12 @@ Every conversation that modifies files (code, documentation, configuration, temp
 - **Use When:** Large features, architecture changes, system redesigns
 
 #### Supporting Templates & Decision Rules
-**Optional templates** (in `.opencode/speckit/templates/`):
-- `tasks.md` - Break plan into actionable tasks (create after plan.md, before coding)
-- `checklist.md` - Validation/QA checklists (when systematic validation needed)
-- `research-*.md` - Comprehensive feature research documentation (for deep technical investigation spanning multiple areas before implementation; use before research-spike for larger research efforts)
-- `research-spike-*.md` - Research/proof-of-concept work (time-boxed experimentation to answer specific technical questions or validate approaches)
-- `decision-record-*.md` - Architecture Decision Records/ADRs (major technical decisions)
+**Optional templates** (in `.opencode/speckit/templates/`) - use `_template.md` suffix files:
+- `tasks_template.md` → `tasks.md` - Break plan into actionable tasks (create after plan.md, before coding)
+- `checklist_template.md` → `checklist.md` - Validation/QA checklists (when systematic validation needed)
+- `research_template.md` → `research-{topic}.md` - Comprehensive feature research documentation (for deep technical investigation spanning multiple areas before implementation; use before research-spike for larger research efforts)
+- `research_spike_template.md` → `research-spike-{topic}.md` - Research/proof-of-concept work (time-boxed experimentation to answer specific technical questions or validate approaches)
+- `decision_record_template.md` → `decision-record-{topic}.md` - Architecture Decision Records/ADRs (major technical decisions)
 
 **Decision rules:**
 - **When in doubt → choose higher level** (better to over-document than under-document)
@@ -305,7 +305,16 @@ def _loc_level(loc: int) -> int:
 ### Spec Folder: `/specs/[###-short-name]/`
 **Find next #**: `ls -d specs/[0-9]*/ | sed 's/.*\/\([0-9]*\)-.*/\1/' | sort -n | tail -1`
 **Name format**: 2-3 words, lowercase, hyphens (e.g., `fix-typo`, `add-auth`, `mcp-code-mode`)
-**Templates**: `.opencode/speckit/templates/` (readme/subfolder_readme/spec/plan/tasks/checklist/research/research_spike/decision_record)
+**Templates**: `.opencode/speckit/templates/` - Copy from these files (rename to remove `_template` suffix):
+  - `readme_template.md` → `README.md`
+  - `subfolder_readme_template.md` → `README.md` (for sub-folders)
+  - `spec_template.md` → `spec.md`
+  - `plan_template.md` → `plan.md`
+  - `tasks_template.md` → `tasks.md`
+  - `checklist_template.md` → `checklist.md`
+  - `research_template.md` → `research-{topic}.md`
+  - `research_spike_template.md` → `research-spike-{topic}.md`
+  - `decision_record_template.md` → `decision-record-{topic}.md`
 **MANDATORY**: Copy from templates - NEVER create documentation from scratch. Fill ALL placeholders.
 
 **Sub-Folder Versioning** (when reusing spec folders):
