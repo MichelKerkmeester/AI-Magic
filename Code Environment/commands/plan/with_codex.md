@@ -1,15 +1,17 @@
 ---
-description: Create a detailed implementation plan with parallel exploration before any code changes (OpenCode)
+description: Create a detailed implementation plan using GPT models via Copilot for parallel exploration (OpenCode)
 argument-hint: <task description> [mode:simple|mode:complex]
 allowed-tools: Read, Write, Edit, Glob, Grep, Task, AskUserQuestion
 agent: plan
 ---
 
-# Implementation Plan (OpenCode)
+# Implementation Plan with GPT/Codex (OpenCode)
 
-Create comprehensive implementation plans using parallel exploration agents to thoroughly analyze the codebase before any code changes.
+Create comprehensive implementation plans using GPT models (via OpenCode Copilot) for parallel codebase exploration to thoroughly analyze before any code changes.
 
-**Platform**: OpenCode only (uses Task tool with Claude agents)
+**Platform**: OpenCode with Copilot integration
+**Orchestrator**: Claude (main agent)
+**Explorers**: GPT-4o/5.1 agents via Copilot (parallel exploration)
 
 ---
 
@@ -17,9 +19,15 @@ Create comprehensive implementation plans using parallel exploration agents to t
 
 Enter PLANNING MODE to create detailed, verified implementation plans. This command:
 1. Analyzes task complexity and selects appropriate mode (simple or complex)
-2. Spawns multiple Explore agents in parallel to discover codebase patterns
-3. Synthesizes findings into a structured plan using YAML workflow
+2. Spawns multiple GPT-based agents in parallel via Copilot to discover codebase patterns
+3. Synthesizes GPT findings into a structured plan using YAML workflow
 4. Requires user approval before implementation begins
+
+**Key Difference from with_claude**:
+- Uses **GPT models via Copilot** for exploration instead of Claude models
+- Provides alternative AI perspective on codebase patterns
+- GPT may excel at certain code pattern recognition tasks
+- Same parallel agent architecture as Claude Code
 
 **Modes:**
 - **Simple Mode** (<500 LOC): Single plan.md file using `simple_mode.yaml`
@@ -30,7 +38,7 @@ Enter PLANNING MODE to create detailed, verified implementation plans. This comm
 ## Contract
 
 **Inputs:** `$ARGUMENTS` — Task description (REQUIRED) + optional mode override
-**Outputs:** Plan file at `specs/###-name/plan.md` (or `plan/` for complex mode) + `STATUS=<OK|FAIL|CANCELLED>`
+**Outputs:** Plan file at `specs/###-name/plan.md` + `STATUS=<OK|FAIL|CANCELLED>`
 
 ---
 
@@ -84,15 +92,39 @@ If no mode override specified, analyze task complexity:
 
    - **COMPLEX mode** (≥500 LOC): Use the Read tool to load `.opencode/command/plan/assets/complex_mode.yaml`. Note: Complex mode is a stub as of Phase 1.5 and will notify user to fall back to simple mode.
 
-7. **YAML workflow executes automatically:**
+7. **YAML workflow executes automatically with GPT model override:**
 
    The loaded YAML prompt contains the complete 8-phase workflow:
-   - **Phases 1-3** (from base_phases.yaml): Task Understanding, Spec Folder Setup, Context Loading
-   - **Phases 4-5** (from exploration.yaml): Parallel Exploration (4 Sonnet agents), Hypothesis Verification (Opus)
-   - **Phase 6** (mode-specific): Plan Creation (simple_mode or complex_mode)
-   - **Phases 7-8** (from base_phases.yaml): User Review & Confirmation, Context Persistence
+   - **Phases 1-3**: Task Understanding, Spec Folder Setup, Context Loading
+   - **Phases 4-5**: Parallel Exploration (4 GPT agents via Copilot), Hypothesis Verification (Claude)
+   - **Phase 6**: Plan Creation (simple_mode or complex_mode)
+   - **Phases 7-8**: User Review & Confirmation, Context Persistence
 
-   All phases execute sequentially: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
+   **CRITICAL OVERRIDE for Phase 4 (Parallel Exploration):**
+
+   When spawning the 4 Explore agents, use GPT models via Copilot instead of Claude:
+
+   ```yaml
+   Task({
+     subagent_type: "Explore",
+     model: "gpt-4o",  # Or "gpt-5.1" if available via Copilot
+     description: "Architecture exploration",
+     prompt: "[exploration prompt from YAML]"
+   })
+   ```
+
+   **Spawn all 4 agents in parallel** (single message with 4 Task calls):
+   - Architecture Explorer (GPT)
+   - Feature Explorer (GPT)
+   - Dependency Explorer (GPT)
+   - Test Explorer (GPT)
+
+   **Model Selection:**
+   - Use GPT-4o by default (fast, capable)
+   - Use GPT-5.1 if available and configured in Copilot
+   - OpenCode routes to appropriate GPT model via Copilot integration
+
+   All phases execute sequentially: 1 → 2 → 3 → 4 (GPT) → 5 (Claude verifies) → 6 → 7 → 8
 
    **Expected outputs:**
    - Simple mode: `specs/###-name/plan.md` (500-2000 lines)
@@ -102,16 +134,17 @@ If no mode override specified, analyze task complexity:
 
 8. **Display phase progress to user:**
    ```
-   🔍 Planning Mode Activated (Opus Orchestrator)
+   🔍 Planning Mode Activated (GPT Explorer via Copilot)
 
    Task: {task_description}
    Mode: {SIMPLE/COMPLEX} ({loc_estimate} LOC estimated)
+   Explorer Model: GPT-4o via Copilot
 
    📋 Phase 1: Task Understanding & Session Initialization...
    📁 Phase 2: Spec Folder Setup...
    🧠 Phase 3: Context Loading...
-   📊 Phase 4: Parallel Exploration (4 Sonnet agents)...
-   🔬 Phase 5: Hypothesis Verification (Opus review)...
+   📊 Phase 4: Parallel Exploration (4 GPT agents via Copilot)...
+   🔬 Phase 5: Hypothesis Verification (Claude review)...
    📝 Phase 6: Plan Creation...
    👤 Phase 7: User Review & Confirmation...
    💾 Phase 8: Context Persistence...
@@ -123,6 +156,8 @@ If no mode override specified, analyze task complexity:
 
 | Failure Type                | Recovery Action                                          |
 | --------------------------- | -------------------------------------------------------- |
+| Copilot unavailable         | Fall back to with_claude command                         |
+| GPT model not accessible    | Fall back to default Claude explorers                    |
 | Task unclear                | Use AskUserQuestion to clarify (handled in YAML Phase 1) |
 | Explore agents find nothing | Expand search scope (handled in YAML Phase 4)            |
 | Conflicting findings        | Document both perspectives, ask user (YAML Phase 5)      |
@@ -141,6 +176,7 @@ If no mode override specified, analyze task complexity:
 | YAML file missing      | Return error: "Workflow file missing at .opencode/command/plan/assets/{mode}_mode.yaml" |
 | Explore agents timeout | Continue with available results (handled in YAML)                                       |
 | Plan file exists       | Ask to overwrite or create new version (handled in YAML Phase 6)                        |
+| Copilot not configured | Error: "OpenCode Copilot not configured. Run setup or use /plan:with_claude"            |
 
 ---
 
@@ -148,20 +184,14 @@ If no mode override specified, analyze task complexity:
 
 ### Basic Planning (Auto-Detect Mode)
 ```bash
-/plan:with_claude Add user authentication with OAuth2
-# Auto-detects: ~300 LOC → SIMPLE mode → simple_mode.yaml
+/plan:with_codex Add user authentication with OAuth2
+# Uses GPT-4o agents via Copilot for exploration
 ```
 
 ### Explicit Simple Mode
 ```bash
-/plan:with_claude "Refactor authentication (800 LOC)" mode:simple
+/plan:with_codex "Refactor authentication (800 LOC)" mode:simple
 # Forces SIMPLE mode despite LOC estimate
-```
-
-### Future: Complex Mode
-```bash
-/plan:with_claude Implement real-time collaboration with conflict resolution
-# Auto-detects: ~800 LOC → COMPLEX mode → Falls back to SIMPLE (stub)
 ```
 
 ---
@@ -169,10 +199,11 @@ If no mode override specified, analyze task complexity:
 ## Example Output
 
 ```
-🔍 Planning Mode Activated (Opus Orchestrator)
+🔍 Planning Mode Activated (GPT Explorer via Copilot)
 
 Task: Add user authentication with OAuth2
 Mode: SIMPLE (300 LOC estimated)
+Explorer Model: GPT-4o via Copilot
 
 📋 Phase 1: Task Understanding & Session Initialization
   ✓ Task parsed: Implement OAuth2 authentication flow
@@ -185,15 +216,15 @@ Mode: SIMPLE (300 LOC estimated)
 🧠 Phase 3: Context Loading
   ℹ No previous memory files found - starting fresh
 
-📊 Phase 4: Parallel Exploration (4 Sonnet agents)
-  ├─ Architecture Explorer: analyzing project structure...
-  ├─ Feature Explorer: finding auth patterns...
-  ├─ Dependency Explorer: mapping imports...
-  └─ Test Explorer: reviewing test infrastructure...
-  ✅ Exploration Complete (23 files identified)
+📊 Phase 4: Parallel Exploration (4 GPT agents via Copilot)
+  ├─ Architecture Explorer (GPT-4o): analyzing project structure...
+  ├─ Feature Explorer (GPT-4o): finding auth patterns...
+  ├─ Dependency Explorer (GPT-4o): mapping imports...
+  └─ Test Explorer (GPT-4o): reviewing test infrastructure...
+  ✅ Exploration Complete (28 files identified)
 
-🔬 Phase 5: Hypothesis Verification (Opus review)
-  ├─ Verifying architecture hypotheses...
+🔬 Phase 5: Hypothesis Verification (Claude review)
+  ├─ Verifying GPT hypotheses...
   ├─ Cross-referencing agent findings...
   └─ Building complete mental model...
   ✅ Verification Complete
@@ -207,7 +238,7 @@ Mode: SIMPLE (300 LOC estimated)
   ✓ Plan re-read (no edits)
 
 💾 Phase 8: Context Persistence
-  ✓ Context saved: specs/042-oauth2-auth/memory/28-11-25_14-30__oauth2-auth.md
+  ✓ Context saved: specs/042-oauth2-auth/memory/29-11-25_14-30__oauth2-auth.md
 
 STATUS=OK ACTION=plan_created PATH=specs/042-oauth2-auth/plan.md
 ```
@@ -216,29 +247,46 @@ STATUS=OK ACTION=plan_created PATH=specs/042-oauth2-auth/plan.md
 
 ## Notes
 
-- **YAML Architecture:**
-  - Command file (~150 lines): Mode detection + prompt loading
-  - YAML prompts (~1050 lines): All phase logic
-  - Modular, maintainable, version-friendly
+- **GPT via Copilot Integration:**
+  - Uses OpenCode's Copilot integration for GPT model access
+  - Spawns agents via Task tool with GPT model specification
+  - Same parallel architecture as Claude Code (4 agents in single message)
+  - GPT provides alternative AI perspective on code patterns
 
 - **Model Hierarchy:**
-  - Orchestrator: Default agent (task understanding, verification, synthesis)
-  - Explore Agents: Faster model (fast parallel discovery)
-  - OpenCode Task tool supports parallel agent spawning
+  - Orchestrator: Claude (task understanding, verification, synthesis)
+  - Explore Agents: GPT-4o/5.1 via Copilot (fast parallel discovery)
+  - Task tool routes to GPT via OpenCode's Copilot configuration
+
+- **Why GPT for Exploration:**
+  - Alternative AI perspective on code patterns
+  - May excel at certain language-specific patterns
+  - Different training data and strengths than Claude
+  - Parallel execution keeps total time low
+
+- **Performance:**
+  - Exploration: ~15-35 seconds (4 GPT agents via Copilot)
+  - Verification: ~15-30 seconds (Claude)
+  - Plan creation: ~10-20 seconds
+  - **Total**: ~40-85 seconds
+
+- **When to Use:**
+  - Want alternative AI perspective on codebase
+  - GPT may excel at specific code pattern recognition
+  - Comparing different planning approaches
+  - Have OpenCode with Copilot configured
 
 - **Integration:**
   - Works with spec folder system (Phase 2)
   - Memory context enables session continuity (Phases 3 & 8)
   - Plans feed into `/spec_kit:implement` workflow
+  - Can be used alongside `/plan:with_claude` or `/plan:with_gemini` for comparison
 
-- **Memory System (Phase 8):**
-  - Invokes `workflows-save-context` skill for memory file creation
-  - Auto-generates HTML anchor tags for grep-able sections
-  - Anchor format: `<!-- anchor: category-topic-spec -->`
-  - Search: `grep -r "anchor:.*keyword" specs/*/memory/`
-  - Compatible with anchor-based context retrieval (spec 049)
-  - Fallback to legacy template if skill unavailable
+- **Copilot Requirements:**
+  - OpenCode with Copilot integration enabled
+  - GitHub Copilot subscription (for GPT model access)
+  - Proper model routing configuration in OpenCode
 
-- **Future Enhancements:**
-  - Complex mode with multi-file plan/ directory (Phase 5 upgrade)
-  - Mode selection refinement based on usage patterns
+---
+
+**Remember**: This command uses GPT models via Copilot for exploration, providing an alternative perspective to Claude-based planning. GPT findings are always verified by Claude reading actual code before inclusion in plans.

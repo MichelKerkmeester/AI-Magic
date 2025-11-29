@@ -1,15 +1,16 @@
 ---
-description: Create a detailed implementation plan with parallel exploration before any code changes (OpenCode)
+description: Create a detailed implementation plan with parallel exploration before any code changes (Claude Code)
 argument-hint: <task description> [mode:simple|mode:complex]
 allowed-tools: Read, Write, Edit, Glob, Grep, Task, AskUserQuestion
 agent: plan
+model: opus
 ---
 
-# Implementation Plan (OpenCode)
+# Implementation Plan (Claude Code)
 
 Create comprehensive implementation plans using parallel exploration agents to thoroughly analyze the codebase before any code changes.
 
-**Platform**: OpenCode only (uses Task tool with Claude agents)
+**Platform**: Claude Code only (uses Task tool with Claude agents)
 
 ---
 
@@ -74,15 +75,15 @@ If no mode override specified, analyze task complexity:
 
 ### Step 3: Load & Execute YAML Workflow
 
-6. **Read the appropriate YAML workflow prompt from OpenCode assets:**
+6. **Read the appropriate YAML workflow prompt from Claude Code assets:**
 
-   Asset path: `.opencode/command/plan/assets/`
+   Asset path: `.claude/commands/plan/assets/`
 
    Based on the mode selected in Step 2:
 
-   - **SIMPLE mode** (<500 LOC): Use the Read tool to load `.opencode/command/plan/assets/simple_mode.yaml` and execute all instructions in that file.
+   - **SIMPLE mode** (<500 LOC): Use the Read tool to load `.claude/commands/plan/assets/simple_mode.yaml` and execute all instructions in that file.
 
-   - **COMPLEX mode** (≥500 LOC): Use the Read tool to load `.opencode/command/plan/assets/complex_mode.yaml`. Note: Complex mode is a stub as of Phase 1.5 and will notify user to fall back to simple mode.
+   - **COMPLEX mode** (≥500 LOC): Use the Read tool to load `.claude/commands/plan/assets/complex_mode.yaml`. Note: Complex mode is a stub as of Phase 1.5 and will notify user to fall back to simple mode.
 
 7. **YAML workflow executes automatically:**
 
@@ -134,13 +135,13 @@ If no mode override specified, analyze task complexity:
 
 ## Error Handling
 
-| Condition              | Action                                                                                  |
-| ---------------------- | --------------------------------------------------------------------------------------- |
-| Empty `$ARGUMENTS`     | Prompt: "Please describe the task you want to plan"                                     |
-| Invalid mode override  | Ignore, proceed with auto-detection                                                     |
-| YAML file missing      | Return error: "Workflow file missing at .opencode/command/plan/assets/{mode}_mode.yaml" |
-| Explore agents timeout | Continue with available results (handled in YAML)                                       |
-| Plan file exists       | Ask to overwrite or create new version (handled in YAML Phase 6)                        |
+| Condition              | Action                                                                                 |
+| ---------------------- | -------------------------------------------------------------------------------------- |
+| Empty `$ARGUMENTS`     | Prompt: "Please describe the task you want to plan"                                    |
+| Invalid mode override  | Ignore, proceed with auto-detection                                                    |
+| YAML file missing      | Return error: "Workflow file missing at .claude/commands/plan/assets/{mode}_mode.yaml" |
+| Explore agents timeout | Continue with available results (handled in YAML)                                      |
+| Plan file exists       | Ask to overwrite or create new version (handled in YAML Phase 6)                       |
 
 ---
 
@@ -148,19 +149,19 @@ If no mode override specified, analyze task complexity:
 
 ### Basic Planning (Auto-Detect Mode)
 ```bash
-/plan:with_claude Add user authentication with OAuth2
+/plan:with_claude_code Add user authentication with OAuth2
 # Auto-detects: ~300 LOC → SIMPLE mode → simple_mode.yaml
 ```
 
 ### Explicit Simple Mode
 ```bash
-/plan:with_claude "Refactor authentication (800 LOC)" mode:simple
+/plan:with_claude_code "Refactor authentication (800 LOC)" mode:simple
 # Forces SIMPLE mode despite LOC estimate
 ```
 
 ### Future: Complex Mode
 ```bash
-/plan:with_claude Implement real-time collaboration with conflict resolution
+/plan:with_claude_code Implement real-time collaboration with conflict resolution
 # Auto-detects: ~800 LOC → COMPLEX mode → Falls back to SIMPLE (stub)
 ```
 
@@ -222,9 +223,9 @@ STATUS=OK ACTION=plan_created PATH=specs/042-oauth2-auth/plan.md
   - Modular, maintainable, version-friendly
 
 - **Model Hierarchy:**
-  - Orchestrator: Default agent (task understanding, verification, synthesis)
-  - Explore Agents: Faster model (fast parallel discovery)
-  - OpenCode Task tool supports parallel agent spawning
+  - Orchestrator: `opus` (task understanding, verification, synthesis)
+  - Explore Agents: `sonnet` (fast parallel discovery)
+  - Claude Code Task tool supports `model: "sonnet"` parameter for Opus+Sonnet hierarchy
 
 - **Integration:**
   - Works with spec folder system (Phase 2)
