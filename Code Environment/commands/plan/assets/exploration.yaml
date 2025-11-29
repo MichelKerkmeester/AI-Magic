@@ -29,8 +29,8 @@ phase_4_parallel_exploration:
       action: "Spawn multiple Explore agents in parallel using Task tool"
       tool: "Task"
       parameters:
-        subagent_type: "Explore"
-        model: "sonnet" # REQUIRED - fast, cost-effective exploration
+        subagent_type: "explore"
+        model: "sonnet"  # Claude Code supports model parameter for Opus+Sonnet hierarchy
 
       agents:
         architecture_explorer:
@@ -90,12 +90,12 @@ phase_4_parallel_exploration:
             Do NOT draw conclusions - just report findings. The main agent will verify.
 
     step_14_agent_spawn_requirements:
-      important: "All Explore agents MUST specify model: 'sonnet' in Task tool call"
+      important: "Claude Code: Use model: 'sonnet' for Opus+Sonnet hierarchy"
       rationale: "Fast, cost-effective exploration while Opus orchestrates and synthesizes"
       pattern: |
         Task({
-          subagent_type: "Explore",
-          model: "sonnet",  // REQUIRED
+          subagent_type: "explore",
+          model: "sonnet",  // Claude Code supports this parameter
           description: "Architecture exploration",
           prompt: "[exploration prompt from agent template]"
         })

@@ -2,7 +2,8 @@
 description: Create a detailed implementation plan with parallel exploration before any code changes
 argument-hint: <task description> [mode:simple|mode:complex]
 allowed-tools: Read, Write, Edit, Glob, Grep, Task, AskUserQuestion
-model: opus
+agent: plan
+model: anthropic/claude-sonnet-4-20250514
 ---
 
 # Implementation Plan
@@ -72,13 +73,18 @@ If no mode override specified, analyze task complexity:
 
 ### Step 3: Load & Execute YAML Workflow
 
-6. **Read and execute the appropriate YAML workflow prompt:**
+6. **Detect asset path and read the appropriate YAML workflow prompt:**
+
+   First, determine which directory structure exists:
+   - Check for `.opencode/command/plan/assets/` (OpenCode)
+   - Check for `.claude/commands/plan/assets/` (Claude Code)
+   - Use whichever path exists (prefer `.opencode/` if both exist)
 
    Based on the mode selected in Step 2:
 
-   - **SIMPLE mode** (<500 LOC): Use the Read tool to load `.claude/commands/plan/assets/simple_mode.yaml` and execute all instructions in that file.
+   - **SIMPLE mode** (<500 LOC): Use the Read tool to load `{asset_path}/simple_mode.yaml` and execute all instructions in that file.
 
-   - **COMPLEX mode** (≥500 LOC): Use the Read tool to load `.claude/commands/plan/assets/complex_mode.yaml`. Note: Complex mode is a stub as of Phase 1.5 and will notify user to fall back to simple mode.
+   - **COMPLEX mode** (≥500 LOC): Use the Read tool to load `{asset_path}/complex_mode.yaml`. Note: Complex mode is a stub as of Phase 1.5 and will notify user to fall back to simple mode.
 
 7. **YAML workflow executes automatically:**
 
@@ -134,7 +140,7 @@ If no mode override specified, analyze task complexity:
 | ---------------------- | --------------------------------------------------------------------------------------- |
 | Empty `$ARGUMENTS`     | Prompt: "Please describe the task you want to plan"                                     |
 | Invalid mode override  | Ignore, proceed with auto-detection                                                     |
-| YAML file missing      | Return error: "Workflow file missing at .claude/commands/plan/assets/{mode}_mode.yaml" |
+| YAML file missing      | Return error: "Workflow file missing at {asset_path}/{mode}_mode.yaml" (check both `.opencode/command/plan/assets/` and `.claude/commands/plan/assets/`) |
 | Explore agents timeout | Continue with available results (handled in YAML)                                       |
 | Plan file exists       | Ask to overwrite or create new version (handled in YAML Phase 6)                        |
 
@@ -220,7 +226,7 @@ STATUS=OK ACTION=plan_created PATH=specs/042-oauth2-auth/plan.md
 - **Model Hierarchy:**
   - Orchestrator: `opus` (task understanding, verification, synthesis)
   - Explore Agents: `sonnet` (fast parallel discovery)
-  - All Task tool calls for Explore agents MUST include `model: "sonnet"`
+  - Claude Code Task tool supports `model: "sonnet"` parameter for Opus+Sonnet hierarchy
 
 - **Integration:**
   - Works with spec folder system (Phase 2)

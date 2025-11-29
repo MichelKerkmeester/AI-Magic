@@ -29,7 +29,7 @@ Apply systematic prompt enhancement with:
 
 **Input:** `$ARGUMENTS` = prompt text + optional mode (`:quick`, `:improve`, `:refine`)
 
-**Output:** Two files (see Phase 6 in `.claude/commands/prompt_improver/assets/prompt_improver:workflow.yaml`)
+**Output:** Two files (see Phase 6 in workflow YAML - searched in `.claude/commands/` then `.opencode/command/`)
 1. `prompt_analysis.md` - Human-readable quality assessment
 2. `enhanced_prompt.yaml` - Machine-readable prompt with metadata
 
@@ -65,10 +65,12 @@ Apply systematic prompt enhancement with:
 
 ### Phase 2-5: Execute DEPTH Workflow
 
-3. **Invoke `.claude/commands/prompt_improver/assets/prompt_improver:workflow.yaml`** with:
+3. **Invoke workflow YAML** (search order: `.claude/commands/prompt_improver/assets/improve_prompt.yaml` → `.opencode/command/prompt_improver/assets/improve_prompt.yaml`) with:
    - `prompt_text`: Original prompt
    - `mode`: Detected mode
    - `rounds`: 1-5 (quick) or 10 (others)
+   
+   **Fallback logic:** If not found in `.claude/`, automatically search `.opencode/` folder.
 
 4. **DEPTH phases execute autonomously:**
    - **D (Discover)**: Analyze intent, assess complexity (1-10), identify RICCE gaps
@@ -97,13 +99,14 @@ Apply systematic prompt enhancement with:
 
 ### Phase 6: Dual Output Generation
 
-**See `.claude/commands/prompt_improver/assets/prompt_improver:workflow.yaml` Phase 6 for complete workflow.**
+**See workflow YAML Phase 6 for complete workflow (searched in `.claude/` then `.opencode/`).**
 
 7. **Determine output location:**
    ```
-   If .claude/.spec-active.$$ exists:
+   # Search for spec-active marker (try both folders)
+   If .claude/.spec-active.$$ OR .opencode/.spec-active.$$ exists:
      base_path = [file contents]
-   Else if .claude/.spec-active exists:
+   Else if .claude/.spec-active OR .opencode/.spec-active exists:
      base_path = [file contents]
    Else:
      base_path = /export/
@@ -181,7 +184,7 @@ Enhanced prompt must contain:
 | Empty prompt | AskUserQuestion with 4 options → Retry |
 | Score below target | Prompt: retry / accept / cancel |
 | Framework timeout | Default to RCAF → Notify → Continue |
-| YAML not found | Error: "Missing .claude/commands/prompt_improver/assets/prompt_improver:workflow.yaml" |
+| YAML not found | Search `.claude/commands/` first, then `.opencode/command/` → Error if both fail |
 | Write permission denied | Output to chat → Suggest manual save |
 
 ---
@@ -229,14 +232,11 @@ Output: Preserves existing framework, polishes clarity, ~9 seconds
 - Both files reference each other for traceability
 
 **Integration:**
-- Saves to active spec folder if available (`.claude/.spec-active.$$`)
+- Saves to active spec folder if available (`.claude/.spec-active.$$` or `.opencode/.spec-active.$$`)
 - Falls back to `/export/` with sequential numbering
 - YAML format enables direct import: `yaml.safe_load(open('enhanced_prompt.yaml'))`
 
-**Performance Targets:**
-- Quick: <10s | Improve/Refine: <30s | Interactive: <30s (+ user wait)
-
 **Workflow Details:**
-- Complete implementation: `.claude/commands/prompt_improver/assets/prompt_improver:workflow.yaml`
+- Complete implementation: `improve_prompt.yaml` (in `.claude/commands/` or `.opencode/command/`)
 - Phase 6 (Dual Output): Steps 13-17 with atomic write guarantees
 - Framework templates: All 7 frameworks fully specified
