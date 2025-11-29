@@ -304,7 +304,6 @@
       "enforcement": "suggest",
       "priority": "high",
       "description": "Professional commit workflow - analyze changes, filter artifacts, write Conventional Commits messages",
-      "orchestrator": "workflows-git",
       "promptTriggers": {
         "keywords": [
         "commit",
@@ -340,7 +339,6 @@
       "enforcement": "suggest",
       "priority": "high",
       "description": "Complete development work with merge, PR, or cleanup options (requires tests pass)",
-      "orchestrator": "workflows-git",
       "promptTriggers": {
         "keywords": [
           "finish",
@@ -398,7 +396,6 @@
       "enforcement": "suggest",
       "priority": "high",
       "description": "Isolated workspace management with temporary branches",
-      "orchestrator": "workflows-git",
       "promptTriggers": {
         "keywords": [
           "worktree",

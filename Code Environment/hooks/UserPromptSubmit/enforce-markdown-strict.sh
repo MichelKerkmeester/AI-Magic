@@ -171,9 +171,13 @@ check_skill_critical() {
     fi
 
     # Check for required sections
-    local required_sections=("WHEN TO USE" "HOW IT WORKS" "RULES")
+    # Pattern matches: "## N. [EMOJI] SECTION NAME" or "## N. SECTION NAME"
+    # The section name can appear anywhere after the number and optional emoji
+    # Note: "HOW TO USE" is the standard (previously "HOW IT WORKS")
+    local required_sections=("WHEN TO USE" "HOW TO USE" "RULES")
     for section in "${required_sections[@]}"; do
-        if ! grep -q "## [0-9]*\. .* $section" "$filepath"; then
+        # Match pattern: ## followed by number, dot, optional emoji, then section name
+        if ! grep -qE "^## [0-9]+\. .* ?${section}" "$filepath"; then
             critical_violations+=("CRITICAL: Missing required section: $section")
         fi
     done
@@ -509,7 +513,7 @@ main() {
     # Performance timing END
     local end_time=$(date +%s%N)
     local duration=$(( (end_time - START_TIME) / 1000000 ))
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] enforce-markdown-strict.sh ${duration}ms" >> "$hooks_dir/logs/performance.log"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] enforce-markdown-strict.sh ${duration}ms" >> "$HOOKS_DIR/logs/performance.log"
 
     # No critical violations - exit 0 (allow execution)
     exit 0

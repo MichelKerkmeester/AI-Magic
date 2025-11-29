@@ -135,12 +135,19 @@ allowed-tools: Read, Write, Edit
 
 **Fix template** (section order for SKILL):
 ```markdown
-## 1. 🎯 WHEN TO USE
-## 2. 🧠 SMART ROUTING
+## 1. 🎯 CAPABILITIES OVERVIEW
+## 2. 🧭 SMART ROUTING
 ## 3. 🗂️ REFERENCES
-## 4. 🛠️ HOW IT WORKS
-## 5. 📖 RULES
+## 4. 🎯 WHEN TO USE
+## 5. ⚙️ HOW TO USE
+## 6. 📋 RULES
+## 7. 🏆 SUCCESS CRITERIA
+## 8. 🔌 INTEGRATION POINTS
+## 9. 📚 ADDITIONAL RESOURCES
+## 10. 🚀 QUICK START
 ```
+
+**Note**: Not all sections are required. Minimum required sections: WHEN TO USE, HOW TO USE, RULES.
 
 ---
 
@@ -224,7 +231,7 @@ Content...
 **SKILL.md**:
 ```yaml
 Required frontmatter: name, description, allowed-tools
-Required sections: WHEN TO USE, HOW IT WORKS, RULES
+Required sections: WHEN TO USE, HOW TO USE, RULES
 H1 format: "# Name - Subtitle"
 Quality target: 90+ overall
 ```

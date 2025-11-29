@@ -109,7 +109,7 @@ def route_orchestrator_resources(task):
     if task.needs_quick_reference:
         return load("references/quick_reference.md")  # one-page decision tree
 
-# thresholds: <25=direct, 25-35=ask user, >35=dispatch
+# thresholds: <20%=direct, 20-49%+2domains=ask user, ≥50%+3domains=auto-dispatch
 # fallback: >30% failure rate → handle directly
 ```
 
@@ -148,12 +148,12 @@ This orchestrator operates in three primary modes:
 
 **Mode 2: Intelligent Sub-Agent Creation**
 - Creates ephemeral agents with targeted skill subsets
-- Use when: Complexity score >= 35% (high complexity), 2+ distinct domains identified, hook recommendations available, parallel execution beneficial
+- Use when: Complexity score >= 50% + 3+ domains (auto-dispatch), or user chose parallel via mandatory question, hook recommendations available, parallel execution beneficial
 - See: [skill_clustering.md](./references/skill_clustering.md), [sub_agent_lifecycle.md](./references/sub_agent_lifecycle.md)
 
 **Mode 3: Direct Task Handling**
 - Handles tasks directly without sub-agent overhead
-- Use when: Complexity score < 25% (low complexity), single domain task, sequential dependencies exist, quick fixes or trivial updates
+- Use when: Complexity score < 20% (low complexity), single domain task, sequential dependencies exist, quick fixes or trivial updates
 - See: [dispatch_decision.md](./references/dispatch_decision.md)
 
 ### Step 1: Task Analysis
@@ -187,12 +187,12 @@ AI Agent Reads:
 ### Step 3: Dispatch Decision
 
 ```markdown
-IF complexity_score >= 35% AND domains >= 2:
-  → DISPATCH sub-agents
-ELSE IF complexity_score < 25% OR domains == 1:
-  → HANDLE directly
-ELSE (25-34%):
-  → COLLABORATIVE decision (ask user preference)
+IF complexity_score >= 50% AND domains >= 3:
+  → AUTO-DISPATCH sub-agents (notification only, no question)
+ELSE IF complexity_score >= 20% AND domains >= 2:
+  → MANDATORY QUESTION (ask user preference via AskUserQuestion)
+ELSE (complexity < 20% OR domains < 2):
+  → HANDLE directly (silent, no question)
 ```
 
 ### Step 4: Sub-Agent Creation
@@ -409,7 +409,7 @@ User Prompt: "Would you like me to handle this directly or split into parallel a
 
 ### ❌ NEVER 
 
-**NEVER dispatch for trivial tasks (complexity < 25%)**:
+**NEVER dispatch for trivial tasks (complexity < 20%)**:
 - Dispatch overhead exceeds benefit
 - Handle directly for single-file changes, typos, quick fixes
 
@@ -423,10 +423,10 @@ User Prompt: "Would you like me to handle this directly or split into parallel a
 
 ### ⚠️ ESCALATE IF
 
-**ESCALATE IF complexity score is borderline (25-34%)**:
-- Ask user preference: "Handle directly or dispatch sub-agents?"
-- Explain trade-offs: simplicity vs potential speed
-- Note: 35%+ with ≥2 domains auto-dispatches
+**ESCALATE IF complexity score is borderline (20-49% with 2+ domains)**:
+- Mandatory question is emitted automatically by hook
+- User chooses: "Handle directly" or "Create parallel agents" or "Auto-decide"
+- Note: ≥50% + 3+ domains auto-dispatches with notification only
 
 **ESCALATE IF resource constraints detected mid-dispatch**:
 - Token budget drops below 20%
@@ -457,7 +457,7 @@ Multiply each weight by the bucket multiplier (0 / 0.5 / 1.0) and sum, then roun
 | Score Range | Action | Rationale |
 |-------------|--------|-----------|
 | 0-19% | Direct handling (silent) | Overhead exceeds benefit, no question asked |
-| 20-49% + 2+ domains | Ask user (mandatory question) | Borderline benefit, user preference matters |
+| 20-49% + 2+ domains | Mandatory question (ask user) | Borderline benefit, user preference matters |
 | 50-100% + 3+ domains | Auto-dispatch with notification | Clear efficiency gain, obvious parallelization |
 | Any with sequential deps | Direct with explanation | No parallel benefit possible |
 

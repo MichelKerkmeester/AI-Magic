@@ -151,24 +151,47 @@ echo "   📁 Target spec: $SPEC_NAME"
 CONTEXT_DIR="$SPEC_FOLDER/memory"
 SPEC_TARGET="$SPEC_NAME"
 
-# Check for active sub-folder marker
-SPEC_ACTIVE_MARKER="$CWD/.claude/.spec-active"
+# Check for active sub-folder marker (V9: session-aware markers)
+# Try session-specific marker first, then fall back to global marker
+SPEC_ACTIVE_MARKER=""
+if [ -n "$SESSION_ID" ] && [ -f "$CWD/.claude/.spec-active.${SESSION_ID}" ]; then
+  SPEC_ACTIVE_MARKER="$CWD/.claude/.spec-active.${SESSION_ID}"
+elif [ -f "$CWD/.claude/.spec-active" ]; then
+  SPEC_ACTIVE_MARKER="$CWD/.claude/.spec-active"
+fi
 
-if [ -f "$SPEC_ACTIVE_MARKER" ]; then
+if [ -n "$SPEC_ACTIVE_MARKER" ] && [ -f "$SPEC_ACTIVE_MARKER" ]; then
   ACTIVE_PATH=$(cat "$SPEC_ACTIVE_MARKER" 2>/dev/null | tr -d '\n\r')
+  
+  # Handle JSON format markers (V9 fingerprint format)
+  if echo "$ACTIVE_PATH" | grep -q '^{'; then
+    ACTIVE_PATH=$(echo "$ACTIVE_PATH" | jq -r '.path // empty' 2>/dev/null)
+  fi
 
-  # Verify active path exists and is within current spec folder
-  if [ -n "$ACTIVE_PATH" ] && [ -d "$ACTIVE_PATH" ]; then
-    if [[ "$ACTIVE_PATH" == "$SPEC_FOLDER"/* ]]; then
-      CONTEXT_DIR="$ACTIVE_PATH/memory"
-      ACTIVE_SUBFOLDER=$(basename "$ACTIVE_PATH")
-      SPEC_TARGET="$SPEC_NAME/$ACTIVE_SUBFOLDER"
-      echo "   📂 Using active sub-folder: $ACTIVE_SUBFOLDER"
+  # Normalize paths for comparison (marker may be relative, SPEC_FOLDER is absolute)
+  if [ -n "$ACTIVE_PATH" ]; then
+    # If ACTIVE_PATH is relative, make it absolute
+    if [[ "$ACTIVE_PATH" != /* ]]; then
+      ACTIVE_PATH="$CWD/$ACTIVE_PATH"
     fi
-  else
-    # Stale marker - cleanup
-    echo "   🧹 Cleaning up stale .spec-active marker"
-    rm -f "$SPEC_ACTIVE_MARKER"
+    
+    # Verify active path exists and is within current spec folder
+    if [ -d "$ACTIVE_PATH" ]; then
+      # Use realpath for reliable comparison
+      ACTIVE_REAL=$(realpath "$ACTIVE_PATH" 2>/dev/null || echo "$ACTIVE_PATH")
+      SPEC_REAL=$(realpath "$SPEC_FOLDER" 2>/dev/null || echo "$SPEC_FOLDER")
+      
+      if [[ "$ACTIVE_REAL" == "$SPEC_REAL"/* ]]; then
+        CONTEXT_DIR="$ACTIVE_PATH/memory"
+        ACTIVE_SUBFOLDER=$(basename "$ACTIVE_PATH")
+        SPEC_TARGET="$SPEC_NAME/$ACTIVE_SUBFOLDER"
+        echo "   📂 Using active sub-folder: $ACTIVE_SUBFOLDER"
+      fi
+    else
+      # Stale marker - cleanup
+      echo "   🧹 Cleaning up stale marker: $(basename "$SPEC_ACTIVE_MARKER")"
+      rm -f "$SPEC_ACTIVE_MARKER"
+    fi
   fi
 fi
 
@@ -227,8 +250,9 @@ fi
 # Execute save-context script with timeout
 # Pass SPEC_TARGET (either "###-name" or "###-name/###-subfolder")
 # Run in AUTO_SAVE_MODE to bypass alignment prompts
+# NOTE: ENV_VAR must precede command, not follow timeout
 if command -v timeout >/dev/null 2>&1; then
-  NODE_OUTPUT=$(timeout 30 AUTO_SAVE_MODE=true node "$SAVE_CONTEXT_SCRIPT" "$TEMP_JSON" "$SPEC_TARGET" 2>&1)
+  NODE_OUTPUT=$(AUTO_SAVE_MODE=true timeout 30 node "$SAVE_CONTEXT_SCRIPT" "$TEMP_JSON" "$SPEC_TARGET" 2>&1)
 else
   NODE_OUTPUT=$(AUTO_SAVE_MODE=true node "$SAVE_CONTEXT_SCRIPT" "$TEMP_JSON" "$SPEC_TARGET" 2>&1)
 fi

@@ -191,6 +191,10 @@ fi
 # Start agent tracking with enhanced metadata
 start_agent_tracking "$AGENT_ID" "$DESCRIPTION" "$MODEL" "$TIMEOUT" 2>/dev/null || true
 
+# Create timestamp file for enforce-markdown-post-task.sh to find recently created files
+# This file is checked by the post-task hook to only process files created during this Task
+touch "/tmp/.claude_task_start_$$" 2>/dev/null || true
+
 # Store enhanced metadata in agent state
 STATE_FILE="/tmp/claude_hooks_state/agent_tracking.json"
 if [ -f "$STATE_FILE" ]; then

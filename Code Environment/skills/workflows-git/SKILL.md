@@ -37,12 +37,15 @@ Use this orchestrator when:
 - Following complete git workflow (setup → work → complete)
 - Looking for git best practices (branch naming, commit conventions)
 
-**Orchestrates 3 workflow phases** (configured in `skill-rules.json`, activated via hook keyword matching):
+**Orchestrates 3 workflow phases** (each configured as separate entries in `skill-rules.json`):
 - **git-worktrees** - Create isolated git workspaces for parallel development
 - **git-commit** - Professional commit workflow with Conventional Commits
 - **git-finish** - Complete work with merge, PR, or cleanup options
 
-**Note**: These are workflow phases within this orchestrator, not separate skill directories. Each phase has detailed documentation in the `references/` folder. The hook system activates them based on user intent keywords.
+**Architecture Note**: These are conceptual workflow phases, not separate skill directories. The hook system routes users to this skill based on intent keywords. Each phase has detailed documentation in `references/`:
+- Phase 1 (Setup): `references/worktree_workflows.md`
+- Phase 2 (Commit): `references/commit_workflows.md`  
+- Phase 3 (Finish): `references/finish_workflows.md`
 
 ---
 

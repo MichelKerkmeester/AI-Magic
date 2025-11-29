@@ -466,6 +466,93 @@ git reset --hard HEAD~1
 git commit --amend
 ```
 
+
+### Pattern: Detached HEAD Recovery
+
+**Symptom**: `You are in 'detached HEAD' state`
+
+```bash
+# 1. Check current state
+git status
+# HEAD detached at abc1234
+
+# 2. If you have uncommitted changes you want to keep:
+git stash
+
+# 3. Create a branch to save work (if commits were made)
+git branch recovery-branch
+
+# 4. Return to main branch
+git checkout main
+
+# 5. Restore stashed changes (if any)
+git stash pop
+
+# 6. Merge recovery branch if needed
+git merge recovery-branch
+git branch -d recovery-branch
+```
+
+
+### Pattern: Worktree Branch Already Exists
+
+**Symptom**: `fatal: 'temp/feature' is already checked out`
+
+```bash
+# 1. List existing worktrees
+git worktree list
+
+# 2. Option A: Use different branch name
+git worktree add .worktrees/feature -b temp/feature-v2 main
+
+# 3. Option B: Remove existing worktree first
+git worktree remove .worktrees/old-feature
+git branch -d temp/feature
+git worktree add .worktrees/feature -b temp/feature main
+
+# 4. Option C: Continue work in existing worktree
+cd .worktrees/old-feature  # Navigate to existing
+```
+
+
+### Pattern: Failed Push (Remote Rejected)
+
+**Symptom**: `! [rejected] main -> main (non-fast-forward)`
+
+```bash
+# 1. Fetch latest changes
+git fetch origin
+
+# 2. Option A: Rebase (cleaner history)
+git rebase origin/main
+# Resolve any conflicts, then:
+git push
+
+# 3. Option B: Merge (preserves history)
+git merge origin/main
+# Resolve any conflicts, then:
+git push
+
+# NEVER: git push --force (on shared branches)
+# Only use --force on personal feature branches
+```
+
+
+### Pattern: Stale Worktree References
+
+**Symptom**: `fatal: '.worktrees/old' is a missing linked worktree`
+
+```bash
+# 1. List worktrees (shows missing ones)
+git worktree list
+
+# 2. Prune stale references
+git worktree prune
+
+# 3. Verify cleanup
+git worktree list
+```
+
 ---
 
 ## 6. ✅ QUALITY CHECK PATTERNS

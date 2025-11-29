@@ -198,12 +198,13 @@ Rationale: Cannot pre-plan agents for unknown problem
 
 ### When to Ask User
 
-Complexity score 25-34% triggers user preference:
+Complexity score 20-49% + 2+ domains triggers mandatory user question:
 
 ```markdown
 Complexity Score: 30%
+Domains: 2
 
-This task has medium complexity (30%). I can either:
+This task has medium complexity (30%, 2 domains). I can either:
 
 A) **Handle directly** (simpler, sequential execution)
    - Pros: Less overhead, easier to track
@@ -214,6 +215,10 @@ B) **Create specialized sub-agents** (parallel execution)
    - Pros: Potentially faster (est. 10 min), specialized focus
    - Cons: More complex, 2-3s overhead per agent
    - Estimated agents: 2-3
+
+C) **Auto-decide for me** (enable automatic mode for session)
+   - Enables automatic dispatch decisions for 1 hour
+   - No more questions during this session
 
 Which would you prefer?
 ```
@@ -377,19 +382,20 @@ Note: User prefers parallel for refactoring tasks
 ```javascript
 const THRESHOLDS = {
   complexity: {
-    direct: 25,          // Below: always direct
-    collaborative: 35,   // Below: ask user
-    dispatch: 35         // At/above: auto-dispatch
-  },
-  overhead: {
-    max_percent: 30      // Max acceptable overhead
+    direct: 20,           // Below: always direct
+    collaborative: 50,    // Below (with 2+ domains): ask user
+    dispatch: 50          // At/above (with 3+ domains): auto-dispatch
   },
   domains: {
-    min_for_dispatch: 2  // Minimum domains for dispatch
+    min_for_question: 2,  // Minimum domains for mandatory question
+    min_for_auto: 3       // Minimum domains for auto-dispatch
+  },
+  overhead: {
+    max_percent: 30       // Max acceptable overhead
   },
   tokens: {
-    critical: 20,        // Force direct below this
-    limited: 25          // Limit agents below this
+    critical: 20,         // Force direct below this
+    limited: 25           // Limit agents below this
   }
 };
 ```
@@ -419,13 +425,13 @@ Adjustment needed: NO (within 10% tolerance)
 
 | Complexity | Domains | Parallel | Token Budget | Decision |
 |------------|---------|----------|--------------|----------|
-| <25% | Any | Any | Any | DIRECT |
+| <20% | Any | Any | Any | DIRECT |
 | Any | 1 | Any | Any | DIRECT |
 | Any | Any | None | Any | DIRECT |
 | Any | Any | Any | <20% | DIRECT |
-| 25-34% | 2+ | Some | >20% | COLLABORATIVE |
-| ≥35% | 2+ | Yes | >25% | DISPATCH |
-| ≥35% | 2+ | Yes | 20-25% | LIMIT_DISPATCH (max 2) |
+| 20-49% | 2+ | Some | >20% | COLLABORATIVE (ask user) |
+| ≥50% | 3+ | Yes | >25% | AUTO-DISPATCH |
+| ≥50% | 3+ | Yes | 20-25% | LIMIT_DISPATCH (max 2) |
 
 ---
 

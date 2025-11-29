@@ -251,17 +251,17 @@ const complexityScore = Object.values(weightedScores).reduce((a, b) => a + b) * 
 
 **Decision Logic**:
 ```markdown
-IF complexityScore < 25:
+IF complexityScore < 20:
   → Decision: DIRECT (low complexity)
   → Rationale: Overhead exceeds benefit
 
-IF complexityScore >= 25 AND complexityScore < 35:
+IF complexityScore >= 20 AND complexityScore < 50 AND domains >= 2:
   → Decision: COLLABORATIVE (medium complexity)
-  → Rationale: Borderline case, user preference
+  → Rationale: Borderline case, mandatory user question
 
-IF complexityScore >= 35:
-  → Decision: DISPATCH (high complexity)
-  → Rationale: Clear efficiency gain from sub-agents
+IF complexityScore >= 50 AND domains >= 3:
+  → Decision: AUTO-DISPATCH (high complexity)
+  → Rationale: Clear efficiency gain from sub-agents, notification only
 ```
 
 **Validation**: `decision_determined`
@@ -343,14 +343,16 @@ IF token_budget >= 20% AND token_budget < 25%:
 
 ### User Preference (Collaborative Zone)
 
-Medium complexity (25-34%) always asks (35%+ auto-dispatches):
+Medium complexity (20-49% + 2+ domains) triggers mandatory question (50%+ with 3+ domains auto-dispatches):
 
 ```markdown
 Complexity: 30%
-Prompt: "This task has medium complexity (30%).
+Domains: 2
+Prompt: "This task has medium complexity (30%, 2 domains).
 Would you prefer:
 A) Handle directly (simpler, sequential)
-B) Dispatch sub-agents (parallel, potentially faster)"
+B) Dispatch sub-agents (parallel, potentially faster)
+C) Auto-decide for me (enable automatic mode for session)"
 ```
 
 ---
@@ -439,14 +441,14 @@ Adjustment Needed: YES | NO
 
 ## 7. 🎯 QUICK REFERENCE
 
-| Request Pattern | Typical Score | Decision | Agents |
-|----------------|---------------|----------|---------|
-| "Fix typo" | 5-10% | Direct | 0 |
-| "Add button" | 20-30% | Direct | 0 |
-| "Update component + tests" | 45-55% | Collaborative | Ask user |
-| "Refactor module + docs" | 70-80% | Dispatch | 2 |
-| "Implement feature + tests + docs" | 85-95% | Dispatch | 3 |
-| "Fix 5 unrelated bugs" | 80-90% | Dispatch | 5 |
+| Request Pattern | Typical Score | Domains | Decision | Agents |
+|----------------|---------------|---------|----------|---------|
+| "Fix typo" | 5-10% | 1 | Direct | 0 |
+| "Add button" | 15-25% | 1 | Direct | 0 |
+| "Update component + tests" | 35-45% | 2 | Collaborative (ask user) | 0-2 |
+| "Refactor module + docs" | 50-60% | 2 | Collaborative (ask user) | 0-2 |
+| "Implement feature + tests + docs" | 70-85% | 3+ | Auto-dispatch | 3 |
+| "Fix 5 unrelated bugs" | 80-90% | 3+ | Auto-dispatch | 5 |
 
 ---
 

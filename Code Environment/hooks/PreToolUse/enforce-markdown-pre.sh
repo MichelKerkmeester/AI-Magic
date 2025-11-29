@@ -101,6 +101,11 @@ is_violation() {
         return 1  # Not a violation
     fi
 
+    # Exception: Standard uppercase documentation files
+    if [[ "$filename" == "CHANGELOG.md" || "$filename" == "LICENSE.md" || "$filename" == "CONTRIBUTING.md" ]]; then
+        return 1  # Not a violation
+    fi
+
     # Exception: SKILL.md is allowed in .claude/skills/*/ directories
     if [[ "$filename" == "SKILL.md" && "$filepath" =~ \.claude/skills/ ]]; then
         return 1  # Not a violation
@@ -185,6 +190,7 @@ main() {
         echo "Exceptions (allowed):" >&2
         echo "  • README.md (always allowed)" >&2
         echo "  • AGENTS.md, CLAUDE.md, GEMINI.md (project root only)" >&2
+        echo "  • CHANGELOG.md, LICENSE.md, CONTRIBUTING.md (standard docs)" >&2
         echo "  • SKILL.md (.claude/skills/*/ only)" >&2
         echo "" >&2
         echo "Reference: .claude/skills/create-documentation/references/core_standards.md" >&2

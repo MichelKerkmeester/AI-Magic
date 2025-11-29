@@ -69,10 +69,11 @@ if [[ "$REQUIRED" == "true" ]]; then
   # Extract details for error message
   COMPLEXITY=$(echo "$DISPATCH_STATE" | jq -r '.complexity // "unknown"' 2>/dev/null)
   AGENTS=$(echo "$DISPATCH_STATE" | jq -r '.agents // "unknown"' 2>/dev/null)
+  DOMAINS=$(echo "$DISPATCH_STATE" | jq -r '.domains // "unknown"' 2>/dev/null)
 
   # Log blocking decision
   {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] BLOCK tool=$TOOL_NAME complexity=$COMPLEXITY agents=$AGENTS"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] BLOCK tool=$TOOL_NAME complexity=$COMPLEXITY agents=$AGENTS domains=$DOMAINS"
   } >> "$LOG_FILE" 2>/dev/null
 
   # Block the tool and show error
@@ -81,14 +82,21 @@ if [[ "$REQUIRED" == "true" ]]; then
     echo "┌─────────────────────────────────────────────────────────────┐"
     echo "│ 🔴 BLOCKED: Parallel Dispatch Required                     │"
     echo "├─────────────────────────────────────────────────────────────┤"
-    echo "│ The ${TOOL_NAME} tool is blocked because parallel dispatch  │"
+    echo "│ The '${TOOL_NAME}' tool is blocked because parallel dispatch │"
     echo "│ is required for this high-complexity task.                 │"
     echo "│                                                             │"
-    echo "│ Complexity: ${COMPLEXITY}% | Required Agents: ${AGENTS}         │"
+    echo "│ Task Analysis:                                             │"
+    echo "│   • Complexity: ${COMPLEXITY}%                              │"
+    echo "│   • Domains detected: ${DOMAINS}                            │"
+    echo "│   • Recommended agents: ${AGENTS}                           │"
     echo "│                                                             │"
-    echo "│ Options:                                                   │"
-    echo "│ 1. Use Task tool to dispatch sub-agents                    │"
-    echo "│ 2. Say 'proceed anyway' to override and handle directly    │"
+    echo "│ How to proceed:                                            │"
+    echo "│ ✓ Use Task tool to create ${AGENTS} sub-agents              │"
+    echo "│   (one per domain for parallel execution)                  │"
+    echo "│                                                             │"
+    echo "│ Override options:                                          │"
+    echo "│ • Say 'proceed directly' to handle sequentially            │"
+    echo "│ • Say 'skip parallel' to bypass this check                 │"
     echo "└─────────────────────────────────────────────────────────────┘"
     echo ""
   } >&2

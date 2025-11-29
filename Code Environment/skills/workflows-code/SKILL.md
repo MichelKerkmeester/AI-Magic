@@ -206,8 +206,8 @@ def route_frontend_resources(task):
     
     # Phase 3: Verification (MANDATORY)
     if task.phase == "verification" or task.claiming_complete:
-        return load("references/verification_workflows.md")  # browser testing
         load("assets/verification_checklist.md")  # mandatory steps
+        return load("references/verification_workflows.md")  # browser testing
     
     # quick lookup
     if task.needs_quick_reference:
@@ -572,7 +572,7 @@ This workflow integrates three core knowledge base standards:
 - **Semantic prefixes:** `is_`, `has_`, `get_`, `set_`, `handle_`, `init_`, `load_`
 - **CSS:** `kebab-case` with BEM notation
 
-**Full reference:** [code_standards.md](../../knowledge/code_standards.md)
+**Full reference:** See [code_quality_standards.md](./references/code_quality_standards.md) Section 1
 
 #### Initialization Pattern (CDN-Safe)
 Every component uses standardized CDN-safe initialization:
@@ -581,7 +581,7 @@ Every component uses standardized CDN-safe initialization:
 - Webflow.push integration for proper lifecycle
 - `INIT_DELAY_MS`: 0ms (no deps), 50ms (standard), 100ms+ (heavy deps)
 
-**Full reference:** [initialization_pattern.md](../../knowledge/initialization_pattern.md)
+**Full reference:** See [code_quality_standards.md](./references/code_quality_standards.md) Section 3
 
 #### Animation Strategy
 - **CSS first:** Simple transitions, hover states, single-property animations
@@ -612,7 +612,7 @@ Platform limits enforced by Webflow that affect architecture decisions:
 
 ### Additional Knowledge Base Dependencies
 
-- `.claude/knowledge/code_standards.md` - Complete naming conventions and file structure (integrated in code_quality_standards.md)
+- **Code Quality Standards** - Complete naming conventions and file structure in [code_quality_standards.md](./references/code_quality_standards.md)
 
 ### External Tools
 

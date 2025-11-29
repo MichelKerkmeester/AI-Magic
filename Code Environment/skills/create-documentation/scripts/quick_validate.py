@@ -38,6 +38,8 @@ def validate_skill(skill_path):
         return False, "Missing 'name' in frontmatter"
     if 'description:' not in frontmatter:
         return False, "Missing 'description' in frontmatter"
+    if 'allowed-tools:' not in frontmatter:
+        return False, "Missing 'allowed-tools' in frontmatter"
     
     # Extract name for validation
     name_match = re.search(r'name:\s*(.+)', frontmatter)

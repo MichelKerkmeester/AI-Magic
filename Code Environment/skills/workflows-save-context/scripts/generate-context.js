@@ -80,7 +80,7 @@ function loadConfig() {
 const userConfig = loadConfig();
 
 const CONFIG = {
-  SKILL_VERSION: '1.3.0',
+  SKILL_VERSION: '9.0.0',
   MESSAGE_COUNT_TRIGGER: 20, // Auto-save every 20 messages
   MAX_RESULT_PREVIEW: userConfig.maxResultPreview,
   MAX_CONVERSATION_MESSAGES: userConfig.maxConversationMessages,

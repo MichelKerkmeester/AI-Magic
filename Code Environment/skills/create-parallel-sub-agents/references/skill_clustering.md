@@ -25,7 +25,22 @@ You MUST assign skills to appropriate domains before creating sub-agents.
 **Validation**: `code_skills_assigned`
 
 
-### Domain 2: Documentation
+### Domain 2: Analysis
+**Purpose**: Investigation, exploration, auditing, profiling, benchmarking
+
+**Core Skills**:
+- `mcp-semantic-search` - Intent-based code discovery for understanding implementations (MANDATORY)
+- `workflows-code` - Development workflow for code analysis patterns
+- `cli-gemini` - Alternative AI with web research capabilities (optional)
+
+**Allowed Tools**: Read, Grep, Glob, WebSearch, WebFetch
+
+**Keywords**: `analyze`, `investigate`, `explore`, `examine`, `audit`, `inspect`, `trace`, `profile`, `benchmark`, `diagnose`, `troubleshoot`, `discover`, `locate`, `scan`
+
+**Validation**: `analysis_skills_assigned`
+
+
+### Domain 3: Documentation
 **Purpose**: Creating and updating documentation
 
 **Core Skills**:
@@ -38,7 +53,7 @@ You MUST assign skills to appropriate domains before creating sub-agents.
 **Validation**: `docs_skills_assigned`
 
 
-### Domain 3: Git
+### Domain 4: Git
 **Purpose**: Version control operations
 
 **Core Skills**:
@@ -50,7 +65,7 @@ You MUST assign skills to appropriate domains before creating sub-agents.
 **Validation**: `git_skills_assigned`
 
 
-### Domain 4: Testing
+### Domain 5: Testing
 **Purpose**: Test creation and execution
 
 **Core Skills**:
@@ -62,7 +77,7 @@ You MUST assign skills to appropriate domains before creating sub-agents.
 **Validation**: `test_skills_assigned`
 
 
-### Domain 5: DevOps / MCP Integration
+### Domain 6: DevOps / MCP Integration
 **Purpose**: Build, deployment, external tool integration
 
 **Core Skills**:

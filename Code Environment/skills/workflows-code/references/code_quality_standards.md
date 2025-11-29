@@ -7,8 +7,8 @@ Essential code quality standards for frontend development, integrating naming co
 Consistency enables collaboration. Clarity prevents bugs.
 
 **Primary Sources:**
-- [code_standards.md](../../../knowledge/code_standards.md) - Complete naming and commenting rules
-- [initialization_pattern.md](../../../knowledge/initialization_pattern.md) - Complete CDN-safe pattern documentation
+- Section 1 below - Complete naming and commenting rules
+- Section 3 below - Complete CDN-safe pattern documentation
 - [animation_workflows.md](./animation_workflows.md) - Complete animation implementation guide
 
 ---
@@ -60,7 +60,7 @@ function load_external_library() { }
 .hero-featured { }           /* Modifier */
 ```
 
-**See:** [code_standards.md Section 1](../../../knowledge/code_standards.md#1--naming-conventions-by-language-and-type) for complete naming rules.
+**See:** Section 1 above for complete naming rules.
 
 ---
 
@@ -68,7 +68,7 @@ function load_external_library() { }
 
 ### JavaScript File Header (MANDATORY)
 
-**Standard pattern:** See [code_standards.md Section 2](../../../knowledge/code_standards.md#2-️-file-and-section-headers) for complete file header requirements.
+**Standard pattern:** See file header format above in Section 2.
 
 **Quick reference:**
 ```javascript
@@ -100,7 +100,7 @@ Organize code blocks with numbered sections:
 ──────────────────────────────────────────────────────────────── */
 ```
 
-**See:** [code_standards.md Section 2](../../../knowledge/code_standards.md#2-️-file-and-section-headers) for complete header rules.
+**See:** File header format section above for complete header rules.
 
 ---
 
@@ -165,7 +165,7 @@ if (window.Webflow?.push) {
 | **50ms** (default) | Standard components | Forms, accordions, navigation |
 | **100ms+** | Heavy dependencies | Hero animations (Motion.dev), video players |
 
-**See:** [initialization_pattern.md](../../../knowledge/initialization_pattern.md) for complete pattern documentation and troubleshooting.
+**See:** Section 3 above for complete pattern documentation and troubleshooting.
 
 ---
 
@@ -271,7 +271,7 @@ function log(...args) {
 }
 ```
 
-**See:** [code_standards.md Section 3](../../../knowledge/code_standards.md#3--commenting-rules) for complete commenting guide.
+**See:** Section 5 above for complete commenting guide.
 
 ---
 

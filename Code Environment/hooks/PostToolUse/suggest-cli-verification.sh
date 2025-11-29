@@ -10,6 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Configuration
 LOG_FILE="$SCRIPT_DIR/../logs/quality-checks.log"
 START_TIME=$(date +%s)
+SITE_URL="${SITE_URL:-https://anobel.com}"
 
 # Parse tool input from stdin
 TOOL_INPUT=$(cat)
@@ -55,7 +56,7 @@ if [[ "$FILE_PATH" =~ src/.*\.(js|css)$ ]]; then
   echo "Consider running CLI verification:"
   echo ""
   echo "   # Quick browser verification"
-  echo "   bdg https://example.com 2>&1"
+  echo "   bdg $SITE_URL 2>&1"
   echo "   bdg screenshot verification.png 2>&1"
   echo "   bdg console logs 2>&1 | jq '.[] | select(.level==\"error\")'"
   echo "   bdg stop 2>&1"

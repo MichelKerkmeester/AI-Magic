@@ -51,11 +51,16 @@ calc_float() {
     # Convert Python functions to awk-compatible operations:
     # - round(x, n) -> sprintf("%.nf", x)
     # - min(a, b) -> (a < b ? a : b)
+    # - int(x) -> int(x) (awk supports int() natively)
     # For simplicity, we handle specific patterns used in this script
     local awk_expr
 
+    # Handle int(x) pattern -> int(x) in awk (native support)
+    if echo "$expr" | grep -qE '^int\([^)]+\)$'; then
+      awk_expr=$(echo "$expr" | sed -E 's/int\(([^)]+)\)/int(\1)/g')
+      awk "BEGIN { print $awk_expr }"
     # Handle round(x / y, 4) pattern -> x / y with 4 decimal precision
-    if echo "$expr" | grep -qE 'round\([^,]+,\s*[0-9]+\)'; then
+    elif echo "$expr" | grep -qE 'round\([^,]+,\s*[0-9]+\)'; then
       # Extract the inner expression and precision
       awk_expr=$(echo "$expr" | sed -E 's/round\(([^,]+),\s*([0-9]+)\)/\1/g')
       awk "BEGIN { printf \"%.4f\", $awk_expr }"
@@ -246,9 +251,9 @@ fi
 # - Task type (5%): Implementation complexity
 #
 # Thresholds:
-# - <25%: Direct execution (sequential)
-# - 25-34%: Collaborative (ask user)
-# - ≥35%: Auto-dispatch parallel agents
+# - <20%: Direct execution (sequential)
+# - 20-49% + 2+ domains: Collaborative (mandatory question)
+# - ≥50% + 3+ domains: Auto-dispatch parallel agents
 
 calculate_complexity_score() {
   local prompt="$1"
@@ -433,20 +438,21 @@ make_dispatch_decision() {
   # Log decision
   {
     echo "DECISION THRESHOLD CHECK:"
-    echo "  Complexity: ${complexity_score}% (threshold: ≥35%)"
-    echo "  Domains: ${domain_count} (threshold: ≥2)"
+    echo "  Complexity: ${complexity_score}% (auto-dispatch threshold: ≥50% + 3 domains)"
+    echo "  Domains: ${domain_count} (question threshold: ≥20% + 2 domains)"
   } >> "$ORCHESTRATOR_LOG"
 
   # Check thresholds (use Python if available, else awk/bash)
+  # Auto-dispatch: ≥50% complexity + 3+ domains
   local score_check
   if [ "$PYTHON_AVAILABLE" = true ]; then
-    score_check=$(python3 -c "print('true' if ${complexity_score} >= 35 else 'false')")
+    score_check=$(python3 -c "print('true' if ${complexity_score} >= 50 and ${domain_count} >= 3 else 'false')")
   else
     # Use awk for floating point comparison
-    score_check=$(awk "BEGIN { print (${complexity_score} >= 35) ? \"true\" : \"false\" }")
+    score_check=$(awk "BEGIN { print (${complexity_score} >= 50 && ${domain_count} >= 3) ? \"true\" : \"false\" }")
   fi
 
-  if [[ "$score_check" == "true" ]] && [ "$domain_count" -ge 2 ]; then
+  if [[ "$score_check" == "true" ]]; then
     echo "DISPATCH"
   else
     echo "SEQUENTIAL"
@@ -668,15 +674,15 @@ if has_hook_state "$DISPATCH_STATE_KEY" "$DISPATCH_STATE_EXPIRY"; then
 
   if [ "$DISPATCH_CHOICE" = "auto" ]; then
     if [ "$PYTHON_AVAILABLE" = true ]; then
-      QUALIFIES=$(python3 -c "print('true' if ${COMPLEXITY_SCORE} >= 35 and ${DOMAIN_COUNT} >= 2 else 'false')")
+      QUALIFIES=$(python3 -c "print('true' if ${COMPLEXITY_SCORE} >= 50 and ${DOMAIN_COUNT} >= 3 else 'false')")
     else
-      QUALIFIES=$(awk "BEGIN { print (${COMPLEXITY_SCORE} >= 35 && ${DOMAIN_COUNT} >= 2) ? \"true\" : \"false\" }")
+      QUALIFIES=$(awk "BEGIN { print (${COMPLEXITY_SCORE} >= 50 && ${DOMAIN_COUNT} >= 3) ? \"true\" : \"false\" }")
     fi
 
     if [ "$QUALIFIES" = "true" ]; then
       DECISION="DISPATCH"
       {
-        echo "AUTO-DISPATCH (complexity ${COMPLEXITY_SCORE}% ≥ 35%, domains ${DOMAIN_COUNT} ≥ 2)"
+        echo "AUTO-DISPATCH (complexity ${COMPLEXITY_SCORE}% ≥ 50%, domains ${DOMAIN_COUNT} ≥ 3)"
         echo "─────────────────────────────────────────────────────────────"
       } >> "$ORCHESTRATOR_LOG"
     else
@@ -779,7 +785,7 @@ if [[ "$DECISION" == "DISPATCH" ]]; then
     echo "┌─────────────────────────────────────────────────────────────┐"
     echo "│ 🚀 PARALLEL AGENT DISPATCH REQUIRED                        │"
     echo "├─────────────────────────────────────────────────────────────┤"
-    echo "│ Complexity Score: ${COMPLEXITY_SCORE}% (threshold: ≥35%)              │"
+    echo "│ Complexity Score: ${COMPLEXITY_SCORE}% (auto-dispatch: ≥50% + 3 domains)  │"
     echo "│ Domains Detected: ${DOMAIN_COUNT} (${DETECTED_DOMAINS})                │"
     echo "│ Recommended Agents: ${AGENT_COUNT}                                  │"
     echo "│                                                             │"
@@ -815,8 +821,9 @@ if [[ "$DECISION" == "DISPATCH" ]]; then
   } >&2
 
   # Write pending dispatch state for PreToolUse hook enforcement
+  # Note: DETECTED_DOMAINS comes from dispatch_parallel_agents (comma-separated list)
   DISPATCH_STATE=$(cat <<EOF
-{"required":true,"complexity":${COMPLEXITY_SCORE},"domains":${DOMAIN_COUNT},"agents":${AGENT_COUNT},"timestamp":"$(date -u +%Y-%m-%dT%H:%M:%SZ)"}
+{"required":true,"complexity":${COMPLEXITY_SCORE},"domain_count":${DOMAIN_COUNT},"domains":"${DETECTED_DOMAINS}","agents":${AGENT_COUNT},"timestamp":"$(date -u +%Y-%m-%dT%H:%M:%SZ)"}
 EOF
 )
   write_hook_state "pending_dispatch" "$DISPATCH_STATE" 2>/dev/null || true

@@ -69,6 +69,8 @@ is_violation() {
     [[ "$filename" == "README.md" ]] && return 1
     # Exception: AGENTS.md, CLAUDE.md, GEMINI.md at project root
     [[ "$filename" == "AGENTS.md" || "$filename" == "CLAUDE.md" || "$filename" == "GEMINI.md" ]] && return 1
+    # Exception: Standard uppercase documentation files
+    [[ "$filename" == "CHANGELOG.md" || "$filename" == "LICENSE.md" || "$filename" == "CONTRIBUTING.md" ]] && return 1
     # Exception: SKILL.md in .claude/skills/
     [[ "$filename" == "SKILL.md" && "$filepath" =~ \.claude/skills/ ]] && return 1
     # Exception: ~/.claude/plans/ directory

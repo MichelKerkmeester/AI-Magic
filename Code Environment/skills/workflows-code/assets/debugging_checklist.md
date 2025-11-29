@@ -23,7 +23,7 @@ Use this checklist for ANY frontend technical issue to ensure thorough investiga
 □ Read complete error message without skipping
 □ Noted file name, line number, error code
 □ Read full stack trace
-☐ Checked Network tab for failed requests
+□ Checked Network tab for failed requests
 
 ---
 

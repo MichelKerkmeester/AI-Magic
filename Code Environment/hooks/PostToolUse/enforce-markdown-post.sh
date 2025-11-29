@@ -96,6 +96,11 @@ is_violation() {
         return 1  # Not a violation
     fi
 
+    # Exception: Standard uppercase documentation files
+    if [[ "$filename" == "CHANGELOG.md" || "$filename" == "LICENSE.md" || "$filename" == "CONTRIBUTING.md" ]]; then
+        return 1  # Not a violation
+    fi
+
     # Exception: SKILL.md is allowed in .claude/skills/*/ directories
     if [[ "$filename" == "SKILL.md" && "$filepath" =~ \.claude/skills/ ]]; then
         return 1  # Not a violation

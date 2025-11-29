@@ -5,7 +5,7 @@ allowed-tools: [Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion]
 version: 3.2.0
 ---
 
-# Documentation Creation Specialist
+# Documentation Creation Specialist - Unified Markdown & Skill Management
 
 Unified specialist providing: (1) Complete document quality pipeline with structure enforcement, content optimization (c7score), and style guide compliance, and (2) Complete skill creation workflow with scaffolding, validation, and packaging.
 

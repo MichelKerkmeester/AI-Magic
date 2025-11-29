@@ -14,10 +14,14 @@ Template for creating focused, ephemeral sub-agents with pre-selected skills.
   prompt: "[DETAILED_PROMPT]",                        // See prompt template below
 
   // OPTIONAL FIELDS
-  model: "[MODEL_CHOICE]",                           // "haiku", "sonnet", "opus", or omit to inherit
   timeout: [TIMEOUT_MS]                              // Default: 300000 (5 minutes)
-  // NOTE: Task tool also supports "resume: AGENT_ID" for continuing a previous agent's
+  // NOTE: Task tool also supports "session_id: AGENT_ID" for continuing a previous agent's
   // conversation. This is rarely needed for parallel dispatch as sub-agents are ephemeral.
+  
+  // IMPORTANT: The Task tool does NOT support a "model" parameter directly.
+  // Model selection (haiku/sonnet/opus) is determined by the subagent_type or inherited
+  // from the parent context. The examples below include model guidance for documentation
+  // purposes to suggest which complexity level warrants faster (haiku) vs smarter (sonnet) agents.
 }
 ```
 
@@ -78,9 +82,8 @@ You are a specialized code agent focused on refactoring and implementation.
 Refactor the authentication system to use the new JWT pattern.
 
 ## AVAILABLE SKILLS
-- code-standards: Follow project coding conventions
-- workflows-code: Development workflow patterns
-- code-security: Security best practices
+- workflows-code: Follow project coding conventions and development workflow
+- mcp-semantic-search: Find implementations and patterns in codebase
 
 ## SPECIFIC INSTRUCTIONS
 1. Read current auth implementation in src/auth/
@@ -119,7 +122,7 @@ Update API documentation for the new authentication endpoints.
 
 ## AVAILABLE SKILLS
 - create-documentation: Documentation best practices
-- conversation-documentation: Spec folder structure
+- workflows-spec-kit: Spec folder structure
 
 ## SPECIFIC INSTRUCTIONS
 1. Read the new auth code in src/auth/
@@ -157,8 +160,8 @@ You are a specialized testing agent.
 Create comprehensive tests for the authentication module.
 
 ## AVAILABLE SKILLS
-- code-test: Testing patterns and practices
-- code-verification: Verification strategies
+- workflows-code: Testing patterns and development workflow
+- mcp-semantic-search: Find test patterns in codebase
 
 ## SPECIFIC INSTRUCTIONS
 1. Write unit tests for all auth functions
@@ -196,8 +199,8 @@ You are a specialized debugging agent.
 Investigate and fix failing tests in the payment module.
 
 ## AVAILABLE SKILLS
-- code-debug: Systematic debugging approach
-- workflows-code: Debugging workflows
+- workflows-code: Debugging workflows and code quality standards
+- mcp-semantic-search: Find code patterns for debugging
 
 ## SPECIFIC INSTRUCTIONS
 1. Run payment tests to see failures
@@ -267,9 +270,9 @@ Replace these in templates:
 | [DOMAIN] | Functional domain | code, docs, test, git |
 | [TASK_SUMMARY] | Brief task description | "refactoring auth", "updating tests" |
 | [DETAILED_PROMPT] | Full task instructions | See prompt template |
-| [MODEL_CHOICE] | AI model selection | haiku, sonnet, opus |
+| [MODEL_CHOICE] | Suggested AI model complexity | haiku (fast), sonnet (smart), opus (advanced) - **NOTE: for documentation only, not a Task tool parameter** |
 | [TIMEOUT_MS] | Timeout in milliseconds | 180000, 300000, 600000 |
-| [SKILL_LIST] | Relevant skills | code-standards, create-documentation |
+| [SKILL_LIST] | Relevant skills | workflows-code, create-documentation, mcp-semantic-search |
 | [TOOL_LIST] | Allowed tools | Read, Write, Edit, Bash |
 | [TIME_LIMIT] | Human-readable timeout | "3 minutes", "5 minutes" |
 

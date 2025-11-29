@@ -186,12 +186,12 @@ debugger;
 
 ```bash
 # Console error checking
-bdg https://example.com 2>&1
+bdg https://anobel.com 2>&1
 bdg console logs 2>&1 | jq '.[] | select(.level=="error")'
 bdg stop 2>&1
 
 # Multi-viewport screenshots
-bdg https://example.com 2>&1
+bdg https://anobel.com 2>&1
 bdg screenshot desktop.png 2>&1  # Default: ~1920x1080
 
 # Mobile viewport (requires Emulation.setDeviceMetricsOverride first)
@@ -200,19 +200,19 @@ bdg screenshot mobile.png 2>&1
 bdg stop 2>&1
 
 # DOM inspection
-bdg https://example.com 2>&1
+bdg https://anobel.com 2>&1
 bdg dom query ".header-nav" 2>&1
 bdg js "document.title" 2>&1
 bdg stop 2>&1
 
 # Network monitoring
-bdg https://example.com 2>&1
+bdg https://anobel.com 2>&1
 bdg network cookies 2>&1
 bdg har export network-trace.har 2>&1
 bdg stop 2>&1
 
 # Performance metrics
-bdg https://example.com 2>&1
+bdg https://anobel.com 2>&1
 bdg cdp Performance.getMetrics 2>&1
 bdg stop 2>&1
 ```
@@ -252,7 +252,7 @@ npm install -g browser-debugger-cli@alpha
   □ Document the fix
   □ Implement single fix
   □ Verify in browser
-  ☐ If 3+ fixes failed → question approach
+  □ If 3+ fixes failed → question approach
 ```
 
 ---
@@ -280,7 +280,7 @@ npm install -g browser-debugger-cli@alpha
 □ CONSOLE/ERRORS
   □ No console errors
   □ No console warnings
-  ☐ No failed network requests
+  □ No failed network requests
 ```
 
 ---
