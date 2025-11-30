@@ -7,30 +7,39 @@ agent: plan
 
 # Implementation Plan (OpenCode)
 
-Create comprehensive implementation plans using parallel exploration agents to thoroughly analyze the codebase before any code changes.
+Create comprehensive SpecKit documentation using parallel exploration agents to thoroughly analyze the codebase before any code changes.
 
 **Platform**: OpenCode only (uses Task tool with Claude agents)
+**SpecKit Aligned**: Creates Level 2+ documentation per AGENTS.md Section 2
 
 ---
 
 ## Purpose
 
-Enter PLANNING MODE to create detailed, verified implementation plans. This command:
-1. Analyzes task complexity and selects appropriate mode (simple or complex)
-2. Spawns multiple Explore agents in parallel to discover codebase patterns
-3. Synthesizes findings into a structured plan using YAML workflow
-4. Requires user approval before implementation begins
+Enter PLANNING MODE to create detailed, verified SpecKit documentation. This command:
+1. Determines SpecKit documentation level (2 or 3) based on task complexity
+2. Creates spec.md (requirements and user stories) + plan.md (technical approach)
+3. Spawns multiple Explore agents in parallel to discover codebase patterns
+4. Synthesizes findings into structured SpecKit documents using YAML workflow
+5. Optionally creates tasks.md for complex features (Level 3)
+6. Requires user approval before implementation begins
 
-**Modes:**
-- **Simple Mode** (<500 LOC): Single plan.md file using `simple_mode.yaml`
-- **Complex Mode** (≥500 LOC): Multi-file plan/ directory (future - currently falls back to simple mode)
+**Documentation Levels:**
+- **Level 2** (<500 LOC): spec.md + plan.md using `simple_mode.yaml`
+- **Level 3** (≥500 LOC): spec.md + plan.md + tasks.md using `simple_mode.yaml`
+
+**Note**: All plan commands create AT LEAST Level 2 documentation (spec.md + plan.md) because running a plan command implies the need for a plan.
 
 ---
 
 ## Contract
 
 **Inputs:** `$ARGUMENTS` — Task description (REQUIRED) + optional mode override
-**Outputs:** Plan file at `specs/###-name/plan.md` (or `plan/` for complex mode) + `STATUS=<OK|FAIL|CANCELLED>`
+**Outputs:** SpecKit documentation at `specs/###-name/`:
+  - `spec.md` - Feature specification and requirements (ALL levels)
+  - `plan.md` - Technical implementation plan (ALL levels)
+  - `tasks.md` - Task breakdown (Level 3 only)
+  - `STATUS=<OK|FAIL|CANCELLED>`
 
 ---
 
@@ -86,33 +95,36 @@ If no mode override specified, analyze task complexity:
 
 7. **YAML workflow executes automatically:**
 
-   The loaded YAML prompt contains the complete 8-phase workflow:
-   - **Phases 1-3** (from base_phases.yaml): Task Understanding, Spec Folder Setup, Context Loading
-   - **Phases 4-5** (from exploration.yaml): Parallel Exploration (4 Sonnet agents), Hypothesis Verification (Opus)
-   - **Phase 6** (mode-specific): Plan Creation (simple_mode or complex_mode)
-   - **Phases 7-8** (from base_phases.yaml): User Review & Confirmation, Context Persistence
+   The loaded YAML prompt contains the complete 9-phase workflow (SpecKit aligned):
+   - **Phase 0**: Documentation Level Detection (SpecKit Level 2 or 3)
+   - **Phases 1-3**: Task Understanding, Spec Folder Setup, Context Loading
+   - **Phases 4-5**: Parallel Exploration (4 Sonnet agents), Hypothesis Verification (Opus)
+   - **Phase 6**: Document Creation (spec.md + plan.md + tasks.md)
+   - **Phases 7-8**: User Review & Confirmation, Context Persistence
 
-   All phases execute sequentially: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
+   All phases execute sequentially: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
    **Expected outputs:**
-   - Simple mode: `specs/###-name/plan.md` (500-2000 lines)
-   - Complex mode (future): `specs/###-name/plan/` directory with manifest
+   - Level 2: `specs/###-name/spec.md` + `plan.md`
+   - Level 3: `specs/###-name/spec.md` + `plan.md` + `tasks.md`
 
 ### Step 4: Monitor Progress
 
 8. **Display phase progress to user:**
    ```
-   🔍 Planning Mode Activated (Opus Orchestrator)
+   🔍 Planning Mode Activated (Opus Orchestrator + SpecKit)
 
    Task: {task_description}
    Mode: {SIMPLE/COMPLEX} ({loc_estimate} LOC estimated)
+   Documentation Level: {2 or 3}
 
+   📊 Phase 0: Documentation Level Detection...
    📋 Phase 1: Task Understanding & Session Initialization...
    📁 Phase 2: Spec Folder Setup...
    🧠 Phase 3: Context Loading...
    📊 Phase 4: Parallel Exploration (4 Sonnet agents)...
    🔬 Phase 5: Hypothesis Verification (Opus review)...
-   📝 Phase 6: Plan Creation...
+   📝 Phase 6: Document Creation (spec.md + plan.md + tasks.md)...
    👤 Phase 7: User Review & Confirmation...
    💾 Phase 8: Context Persistence...
    ```
@@ -169,10 +181,15 @@ If no mode override specified, analyze task complexity:
 ## Example Output
 
 ```
-🔍 Planning Mode Activated (Opus Orchestrator)
+🔍 Planning Mode Activated (Opus Orchestrator + SpecKit)
 
 Task: Add user authentication with OAuth2
 Mode: SIMPLE (300 LOC estimated)
+
+📊 Phase 0: Documentation Level Detection
+  ✓ LOC estimate: 300 (<500 LOC)
+  ✓ Documentation Level: 2 (spec.md + plan.md)
+  ✓ Required files: spec.md, plan.md
 
 📋 Phase 1: Task Understanding & Session Initialization
   ✓ Task parsed: Implement OAuth2 authentication flow
@@ -198,27 +215,39 @@ Mode: SIMPLE (300 LOC estimated)
   └─ Building complete mental model...
   ✅ Verification Complete
 
-📝 Phase 6: Plan Creation
-  ✓ Plan file created: specs/042-oauth2-auth/plan.md
+📝 Phase 6: Document Creation (SpecKit)
+  ✓ spec.md created: specs/042-oauth2-auth/spec.md
+  ✓ plan.md created: specs/042-oauth2-auth/plan.md
 
 👤 Phase 7: User Review & Confirmation
+  SpecKit Documentation Created:
+  ✅ spec.md - Feature specification and requirements
+  ✅ plan.md - Technical implementation plan
+
   Please review and confirm to proceed.
   [User confirms]
-  ✓ Plan re-read (no edits)
+  ✓ Documents re-read (no edits)
 
 💾 Phase 8: Context Persistence
   ✓ Context saved: specs/042-oauth2-auth/memory/28-11-25_14-30__oauth2-auth.md
 
-STATUS=OK ACTION=plan_created PATH=specs/042-oauth2-auth/plan.md
+STATUS=OK ACTION=documentation_created FILES=spec.md,plan.md PATH=specs/042-oauth2-auth/
 ```
 
 ---
 
 ## Notes
 
+- **SpecKit Alignment:**
+  - MANDATORY compliance with AGENTS.md Section 2 requirements
+  - Creates Level 2+ documentation (spec.md + plan.md minimum)
+  - Level 3 automatically includes tasks.md for complex features
+  - All templates from `.opencode/speckit/templates/`
+  - Documentation level detection in Phase 0
+
 - **YAML Architecture:**
   - Command file (~150 lines): Mode detection + prompt loading
-  - YAML prompts (~1050 lines): All phase logic
+  - YAML prompts (~1150 lines): All 9-phase logic + SpecKit integration
   - Modular, maintainable, version-friendly
 
 - **Model Hierarchy:**
@@ -229,7 +258,8 @@ STATUS=OK ACTION=plan_created PATH=specs/042-oauth2-auth/plan.md
 - **Integration:**
   - Works with spec folder system (Phase 2)
   - Memory context enables session continuity (Phases 3 & 8)
-  - Plans feed into `/spec_kit:implement` workflow
+  - SpecKit documents feed into `/spec_kit:implement` workflow
+  - Enforced by workflows-spec-kit hooks
 
 - **Memory System (Phase 8):**
   - Invokes `workflows-save-context` skill for memory file creation
@@ -242,3 +272,4 @@ STATUS=OK ACTION=plan_created PATH=specs/042-oauth2-auth/plan.md
 - **Future Enhancements:**
   - Complex mode with multi-file plan/ directory (Phase 5 upgrade)
   - Mode selection refinement based on usage patterns
+  - Auto-generation of additional SpecKit templates (research-spike, decision-record)

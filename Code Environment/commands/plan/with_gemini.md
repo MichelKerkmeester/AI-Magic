@@ -8,23 +8,27 @@ model: gemini-3.0-pro
 
 # Implementation Plan with Gemini Orchestrator (OpenCode)
 
-Create comprehensive implementation plans using **Gemini as orchestrator** with Sonnet agents for parallel codebase exploration and potential web research.
+Create comprehensive SpecKit documentation using **Gemini as orchestrator** with Sonnet agents for parallel codebase exploration and potential web research.
 
 **Platform**: OpenCode with Copilot integration
 **Orchestrator**: Gemini 3.0 pro via Copilot (task understanding, verification, synthesis, web research)
 **Explorers**: Sonnet agents × 4 (parallel exploration) - with intelligent fallback
+**SpecKit Aligned**: Creates Level 2+ documentation per AGENTS.md Section 2
 
 ---
 
 ## Purpose
 
-Enter PLANNING MODE to create detailed, verified implementation plans. This command:
-1. **Gemini orchestrates** the entire planning workflow (task understanding, agent coordination, verification)
-2. **Spawns 4 Sonnet agents** in parallel for fast, cost-effective codebase exploration
-3. **Leverages Gemini's web research** capabilities for current best practices (if enabled in Copilot)
-4. **Falls back gracefully** if Sonnet unavailable (tries other models, then self-exploration)
-5. **Gemini verifies** all findings by reading actual code before creating plan
-6. Requires user approval before implementation begins
+Enter PLANNING MODE to create detailed, verified SpecKit documentation. This command:
+1. Determines SpecKit documentation level (2 or 3) based on task complexity
+2. **Gemini orchestrates** the entire planning workflow (task understanding, agent coordination, verification)
+3. **Spawns 4 Sonnet agents** in parallel for fast, cost-effective codebase exploration
+4. **Leverages Gemini's web research** capabilities for current best practices (if enabled in Copilot)
+5. **Falls back gracefully** if Sonnet unavailable (tries other models, then self-exploration)
+6. **Gemini verifies** all findings by reading actual code before creating SpecKit documents
+7. Creates spec.md (requirements and user stories) + plan.md (technical approach)
+8. Optionally creates tasks.md for complex features (Level 3)
+9. Requires user approval before implementation begins
 
 **Key Architecture**:
 - **Gemini Orchestrator**: Provides Gemini's perspective on planning, synthesis, and multimodal understanding
@@ -32,17 +36,24 @@ Enter PLANNING MODE to create detailed, verified implementation plans. This comm
 - **Web Research**: Potential Google Search integration for current best practices and documentation
 - **Hybrid Strength**: Combines Gemini's research capabilities with Sonnet's exploration speed
 - **Intelligent Fallback**: Automatically adapts if Sonnet agents unavailable
+- **SpecKit Integration**: Creates complete Level 2+ documentation per AGENTS.md requirements
 
-**Modes:**
-- **Simple Mode** (<500 LOC): Single plan.md file using `simple_mode.yaml`
-- **Complex Mode** (≥500 LOC): Multi-file plan/ directory (future - currently falls back to simple mode)
+**Documentation Levels:**
+- **Level 2** (<500 LOC): spec.md + plan.md using `simple_mode.yaml`
+- **Level 3** (≥500 LOC): spec.md + plan.md + tasks.md using `simple_mode.yaml`
+
+**Note**: All plan commands create AT LEAST Level 2 documentation (spec.md + plan.md) because running a plan command implies the need for a plan.
 
 ---
 
 ## Contract
 
 **Inputs:** `$ARGUMENTS` — Task description (REQUIRED) + optional mode override
-**Outputs:** Plan file at `specs/###-name/plan.md` + `STATUS=<OK|FAIL|CANCELLED>`
+**Outputs:** SpecKit documentation at `specs/###-name/`:
+  - `spec.md` - Feature specification and requirements (ALL levels)
+  - `plan.md` - Technical implementation plan (ALL levels)
+  - `tasks.md` - Task breakdown (Level 3 only)
+  - `STATUS=<OK|FAIL|CANCELLED>`
 
 ---
 
@@ -98,10 +109,10 @@ If no mode override specified, analyze task complexity:
 
 7. **YAML workflow executes with Gemini orchestration + Sonnet exploration:**
 
-   The loaded YAML prompt contains the complete 8-phase workflow:
+   The loaded YAML prompt contains the complete 9-phase workflow (SpecKit aligned):
    - **Phases 1-3**: Task Understanding (Gemini + optional web research), Spec Folder Setup, Context Loading
    - **Phases 4-5**: Parallel Exploration (4 Sonnet agents), Hypothesis Verification (Gemini)
-   - **Phase 6**: Plan Creation (Gemini synthesis + web insights)
+   - **Phase 6: Document Creation (spec.md + plan.md + tasks.md) (Gemini synthesis + web insights)
    - **Phases 7-8**: User Review & Confirmation, Context Persistence
 
    **CRITICAL OVERRIDE for Phase 4 (Parallel Exploration):**
@@ -175,7 +186,7 @@ If no mode override specified, analyze task complexity:
    🧠 Phase 3: Context Loading...
    📊 Phase 4: Parallel Exploration (4 Sonnet agents)...
    🔬 Phase 5: Hypothesis Verification (Gemini review)...
-   📝 Phase 6: Plan Creation (Gemini synthesis)...
+   📝 Phase 6: Document Creation (spec.md + plan.md + tasks.md) (Gemini synthesis)...
    👤 Phase 7: User Review & Confirmation...
    💾 Phase 8: Context Persistence...
    ```
@@ -237,13 +248,18 @@ If no mode override specified, analyze task complexity:
 ## Example Output
 
 ```
-🔍 Planning Mode Activated (Gemini Orchestrator + Sonnet Explorers)
+🔍 Planning Mode Activated (Gemini Orchestrator + Sonnet Explorers + SpecKit)
 
 Task: Add user authentication with OAuth2
 Mode: SIMPLE (300 LOC estimated)
 Orchestrator: Gemini 3.0 pro via Copilot
 Explorers: Sonnet agents
 Web Research: Enabled
+
+📊 Phase 0: Documentation Level Detection
+  ✓ LOC estimate: 300 (<500 LOC)
+  ✓ Documentation Level: 2 (spec.md + plan.md)
+  ✓ Required files: spec.md, plan.md
 
 📋 Phase 1: Task Understanding & Session Initialization (Gemini)
   ✓ Task parsed: Implement OAuth2 authentication flow
@@ -270,25 +286,37 @@ Web Research: Enabled
   └─ Building complete mental model with Gemini perspective...
   ✅ Verification Complete
 
-📝 Phase 6: Plan Creation (Gemini synthesis)
-  ✓ Plan file created: specs/042-oauth2-auth/plan.md
+📝 Phase 6: Document Creation (SpecKit - Gemini synthesis)
+  ✓ spec.md created: specs/042-oauth2-auth/spec.md
+  ✓ plan.md created: specs/042-oauth2-auth/plan.md
   ✓ Gemini perspective applied with current best practices
   🌐 Incorporated OAuth2 security recommendations from web research
 
 👤 Phase 7: User Review & Confirmation
+  SpecKit Documentation Created:
+  ✅ spec.md - Feature specification and requirements
+  ✅ plan.md - Technical implementation plan
+
   Please review and confirm to proceed.
   [User confirms]
-  ✓ Plan re-read (no edits)
+  ✓ Documents re-read (no edits)
 
 💾 Phase 8: Context Persistence
   ✓ Context saved: specs/042-oauth2-auth/memory/29-11-25_14-30__oauth2-auth.md
 
-STATUS=OK ACTION=plan_created PATH=specs/042-oauth2-auth/plan.md
+STATUS=OK ACTION=documentation_created FILES=spec.md,plan.md PATH=specs/042-oauth2-auth/
 ```
 
 ---
 
 ## Notes
+
+- **SpecKit Alignment:**
+  - MANDATORY compliance with AGENTS.md Section 2 requirements
+  - Creates Level 2+ documentation (spec.md + plan.md minimum)
+  - Level 3 automatically includes tasks.md for complex features
+  - All templates from `.opencode/speckit/templates/`
+  - Documentation level detection in Phase 0
 
 - **Gemini Orchestration:**
   - Gemini 3.0 pro handles task understanding, agent coordination, verification, synthesis
@@ -296,6 +324,7 @@ STATUS=OK ACTION=plan_created PATH=specs/042-oauth2-auth/plan.md
   - Provides Gemini's unique perspective on planning and code patterns
   - Multimodal capabilities for enhanced understanding
   - Different strengths than Claude or GPT for certain types of analysis
+  - Applies Gemini perspective to SpecKit document creation
 
 - **Sonnet Exploration:**
   - Spawns 4 Sonnet agents via Task tool for parallel discovery

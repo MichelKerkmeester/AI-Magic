@@ -1247,22 +1247,26 @@ error_handling:
 
 output_specifications:
   dual_output_system:
-    purpose: "Separate analysis from prompt for clarity and reusability"
+    purpose: "Generate both SpecKit spec and machine-readable YAML for comprehensive documentation"
     rationale: |
-      - Analysis document = human-readable assessment for review
-      - YAML prompt = machine-readable format for direct workflow integration
-      - Separation enables independent use of each file
-      - YAML format allows easy import into other tools/workflows
+      - spec.md = Human-readable SpecKit specification for documentation and planning
+      - enhanced_prompt.yaml = Machine-readable for direct workflow integration
+      - Dual output provides both documentation and automation capability
+      - Both files stored in user-selected spec folder
 
-    file_1_analysis:
-      filename: "prompt_analysis.md"
-      purpose: "Human-readable quality assessment and enhancement report"
-      format: "Markdown"
+    file_1_spec_md:
+      filename: "spec.md"
+      purpose: "SpecKit specification with enhanced prompt structured as implementation guide"
+      format: "Markdown with SpecKit structure (Problem, Solution, Enhanced Prompt, Success Criteria)"
+      use_case: "Documentation, team collaboration, implementation planning"
+      location: "{spec_folder_path}/spec.md"
 
-    file_2_prompt:
+    file_2_yaml:
       filename: "enhanced_prompt.yaml"
-      purpose: "Machine-readable enhanced prompt for direct use"
-      format: "YAML with framework-specific structure"
+      purpose: "Machine-readable enhanced prompt for direct use in AI workflows"
+      format: "YAML with framework-specific structure and metadata"
+      use_case: "Direct integration into automated workflows, tools, and systems"
+      location: "{spec_folder_path}/enhanced_prompt.yaml"
 
   enhanced_prompt_yaml:
     format: "YAML with framework-specific components"
@@ -1283,7 +1287,7 @@ output_specifications:
       prompt:
         # Framework-specific components (each framework has its own complete structure)
         # Example shown below is RCAF framework structure
-        # See framework_specific_components in step_15 for all framework structures
+        # See framework_specific_components in step_14b for all framework structures
 
         # IMPORTANT: These are PLACEHOLDER EXAMPLES only
         # The actual YAML file MUST contain real enhanced prompt content
@@ -1316,140 +1320,27 @@ output_specifications:
       CRISPE: [ "capacity", "role", "insight", "statement", "personality", "experiment" ]
       CRAFT: [ "context", "role", "action", "format", "target" ]
 
-  prompt_analysis_md:
-    format: "Structured markdown with quality assessment and enhancement report"
-    sections:
-    - "Header (metadata: generated, scores, framework)"
-    - "Quality Assessment (CLEAR scores, comparison table, strong/weak areas)"
-    - "RICCE Completeness (checklist with descriptions)"
-    - "Framework Selection Rationale (complexity, choice, alternatives)"
-    - "Cognitive Rigor Summary (4 technique insights)"
-    - "Key Improvements (top 3-5 with explanations)"
-    - "Original Prompt Reference (for comparison)"
-    - "Processing Metadata (mode, rounds, time)"
-
-    template_structure: |
-      # Prompt Enhancement Analysis
-
-      **Generated:** [timestamp]
-      **Original CLEAR Score:** [X]/50 ([quality_label])
-      **Enhanced CLEAR Score:** [Y]/50 ([quality_label])
-      **Improvement:** +[Z] points ([P]% better)
-      **Framework Applied:** [framework_name]
-
-      ---
-
-      ## Quality Assessment
-
-      ### CLEAR Score Comparison
-
-      | Dimension            | Original   | Enhanced   | Delta    |
-      | -------------------- | ---------- | ---------- | -------- |
-      | **Correctness** (10) | [X]/10     | [Y]/10     | +[Z]     |
-      | **Logic** (10)       | [X]/10     | [Y]/10     | +[Z]     |
-      | **Expression** (15)  | [X]/15     | [Y]/15     | +[Z]     |
-      | **Arrangement** (10) | [X]/10     | [Y]/10     | +[Z]     |
-      | **Reusability** (5)  | [X]/5      | [Y]/5      | +[Z]     |
-      | **TOTAL**            | **[X]/50** | **[Y]/50** | **+[Z]** |
-
-      **Target Met:** [YES ✅ / NO ❌] (Target: ≥40/50)
-
-      ### Strong Areas
-      • [Dimension]: [Score]/[Max] ([interpretation])
-      • [Dimension]: [Score]/[Max] ([interpretation])
-
-      ### Needs Work
-      • [Dimension]: [Score]/[Max] ([specific issue])
-
-      ### What This Means
-      [Plain language explanation of quality level and practical impact]
-
-      ---
-
-      ## RICCE Completeness
-
-      - ✅ **Role**: [description]
-      - ✅ **Instructions**: [description]
-      - ✅ **Context**: [description]
-      - ✅ **Constraints**: [description]
-      - ✅ **Examples**: [description or N/A]
-
-      ---
-
-      ## Framework Selection Rationale
-
-      **Complexity Assessment:** [X]/10
-      - [Brief explanation of complexity factors]
-
-      **Framework Choice:** [framework_name]
-      - [Rationale for selection]
-      - [Alternative frameworks considered]
-
-      ---
-
-      ## Cognitive Rigor Applied
-
-      - **Perspective Inversion**: [key insight]
-      - **Constraint Reversal**: [key insight]
-      - **Assumption Audit**: [key insight]
-      - **Mechanism First**: [key insight]
-
-      ---
-
-      ## Key Improvements
-
-      1. **[Category]**: [Description with rationale]
-      2. **[Category]**: [Description with rationale]
-      3. **[Category]**: [Description with rationale]
-
-      **Characters:** Original [XXX] → Enhanced [YYY] ([+/-ZZZ])
-
-      ---
-
-      ## Original Prompt (Reference)
-
-      ```
-      [Original prompt text for comparison]
-      ```
-
-      ---
-
-      ## Processing Metadata
-
-      - **Mode:** [quick|improve|refine|interactive]
-      - **DEPTH Rounds:** [N]/10
-      - **Processing Time:** [X.X] seconds
-      - **Generated:** [ISO 8601 timestamp]
-
-      ---
-
-      **Enhanced prompt available in:** `enhanced_prompt.yaml`
-      **Import into workflows:** Load YAML directly for automated use
-
-    quality_label_mapping:
-      poor: "0-25"
-      fair: "26-35"
-      good: "36-40"
-      very_good: "41-45"
-      excellent: "46-50"
-
   file_locations:
-    determine_output_path:
-      check_priority_1: "Active spec folder (.claude/.spec-active.$$)"
-      check_priority_2: "Legacy spec folder (.claude/.spec-active)"
-      check_priority_3: "/export/ directory with sequential numbering"
+    spec_folder_from_phase_1:
+      source: "User selected in Phase 1 step 3 (A/B/C/D)"
+      options:
+        A: "Use existing spec folder from .spec-active marker"
+        B: "Create new spec folder: specs/[###]-enhanced-prompt/"
+        C: "Update related spec folder"
+        D: "Skip documentation (fallback to /export/)"
 
     naming_convention:
-      analysis_file: "prompt_analysis.md"
-      prompt_file: "enhanced_prompt.yaml"
+      always_both_files:
+        file_1: "spec.md"
+        file_2: "enhanced_prompt.yaml"
 
     output_paths:
-      if_spec_active: |
-        analysis: {spec_folder_path}/prompt_analysis.md
-        prompt: {spec_folder_path}/enhanced_prompt.yaml
-      if_no_spec: |
-        analysis: /export/[###]-prompt-analysis-[timestamp].md
-        prompt: /export/[###]-enhanced-prompt-[timestamp].yaml
+      if_user_selected_A_B_C:
+        spec_md: "{spec_folder_path}/spec.md"
+        yaml: "{spec_folder_path}/enhanced_prompt.yaml"
+      if_user_selected_D_skip:
+        spec_md: "/export/[###]-enhanced-prompt-[timestamp]/spec.md"
+        yaml: "/export/[###]-enhanced-prompt-[timestamp]/enhanced_prompt.yaml"
 
   metadata:
     include:
@@ -1480,13 +1371,20 @@ output_specifications:
 # ───────────────────────────────────────────────────────────────
 
 execution_notes:
+  spec_folder_selection:
+  - "Ask user for spec folder choice in Phase 1 step 3 (A/B/C/D pattern)"
+  - "A: Use existing spec folder | B: Create new | C: Update related | D: Skip (fallback)"
+  - "Store spec_folder_path for use in Phase 6"
+  - "Follows standard SpecKit workflow from AGENTS.md"
+
   dual_output_generation:
-  - "Generate TWO files instead of one"
-  - "File 1: prompt_analysis.md (human-readable assessment)"
-  - "File 2: enhanced_prompt.yaml (machine-readable prompt)"
-  - "Both files go to same location (spec folder or /export/)"
-  - "Write files sequentially: analysis first, then YAML"
+  - "Generate BOTH files - spec.md and enhanced_prompt.yaml"
+  - "File 1: spec.md (SpecKit specification with Problem, Solution, Enhanced Prompt, Success Criteria)"
+  - "File 2: enhanced_prompt.yaml (machine-readable with metadata and framework components)"
+  - "Both files go to same spec folder selected in Phase 1"
+  - "Write files sequentially: spec.md first, then YAML"
   - "Both files required for STATUS=OK (fail if either write fails)"
+
   phase_progression:
   - "Phases MUST execute sequentially (D → E → P → T → H)"
   - "Rounds within phases execute in order (no skipping)"
@@ -1509,7 +1407,7 @@ execution_notes:
   - "Show external layer updates in real-time"
   - "Keep updates concise (1-2 lines per phase)"
   - "Include key metrics (complexity, score, rounds)"
-  - "Save internal layer details for final report"
+  - "Internal calculations happen silently, only key results shown"
 
   framework_application:
   - "Apply framework structure explicitly (visible headers/sections)"
@@ -1518,119 +1416,152 @@ execution_notes:
   - "Make structure self-documenting"
 
 # ───────────────────────────────────────────────────────────────
-# PHASE 6: DUAL OUTPUT GENERATION (File Creation Workflow)
+# PHASE 6: OUTPUT GENERATION (File Creation Workflow)
 # ───────────────────────────────────────────────────────────────
 
-phase_6_dual_output_generation:
+phase_6_output_generation:
   phase_name: "Dual Output Generation"
   emoji: "📄"
-  purpose: "Create both analysis markdown and YAML prompt files"
+  purpose: "Create BOTH output files (spec.md and enhanced_prompt.yaml) in user-selected spec folder"
   trigger: "After Phase H (Harmonize) completes successfully"
 
   steps:
     step_13_determine_output_location:
-      action: "Determine where to save both output files"
-      priority_order:
-        1: "Check for active spec folder (.claude/.spec-active.$$ or .claude/.spec-active)"
-        2: "If spec folder exists, use: {spec_folder_path}/"
-        3: "If no spec folder, use: /export/ with sequential numbering"
+      action: "Use spec folder from Phase 1 step 3 (user already selected A/B/C/D)"
+
+      spec_folder_source:
+        from_phase_1: "User selected spec folder via AskUserQuestion (A/B/C/D pattern)"
+        options_recap:
+          A: "Use existing spec folder from .spec-active marker"
+          B: "Create new spec folder: specs/[###]-enhanced-prompt/"
+          C: "Update related spec folder"
+          D: "Skip documentation (fallback to /export/)"
+
+      output_location_logic:
+        if_user_selected_A_B_or_C:
+          base_path: "{spec_folder_path from Phase 1}"
+          file_1: "{base_path}/spec.md"
+          file_2: "{base_path}/enhanced_prompt.yaml"
+
+        if_user_selected_D_skip:
+          base_path: "/export/[###]-enhanced-prompt-[timestamp]/"
+          file_1: "{base_path}/spec.md"
+          file_2: "{base_path}/enhanced_prompt.yaml"
+          warning: "User skipped documentation - saving to /export/ fallback"
+
       outputs:
-      - base_path: "Directory path where both files will be saved"
-      - analysis_file_path: "{base_path}/prompt_analysis.md"
-      - prompt_file_path: "{base_path}/enhanced_prompt.yaml"
+      - spec_folder_path: "Full path to spec folder (from Phase 1)"
+      - spec_md_path: "{spec_folder_path}/spec.md"
+      - yaml_path: "{spec_folder_path}/enhanced_prompt.yaml"
 
-      file_naming:
-        with_spec_folder:
-          analysis: "prompt_analysis.md"
-          prompt: "enhanced_prompt.yaml"
-        without_spec_folder:
-          analysis: "[###]-prompt-analysis-[YYYYMMDD-HHMMSS].md"
-          prompt: "[###]-enhanced-prompt-[YYYYMMDD-HHMMSS].yaml"
-          sequential_number: "Find highest existing number in /export/, increment by 1"
-
-    step_14_assemble_analysis_file:
-      action: "Assemble complete prompt_analysis.md content"
+    step_14_assemble_both_outputs:
+      action: "Assemble BOTH spec.md and enhanced_prompt.yaml content"
       tool: "Construct in memory (Write tool in step 16)"
+      note: "Both files are ALWAYS generated - dual output system"
+
+      parallel_assembly:
+        execute_both:
+        - "step_14a_assemble_speckit_content"
+        - "step_14b_assemble_yaml_content"
+
+    step_14a_assemble_speckit_content:
+      action: "Assemble spec.md content (SpecKit specification format)"
+      tool: "Construct in memory (Write tool in step 16)"
+      note: "This is the SAME content structure from step_14b in previous version"
 
       content_structure:
-        header:
-        - "# Prompt Enhancement Analysis"
-        - "**Generated:** {ISO_8601_timestamp}"
-        - "**Original CLEAR Score:** {original_score}/50 ({quality_label})"
-        - "**Enhanced CLEAR Score:** {enhanced_score}/50 ({quality_label})"
-        - "**Improvement:** +{delta} points ({percentage}% better)"
-        - "**Framework Applied:** {framework_name}"
+        front_matter:
         - "---"
+        - "title: Enhanced Prompt"
+        - "framework: {framework_name}"
+        - "complexity: {complexity_score}"
+        - "clear_score: {enhanced_score}"
+        - "improvement: +{delta}"
+        - "generated: {ISO_8601_timestamp}"
+        - "---"
+        - ""
 
-        section_1_quality_assessment:
-        - "## Quality Assessment"
-        - "### CLEAR Score Comparison"
-        - "{CLEAR_comparison_table}"
-        - "**Target Met:** {YES/NO} (Target: ≥40/50)"
-        - "### Strong Areas"
-        - "{List dimensions scoring ≥8/10 or ≥12/15}"
-        - "### Needs Work"
-        - "{List dimensions below threshold or N/A if none}"
-        - "### What This Means"
-        - "{Plain language explanation of quality impact}"
+        header:
+        - "# Enhanced Prompt Specification"
+        - ""
+        - "**Framework:** {framework_name}"
+        - "**Complexity:** {complexity_score}/10"
+        - "**CLEAR Score:** {enhanced_score}/50 (Original: {original_score}/50, +{delta} improvement)"
+        - "**Generated:** {ISO_8601_timestamp}"
+        - ""
 
-        section_2_ricce_completeness:
-        - "## RICCE Completeness"
-        - "- ✅ **Role**: {description_of_role_component}"
-        - "- ✅ **Instructions**: {description_of_instructions}"
-        - "- ✅ **Context**: {description_of_context}"
-        - "- ✅ **Constraints**: {description_of_constraints}"
-        - "- ✅ **Examples**: {description_or_NA_with_justification}"
-
-        section_3_framework_rationale:
-        - "## Framework Selection Rationale"
-        - "**Complexity Assessment:** {complexity_score}/10"
-        - "{Brief explanation of complexity factors}"
-        - "**Framework Choice:** {framework_name}"
-        - "{Rationale for selection}"
-        - "{Alternative frameworks considered}"
-
-        section_4_cognitive_rigor:
-        - "## Cognitive Rigor Applied"
-        - "- **Perspective Inversion**: {key_insight}"
-        - "- **Constraint Reversal**: {key_insight}"
-        - "- **Assumption Audit**: {key_insight}"
-        - "- **Mechanism First**: {key_insight}"
-
-        section_5_key_improvements:
-        - "## Key Improvements"
-        - "1. **{Category}**: {Description with rationale}"
-        - "2. **{Category}**: {Description with rationale}"
-        - "3. **{Category}**: {Description with rationale}"
-        - "(List 3-5 most impactful changes)"
-        - "**Characters:** Original {XXX} → Enhanced {YYY} ({+/-ZZZ})"
-
-        section_6_original_reference:
-        - "## Original Prompt (Reference)"
+        section_1_problem:
+        - "## Problem"
+        - ""
+        - "Original prompt required enhancement to improve:"
+        - "- Clarity and specificity"
+        - "- Structural organization ({framework_name} framework)"
+        - "- RICCE completeness (Role, Instructions, Context, Constraints, Examples)"
+        - ""
+        - "### Original Prompt"
         - "```"
         - "{original_prompt_text}"
         - "```"
+        - ""
 
-        section_7_metadata:
-        - "## Processing Metadata"
-        - "- **Mode:** {quick|improve|refine|interactive}"
-        - "- **DEPTH Rounds:** {N}/10"
-        - "- **Processing Time:** {X.X} seconds"
-        - "- **Generated:** {ISO_8601_timestamp}"
+        section_2_solution:
+        - "## Solution"
+        - ""
+        - "Enhanced prompt using DEPTH methodology:"
+        - "- **D**iscover: Analyzed intent, assessed complexity ({complexity_score}/10)"
+        - "- **E**ngineer: Applied {framework_name} framework with cognitive rigor"
+        - "- **P**rototype: Generated enhanced draft, validated RICCE"
+        - "- **T**est: Calculated CLEAR scores (Original: {original_score}/50 → Enhanced: {enhanced_score}/50)"
+        - "- **H**armonize: Final polish and consistency check"
+        - ""
 
-        footer:
-        - "---"
-        - "**Enhanced prompt available in:** `enhanced_prompt.yaml`"
-        - "**Import into workflows:** Load YAML directly for automated use"
+        section_3_framework:
+        - "## Framework Applied: {framework_name}"
+        - ""
+        - "{framework_description_from_framework_definitions}"
+        - ""
+
+        section_4_enhanced_prompt:
+        - "## Enhanced Prompt"
+        - ""
+        - "{enhanced_prompt_full_text_formatted}"
+        - ""
+
+        section_5_success_criteria:
+        - "## Success Criteria"
+        - ""
+        - "✅ **CLEAR Score:** {enhanced_score}/50 (Target: ≥40/50)"
+        - "✅ **RICCE Completeness:** All 5 components present"
+        - "✅ **Framework Compliance:** {framework_name} structure applied"
+        - "✅ **Quality Improvement:** +{delta} points ({percentage}% better)"
+        - ""
+        - "### Dimensions"
+        - "- **Correctness:** {correctness_score}/10"
+        - "- **Logic:** {logic_score}/10"
+        - "- **Expression:** {expression_score}/15"
+        - "- **Arrangement:** {arrangement_score}/10"
+        - "- **Reusability:** {reusability_score}/5"
+        - ""
+
+        section_6_usage:
+        - "## Usage"
+        - ""
+        - "Use this enhanced prompt in your AI workflows for improved results."
+        - ""
+        - "**Copy prompt:** See 'Enhanced Prompt' section above"
+        - "**Framework:** {framework_name}"
+        - "**Complexity:** {complexity_score}/10"
+        - "**YAML version:** See enhanced_prompt.yaml in this folder"
+        - ""
 
       validation:
       - "Verify all placeholders replaced with actual values"
-      - "Confirm CLEAR scores match calculated values"
       - "Ensure markdown formatting is correct"
-      - "Check that framework name is accurate"
+      - "Confirm enhanced prompt is formatted properly"
+      - "Check CLEAR scores match calculated values"
 
-    step_15_assemble_yaml_file:
-      action: "Assemble complete enhanced_prompt.yaml content"
+    step_14b_assemble_yaml_content:
+      action: "Assemble enhanced_prompt.yaml content"
       tool: "Construct in memory (Write tool in step 16)"
 
       content_structure:
@@ -1758,41 +1689,40 @@ phase_6_dual_output_generation:
       validation:
       - "Verify all {ACTUAL_*_CONTENT} placeholders are replaced"
       - "Confirm YAML is valid (proper indentation, quotes, structure)"
-      - "Check metadata values match analysis file"
       - "Ensure framework components match framework_mapping"
       - "Test parsability: yaml.safe_load() should succeed"
 
     step_16_write_both_files:
-      action: "Write both files to determined location"
+      action: "Write BOTH files to spec folder"
       tool: "Write tool (two separate invocations)"
-      sequence: "sequential (not parallel - write analysis first, then YAML)"
+      sequence: "sequential (write spec.md first, then YAML)"
 
       write_sequence:
-        1_write_analysis:
+        1_write_spec_md:
           tool: "Write"
-          file_path: "{analysis_file_path}"
-          content: "{assembled_analysis_content_from_step_14}"
+          file_path: "{spec_md_path from step_13}"
+          content: "{assembled_speckit_content_from_step_14a}"
           verification: "Check Write tool returns success"
 
         2_write_yaml:
           tool: "Write"
-          file_path: "{prompt_file_path}"
-          content: "{assembled_yaml_content_from_step_15}"
+          file_path: "{yaml_path from step_13}"
+          content: "{assembled_yaml_content_from_step_14b}"
           verification: "Check Write tool returns success"
 
       error_handling:
-        if_analysis_write_fails:
-        - "Log error: Analysis file write failed"
+        if_spec_write_fails:
+        - "Log error: spec.md file write failed"
         - "Do NOT write YAML file"
         - "Return STATUS=ERROR with message"
         - "Do NOT proceed to step 17"
 
-        if_yaml_write_fails_after_analysis_succeeds:
+        if_yaml_write_fails_after_spec_succeeds:
         - "Log error: YAML file write failed"
-        - "Consider analysis file orphaned"
+        - "Consider spec.md file orphaned"
         - "Return STATUS=ERROR with message"
-        - "Note: Analysis file exists but YAML is missing"
-        - "User may need to manually delete analysis file or retry"
+        - "Note: spec.md exists but YAML is missing"
+        - "User may need to manually delete spec.md or retry"
 
         atomic_write_guarantee:
         - "Both files MUST write successfully for STATUS=OK"
@@ -1801,12 +1731,14 @@ phase_6_dual_output_generation:
 
     step_17_report_success:
       action: "Report successful dual-output generation to user"
-      display_format: |
-        ✅ Enhanced prompt generated successfully!
 
+      display_format: |
+        ✅ Enhanced prompt created successfully!
+
+        📁 **Spec folder:** {spec_folder_path}
         📄 **Files created:**
-        - Analysis: {analysis_file_path}
-        - Prompt:   {prompt_file_path}
+        - spec.md (SpecKit specification)
+        - enhanced_prompt.yaml (machine-readable)
 
         📊 **Quality:**
         - Original CLEAR Score: {original_score}/50
@@ -1816,14 +1748,14 @@ phase_6_dual_output_generation:
         🔧 **Framework:** {framework_name}
 
         💡 **Next steps:**
-        - Review analysis: `cat {analysis_file_path}`
-        - Import YAML: `import yaml; prompt = yaml.safe_load(open('{prompt_file_path}'))`
-        - Use enhanced prompt in your workflow
+        - Review spec: `cat {spec_folder_path}/spec.md`
+        - Import YAML: `import yaml; prompt = yaml.safe_load(open('{spec_folder_path}/enhanced_prompt.yaml'))`
+        - Use enhanced prompt in your AI workflows
 
       status_return:
       - "STATUS=OK"
-      - "ANALYSIS={analysis_file_path}"
-      - "PROMPT={prompt_file_path}"
+      - "SPEC={spec_folder_path}"
+      - "FILES=spec.md,enhanced_prompt.yaml"
       - "SCORE={enhanced_score}/50"
       - "IMPROVEMENT=+{delta}"
 

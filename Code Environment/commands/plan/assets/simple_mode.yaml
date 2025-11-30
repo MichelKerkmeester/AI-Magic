@@ -1,13 +1,13 @@
 # ───────────────────────────────────────────────────────────────────
 # PLAN_CLAUDE: SIMPLE MODE WORKFLOW
 # ───────────────────────────────────────────────────────────────────
-# Complete 8-phase planning workflow for features <500 LOC
-# Generates single plan.md file using plan_template.md structure
+# Complete 9-phase planning workflow for features <500 LOC
+# Generates spec.md + plan.md using SpecKit templates
 # ───────────────────────────────────────────────────────────────────
 
 role: Expert Planning Orchestrator (Opus) for Simple Features
-purpose: Create comprehensive single-file implementation plan
-action: Execute 8-phase planning workflow with single plan.md output
+purpose: Create comprehensive specification and implementation plan
+action: Execute 9-phase planning workflow with spec.md + plan.md output
 
 # ───────────────────────────────────────────────────────────────────
 # WORKFLOW METADATA
@@ -16,16 +16,83 @@ workflow_metadata:
   name: "Simple Mode Planning"
   mode: "simple"
   target_features: "Features <500 LOC, straightforward scope"
-  output: "Single plan.md file"
-  phases: 8
-  estimated_duration: "45-90 seconds"
+  output: "spec.md + plan.md (SpecKit Level 2)"
+  phases: 9
+  estimated_duration: "50-100 seconds"
+  speckit_alignment: "MANDATORY - follows AGENTS.md Section 2 requirements"
 
 # ───────────────────────────────────────────────────────────────────
 # NOTE: This is a self-contained workflow file merging:
+# - Phase 0: Documentation Level Detection (SpecKit alignment)
 # - base_phases.yaml (Phases 1-3, 7-8)
 # - exploration.yaml (Phases 4-5)
-# - Phase 6: Simple mode plan creation
+# - Phase 6: SpecKit document creation (spec.md + plan.md)
 # ───────────────────────────────────────────────────────────────────
+
+# ───────────────────────────────────────────────────────────────────
+# PHASE 0: DOCUMENTATION LEVEL DETECTION (SpecKit Alignment)
+# ───────────────────────────────────────────────────────────────────
+phase_0_documentation_level:
+  phase_name: "Documentation Level Detection"
+  emoji: "📊"
+  purpose: "Determine SpecKit documentation level (2 or 3) per AGENTS.md Section 2"
+  mandatory: "All plan commands create AT LEAST Level 2 documentation"
+
+  steps:
+    step_0_1_extract_loc_estimate:
+      action: "Extract LOC estimate from parent command mode detection"
+      note: "Parent command (with_claude_code.md) already calculated this"
+      source: "Mode selection logic in parent command"
+      fallback: "If not available, estimate from task description keywords"
+
+    step_0_2_apply_decision_matrix:
+      action: "Apply SpecKit decision matrix from AGENTS.md Section 2"
+      logic: |
+        # Decision Matrix (from AGENTS.md lines 119-143)
+        if loc_estimate < 500:
+          documentation_level = 2
+          required_files = ["spec.md", "plan.md"]
+          optional_files = ["tasks.md", "checklist.md"]
+          rationale = "Plan command implies need for plan → minimum Level 2"
+        else:
+          documentation_level = 3
+          required_files = ["spec.md", "plan.md", "tasks.md"]
+          optional_files = ["research-spike-*.md", "decision-record-*.md"]
+          rationale = "≥500 LOC requires task breakdown → Level 3"
+
+    step_0_3_check_secondary_factors:
+      action: "Check secondary factors that can override LOC"
+      factors:
+        complexity:
+          high_indicators: ["architecture change", "system redesign", "multi-service"]
+          action_if_high: "Bump to Level 3 even if <500 LOC"
+        risk:
+          high_indicators: ["authentication", "security", "data migration", "breaking change"]
+          action_if_high: "Bump to Level 3 even if <500 LOC"
+        dependencies:
+          multiple_systems: true
+          action_if_true: "Consider Level 3"
+      note: "When in doubt, choose higher level (AGENTS.md line 280)"
+
+    step_0_4_store_level:
+      action: "Store documentation level for use in Phase 6"
+      outputs:
+        - documentation_level  # 2 or 3
+        - required_files       # ["spec.md", "plan.md"] or ["spec.md", "plan.md", "tasks.md"]
+        - optional_files       # Level-specific optional templates
+        - level_rationale      # Justification for level selection
+
+  outputs:
+    - documentation_level  # 2 or 3
+    - required_files
+    - optional_files
+    - level_rationale
+
+  notification:
+    format: |
+      📊 SpecKit Documentation Level: {documentation_level}
+      Required Files: {required_files}
+      Rationale: {level_rationale}
 
 # ───────────────────────────────────────────────────────────────────
 # PHASE 1: TASK UNDERSTANDING & SESSION INITIALIZATION
@@ -359,24 +426,138 @@ phase_5_hypothesis_verification:
   - "At least 80% of identified files actually read for verification"
 
 # ───────────────────────────────────────────────────────────────────
-# PHASE 6: PLAN CREATION (SIMPLE MODE)
+# PHASE 6: DOCUMENT CREATION (SpecKit Aligned)
 # ───────────────────────────────────────────────────────────────────
-phase_6_plan_creation_simple:
-  phase_name: "Plan Creation"
+phase_6_document_creation:
+  phase_name: "Document Creation (SpecKit)"
   emoji: "📝"
-  purpose: "Generate single plan.md file from template with verified findings"
+  purpose: "Generate spec.md + plan.md (+ tasks.md for Level 3) using SpecKit templates"
   mode: "simple"
-  output: "Single plan.md file (500-2000 lines)"
+  output: "Level 2: spec.md + plan.md | Level 3: spec.md + plan.md + tasks.md"
+  mandatory: "MUST create spec.md FIRST per AGENTS.md Section 2"
 
   steps:
-    step_16_create_plan_file:
+    step_16_create_spec_md:
+      description: "STEP 1: Create spec.md (MANDATORY for ALL levels)"
+      action: "Create spec.md at {spec_folder_path}/spec.md"
+      priority: "MUST create spec.md FIRST per AGENTS.md Section 2"
+
+      template_usage:
+        read_template:
+          path: ".opencode/speckit/templates/spec_template.md"
+          purpose: "Feature specification - requirements and user stories"
+          requirement: "Use as skeleton, preserve all section headings"
+
+        fill_placeholders:
+          pattern: "[YOUR_VALUE_HERE: ...]"
+          action: "Replace with actual content from task understanding"
+          sources:
+          - "Phase 1 task understanding"
+          - "Phase 0 documentation level"
+          - "Phase 3 loaded context (if any)"
+
+        remove_samples:
+          pattern: "[PLACEHOLDER]"
+          action: "Replace with actual content"
+          requirement: "No placeholder text remaining"
+
+      content_population:
+        section_1_objective:
+          heading: "## 1. OBJECTIVE"
+          sources:
+          - "Task description from Phase 1"
+          - "Documentation level from Phase 0"
+          content:
+          - "Fill metadata (Category, Tags, Priority, Branch, Date, Status, Input)"
+          - "List stakeholders (Product, Engineering, Design, QA, etc.)"
+          - "Define purpose (one-sentence outcome statement)"
+          - "Document assumptions with clarification questions"
+
+        section_2_scope:
+          heading: "## 2. SCOPE"
+          sources:
+          - "Task understanding from Phase 1"
+          content:
+          - "List in-scope deliverables (specific, concrete)"
+          - "List out-of-scope items with reasons"
+
+        section_3_users_stories:
+          heading: "## 3. USERS & STORIES"
+          sources:
+          - "Task description from Phase 1"
+          content:
+          - "Create prioritized user stories (P0/P1/P2/P3)"
+          - "Each story independently testable"
+          - "Include acceptance scenarios (Given/When/Then)"
+          - "Explain priority rationale"
+
+        section_4_functional_requirements:
+          heading: "## 4. FUNCTIONAL REQUIREMENTS"
+          content:
+          - "List testable functional requirements (FR-001, FR-002, etc.)"
+          - "Use MUST/SHALL for requirements"
+          - "Create traceability mapping to user stories"
+
+        section_5_non_functional_requirements:
+          heading: "## 5. NON-FUNCTIONAL REQUIREMENTS"
+          content:
+          - "Performance requirements (response time, throughput, concurrency)"
+          - "Security requirements (auth, encryption, compliance)"
+          - "Reliability requirements (uptime, error rate, recovery)"
+          - "Usability requirements (accessibility, browser support, mobile)"
+          - "Operability requirements (monitoring, deployment, logging)"
+
+        section_6_edge_cases:
+          heading: "## 6. EDGE CASES"
+          content:
+          - "Data boundaries (empty input, max length, special chars)"
+          - "Error scenarios (API failures, timeouts, concurrent updates)"
+          - "State transitions (partial completion, rollback, session expiry)"
+
+        section_7_success_criteria:
+          heading: "## 7. SUCCESS CRITERIA"
+          content:
+          - "Measurable outcomes (completion time, performance, success rate)"
+          - "KPI targets (adoption, quality, performance, reliability)"
+
+        section_8_dependencies_risks:
+          heading: "## 8. DEPENDENCIES & RISKS"
+          content:
+          - "List dependencies (systems, APIs, libraries) with status"
+          - "Risk assessment with mitigation strategies"
+          - "Rollback plan"
+
+        section_9_out_of_scope:
+          heading: "## 9. OUT OF SCOPE"
+          content:
+          - "Explicit exclusions to prevent scope creep"
+
+        section_10_open_questions:
+          heading: "## 10. OPEN QUESTIONS"
+          content:
+          - "List questions needing clarification from stakeholders"
+
+        section_11_appendix:
+          heading: "## 11. APPENDIX"
+          content:
+          - "References (related specs, design mockups, API docs)"
+          - "Diagrams (architecture, flowcharts, data models)"
+
+      validation:
+      - "NO placeholder text remaining ([YOUR_VALUE_HERE:], [PLACEHOLDER])"
+      - "All [NEEDS CLARIFICATION:] either filled or kept as open questions"
+      - "User stories have priorities and independent test descriptions"
+      - "All template sections present and filled"
+
+    step_17_create_plan_md:
+      description: "STEP 2: Create plan.md (MANDATORY for Level 2+)"
       action: "Create plan.md at {spec_folder_path}/plan.md"
-      note: "Path was determined in Phase 2 step 8"
+      note: "Technical implementation plan with exploration findings"
 
       template_usage:
         read_template:
           path: ".opencode/speckit/templates/plan_template.md"
-          purpose: "Base structure for plan"
+          purpose: "Technical approach and architecture"
           requirement: "Use as skeleton, preserve all section headings"
 
         fill_placeholders:
@@ -385,16 +566,13 @@ phase_6_plan_creation_simple:
           sources:
           - "Phases 4-5 exploration and verification"
           - "Phase 1 task understanding"
-          - "Phase 3 loaded context (if any)"
+          - "Phase 0 documentation level"
+          - "Spec.md created in step_16"
 
         remove_samples:
           pattern: "[PLACEHOLDER]"
           action: "Replace with actual content"
           requirement: "No placeholder text remaining"
-
-        preserve_structure:
-          action: "Keep all section headings and structure from template"
-          validation: "All template sections present in output"
 
       content_population:
         section_1_objective:
@@ -402,10 +580,11 @@ phase_6_plan_creation_simple:
           sources:
           - "Task description from Phase 1"
           - "Verified findings from Phase 5"
+          - "spec.md objective"
           content:
-          - "Synthesize task description and verified findings into clear objective"
-          - "Include metadata: Category, Tags, Priority, Branch, Date, Status"
-          - "Define purpose, assumptions, stakeholders"
+          - "Synthesize task and findings into technical objective"
+          - "Include metadata: Category, Tags, Priority, Branch, Date, Spec link"
+          - "Define technical context (language, dependencies, platform)"
 
         section_2_quality_gates:
           heading: "## 2. QUALITY GATES"
@@ -413,10 +592,8 @@ phase_6_plan_creation_simple:
           - "Test Explorer findings from Phase 4"
           - "Verification strategy from Phase 5"
           content:
-          - "Define completion criteria from Test Explorer findings"
-          - "Set verification steps based on test patterns found"
-          - "Include Definition of Ready (DoR) and Definition of Done (DoD)"
-          - "Add rollback guardrails and recovery procedures"
+          - "Definition of Ready (DoR) and Definition of Done (DoD)"
+          - "Rollback guardrails and recovery procedures"
 
         section_3_project_structure:
           heading: "## 3. PROJECT STRUCTURE"
@@ -424,96 +601,106 @@ phase_6_plan_creation_simple:
           - "Architecture Explorer findings from Phase 4"
           - "Verified architecture from Phase 5"
           content:
-          - "Document affected areas using Architecture Explorer findings"
+          - "Document affected areas from Architecture Explorer"
           - "Show directory structure for modified files"
-          - "Explain structure decision rationale"
 
         section_4_implementation_phases:
           heading: "## 4. IMPLEMENTATION PHASES"
           sources:
           - "All Explore agent findings from Phase 4"
           - "Verified integration points from Phase 5"
-          - "Dependency Explorer findings"
-          - "Test Explorer findings"
           content:
-          - "Break down solution into phases"
-          - "Include file paths with line numbers (format: path/to/file.ts:123)"
-          - "Reference verified integration points from Dependency Explorer"
-          - "Add test patterns from Test Explorer"
-          - "Specify deliverables, duration, parallel tasks for each phase"
+          - "Break down solution into implementation phases"
+          - "Include file paths with line numbers (path/to/file.ts:123)"
+          - "Reference verified integration points"
+          - "Add test patterns"
 
         section_5_testing_strategy:
           heading: "## 5. TESTING STRATEGY"
           sources:
           - "Test Explorer findings from Phase 4"
-          - "Verified test approach from Phase 5"
           content:
-          - "Use Test Explorer findings to define test approach"
-          - "Include test pyramid (unit/integration/e2e)"
-          - "Specify test coverage targets"
-          - "Define CI quality gates"
+          - "Test pyramid (unit/integration/e2e)"
+          - "Test coverage targets"
+          - "CI quality gates"
 
         section_6_success_metrics:
           heading: "## 6. SUCCESS METRICS"
           content:
-          - "Define measurable outcomes"
-          - "Functional metrics (feature completeness, bug counts)"
-          - "Performance metrics (response times, load capacity)"
-          - "Quality metrics (test coverage, code review pass rate)"
+          - "Measurable outcomes (functional, performance, quality)"
 
         section_7_risks_mitigations:
           heading: "## 7. RISKS & MITIGATIONS"
           sources:
-          - "Risk assessment from Phase 5 verification"
-          - "Potential risks identified during exploration"
+          - "Risk assessment from Phase 5"
           content:
-          - "Document risks identified during hypothesis verification"
-          - "Include risk matrix (Risk ID, Description, Impact, Likelihood, Mitigation)"
-          - "Add rollback plan"
+          - "Risk matrix with mitigations"
+          - "Rollback plan"
 
         section_8_dependencies:
           heading: "## 8. DEPENDENCIES"
           sources:
           - "Dependency Explorer findings from Phase 4"
-          - "Verified dependencies from Phase 5"
           content:
-          - "List dependencies from Dependency Explorer findings"
-          - "Internal dependencies (files, modules, components)"
-          - "External dependencies (libraries, APIs, services)"
-          - "Dependency status and timeline impacts"
+          - "Internal and external dependencies"
 
         section_9_communication:
           heading: "## 9. COMMUNICATION & REVIEW"
           content:
-          - "Standard review checkpoints"
-          - "Stakeholder communication plan"
-          - "Approval gates"
+          - "Review checkpoints and stakeholder communication"
 
         section_10_references:
           heading: "## 10. REFERENCES"
-          sources:
-          - "Spec folder files"
-          - "Agent findings from Phase 4"
           content:
-          - "Link to related spec folder files"
-          - "Reference agent findings"
-          - "External references (documentation, APIs, examples)"
+          - "Link to spec.md and agent findings"
 
       validation:
-      - "NO placeholder text remaining ([YOUR_VALUE_HERE:], [PLACEHOLDER])"
-      - "All file paths include line numbers (format: path/to/file.ts:lineNumber)"
-      - "Each phase has clear verification steps"
-      - "Risks identified during exploration are documented"
-      - "All template sections present and filled"
+      - "NO placeholder text remaining"
+      - "All file paths include line numbers"
+      - "References spec.md in section 10"
 
       final_line:
         content: |
           ---
-          **USER: Please review this plan. Edit any section directly, then confirm to proceed.**
+          **USER: Please review spec.md and plan.md. Edit any section directly, then confirm to proceed.**
+
+    step_18_create_tasks_md:
+      description: "STEP 3: Create tasks.md (Level 3 ONLY - ≥500 LOC)"
+      condition: "ONLY execute if documentation_level == 3"
+      action: "Create tasks.md at {spec_folder_path}/tasks.md"
+      note: "Task breakdown for complex features"
+
+      template_usage:
+        read_template:
+          path: ".opencode/speckit/templates/tasks_template.md"
+          purpose: "Implementation task list organized by user story"
+          requirement: "Use as skeleton, preserve structure"
+
+        fill_placeholders:
+          pattern: "[YOUR_VALUE_HERE: ...]"
+          action: "Replace with task breakdown from plan.md"
+          sources:
+          - "plan.md implementation phases (step_17)"
+          - "spec.md user stories (step_16)"
+
+      content_population:
+        tasks_by_user_story:
+          action: "Break plan phases into actionable tasks"
+          organization: "Group by user story from spec.md"
+          format: "- [ ] Task description (estimated time, file references)"
+          priority: "Inherit from user story priority"
+
+      validation:
+      - "Tasks traceable to user stories in spec.md"
+      - "Each task has checkbox, description, estimate"
+      - "File paths included where applicable"
 
   outputs:
+  - spec_file_path: "{spec_folder_path}/spec.md"
   - plan_file_path: "{spec_folder_path}/plan.md"
-  - plan_size_lines: "500-2000 lines typical"
+  - tasks_file_path: "{spec_folder_path}/tasks.md (Level 3 only)"
+  - documentation_level: "2 or 3"
+  - files_created: "spec.md + plan.md (+ tasks.md if Level 3)"
   - template_validated: true
   - placeholders_removed: true
 
@@ -522,49 +709,64 @@ phase_6_plan_creation_simple:
 phase_7_user_review:
   phase_name: "User Review & Confirmation"
   emoji: "👤"
-  purpose: "Request approval, wait for edits, re-read plan after user confirmation"
+  purpose: "Request approval, wait for edits, re-read all documents after confirmation"
 
   steps:
-    step_17_request_approval:
-      action: "Inform user plan has been created"
+    step_19_request_approval:
+      action: "Inform user that SpecKit documents have been created"
       notification_format: |
-        Plan created at: {spec_folder_path}/plan.md
+        SpecKit Documentation Created:
+        ✅ spec.md - Feature specification and requirements
+        ✅ plan.md - Technical implementation plan
+        {✅ tasks.md - Task breakdown (Level 3 only)}
 
-        Please review the plan and confirm to proceed.
+        Location: {spec_folder_path}/
+
+        Please review the documentation and confirm to proceed.
         Options:
-          - Review and edit the file directly
+          - Review and edit files directly (spec.md, plan.md, tasks.md)
           - Reply "confirm" to proceed with implementation
           - Reply "cancel" to abort
+
       wait_for: "Explicit confirmation (confirm or cancel)"
       blocking: "DO NOT write implementation files until confirmed"
 
-    step_18_handle_response:
+    step_20_handle_response:
       on_confirm:
-        action: "Proceed to step 19 (re-read plan)"
+        action: "Proceed to step 21 (re-read documents)"
       on_reject:
         action: "Set STATUS=CANCELLED ACTION=user_rejected"
         capture: "REASON=[reason from user]"
 
-    step_19_reread_plan:
-      purpose: "User may have edited the plan file"
-      action: "Re-read the plan file completely"
-      tool: "Read"
-      path: "{spec_folder_path}/plan.md"
+    step_21_reread_documents:
+      purpose: "User may have edited any of the documentation files"
+      action: "Re-read all created documents"
+      tool: "Read (parallel calls for efficiency)"
+      files:
+        - path: "{spec_folder_path}/spec.md"
+          required: true
+        - path: "{spec_folder_path}/plan.md"
+          required: true
+        - path: "{spec_folder_path}/tasks.md"
+          required: "Level 3 only"
       analysis:
-      - "Note any changes the user made"
+      - "Note any changes the user made to any file"
       - "Acknowledge the changes before proceeding"
-      - "Begin implementation following the plan exactly"
+      - "Begin implementation following spec.md and plan.md exactly"
 
-    step_20_return_status:
+    step_22_return_status:
       on_awaiting_review:
-        status: "STATUS=OK ACTION=plan_created PATH={spec_folder_path}/plan.md"
+        status_level_2: "STATUS=OK ACTION=documentation_created FILES=spec.md,plan.md PATH={spec_folder_path}/"
+        status_level_3: "STATUS=OK ACTION=documentation_created FILES=spec.md,plan.md,tasks.md PATH={spec_folder_path}/"
       on_rejected:
         status: "STATUS=CANCELLED ACTION=user_rejected REASON=[reason]"
 
   outputs:
   - user_decision # confirmed/rejected
-  - plan_edited # true/false
+  - documents_edited # true/false
+  - spec_final_content
   - plan_final_content
+  - tasks_final_content # if Level 3
   - ready_for_implementation
 
 # ───────────────────────────────────────────────────────────────────
@@ -576,7 +778,7 @@ phase_8_context_persistence:
   purpose: "Save planning session context to memory/ for future sessions"
 
   steps:
-    step_21_invoke_save_context_skill:
+    step_23_invoke_save_context_skill:
       description: "Invoke workflows-save-context skill for anchor-based memory"
       action: "Use Skill tool to create memory file with anchor tags"
 
@@ -598,10 +800,10 @@ phase_8_context_persistence:
         - "Grep-able sections for future sessions"
 
         fallback:
-          on_failure: "Use legacy inline template (step_22_legacy_template)"
+          on_failure: "Use legacy inline template (step_24_legacy_template)"
           reason: "Graceful degradation if skill unavailable"
 
-    step_22_legacy_template:
+    step_24_legacy_template:
       description: "FALLBACK ONLY - Legacy memory file format (no anchors)"
       condition: "Only execute if skill invocation fails"
 
@@ -646,37 +848,51 @@ phase_8_context_persistence:
   - context_saved
   - anchors_generated  # true if skill used, false if fallback
 
-# SIMPLE MODE CHARACTERISTICS
+# SIMPLE MODE CHARACTERISTICS (SpecKit Aligned)
 # ───────────────────────────────────────────────────────────────────
 simple_mode_features:
   file_output:
-    type: "Single file"
-    path: "{spec_folder_path}/plan.md"
-    size: "500-2000 lines"
+    type: "Multi-file SpecKit documentation"
+    files:
+      spec_md:
+        path: "{spec_folder_path}/spec.md"
+        template: "spec_template.md"
+        size: "300-1000 lines (requirements, user stories)"
+      plan_md:
+        path: "{spec_folder_path}/plan.md"
+        template: "plan_template.md"
+        size: "500-2000 lines (technical approach)"
+      tasks_md:
+        path: "{spec_folder_path}/tasks.md (Level 3 only)"
+        template: "tasks_template.md"
+        size: "200-500 lines (task breakdown)"
 
   structure:
-    base: "plan_template.md"
-    sections: 10
-    anchors: "None (future enhancement)"
+    level_2: "spec.md + plan.md"
+    level_3: "spec.md + plan.md + tasks.md"
+    templates: ".opencode/speckit/templates/"
+    sections_spec: 11
+    sections_plan: 10
 
   target_features:
-    loc: "<500 LOC"
+    loc: "<500 LOC (Level 2) or ≥500 LOC (Level 3)"
     iterations: "<4"
     complexity: "Low to moderate"
     file_count: "1-10 files"
 
   advantages:
-  - "Simple to read and edit"
-  - "No file navigation required"
-  - "Familiar single-document format"
-  - "Quick to generate"
+  - "Complete SpecKit Level 2+ documentation"
+  - "Separation of concerns (requirements vs technical approach)"
+  - "Aligned with AGENTS.md Section 2 requirements"
+  - "Supports workflows-spec-kit enforcement"
+  - "Task breakdown for complex features (Level 3)"
 
   when_to_use:
-  - "Bug fixes"
-  - "Small feature additions"
-  - "Refactoring single components"
-  - "Documentation updates"
-  - "Configuration changes"
+  - "New features requiring planning"
+  - "Refactoring with clear requirements"
+  - "Multi-file changes with dependencies"
+  - "Features needing stakeholder review"
+  - "Any task running plan command (implies need for Level 2+)"
 
 # ───────────────────────────────────────────────────────────────────
 # TEMPLATE VALIDATION
@@ -719,21 +935,25 @@ template_validation:
     action_if_missing: "Add missing section with placeholder note"
 
 # ───────────────────────────────────────────────────────────────────
-# COMPLETION CRITERIA
+# COMPLETION CRITERIA (SpecKit Aligned)
 # ───────────────────────────────────────────────────────────────────
 simple_mode_completion:
-  plan_created: true
-  template_compliant: true
+  documentation_created: true
+  speckit_compliant: true
   findings_integrated: true
   ready_for_review: true
 
   verification_checklist:
-  - "plan.md file exists at correct path"
-  - "File size 500-2000 lines"
-  - "All placeholders removed"
-  - "Exploration findings integrated"
-  - "Template validation passed"
-  - "User review prompt added at end"
+  - "spec.md file exists at {spec_folder_path}/spec.md"
+  - "plan.md file exists at {spec_folder_path}/plan.md"
+  - "tasks.md file exists at {spec_folder_path}/tasks.md (Level 3 only)"
+  - "All placeholders removed from all files"
+  - "Exploration findings integrated into plan.md"
+  - "Requirements and user stories documented in spec.md"
+  - "Template validation passed for all files"
+  - "User review prompt presented for all documents"
+  - "Documentation level (2 or 3) correctly determined and applied"
+  - "SpecKit template sources referenced in all files"
 
 # ───────────────────────────────────────────────────────────────────
 # ERROR HANDLING

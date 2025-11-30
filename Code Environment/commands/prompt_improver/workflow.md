@@ -21,7 +21,7 @@ $ARGUMENTS
 Apply systematic prompt enhancement with:
 - **Framework selection** - Auto-select from 7 frameworks (RCAF, COSTAR, RACE, CIDI, TIDD-EC, CRISPE, CRAFT)
 - **Quality scoring** - CLEAR evaluation (50-point scale)
-- **Dual output** - Analysis markdown + YAML prompt files
+- **Dual output** - SpecKit spec.md + YAML prompt for comprehensive documentation
 
 ---
 
@@ -29,9 +29,11 @@ Apply systematic prompt enhancement with:
 
 **Input:** `$ARGUMENTS` = prompt text + optional mode (`:quick`, `:improve`, `:refine`)
 
-**Output:** Two files (see Phase 6 in workflow YAML - searched in `.claude/commands/` then `.opencode/command/`)
-1. `prompt_analysis.md` - Human-readable quality assessment
-2. `enhanced_prompt.yaml` - Machine-readable prompt with metadata
+**Output:** Always creates spec folder with both files:
+1. **spec.md** - SpecKit specification with enhanced prompt (Problem, Solution, Enhanced Prompt, Success Criteria)
+2. **enhanced_prompt.yaml** - Machine-readable YAML for direct workflow integration
+
+**Location:** User-selected spec folder (A/B/C/D choice following SpecKit workflow)
 
 **Modes:**
 - **:quick** - Fast enhancement (1-5 rounds, auto-framework, <10s)
@@ -39,7 +41,7 @@ Apply systematic prompt enhancement with:
 - **:refine** - Polish existing prompt (preserve framework, focus on clarity)
 - **Default** - Interactive mode with full user participation
 
-**Status:** `STATUS=OK ANALYSIS={path} PROMPT={path}` or `STATUS=ERROR|CANCELLED`
+**Status:** `STATUS=OK SPEC={folder} FILES={spec.md,enhanced_prompt.yaml}` or `STATUS=ERROR|CANCELLED`
 
 ---
 
@@ -60,6 +62,16 @@ Apply systematic prompt enhancement with:
 2. **Validate prompt:**
    - If empty: Use AskUserQuestion with options (paste text / describe intent / file path / cancel)
    - Store: `original_prompt`, `original_length`, `mode`, `timestamp_start`
+
+3. **Spec folder selection (follows standard SpecKit workflow):**
+   - Find next spec number: `ls -d specs/[0-9]*/ | sed 's/.*\/\([0-9]*\)-.*/\1/' | sort -n | tail -1`
+   - Suggest name: `enhanced-prompt` or based on prompt content
+   - Use AskUserQuestion with 4 options (A/B/C/D pattern from AGENTS.md):
+     - **A)** Use existing spec folder (if .spec-active exists)
+     - **B)** Create new spec folder: `specs/[###]-[suggested-name]/`
+     - **C)** Update related spec (show any existing prompt-related specs)
+     - **D)** Skip documentation (creates `.claude/.spec-skip` marker) - NOT RECOMMENDED
+   - Store: `spec_folder_path`, `spec_folder_choice`
 
 ---
 
@@ -101,39 +113,49 @@ Apply systematic prompt enhancement with:
 
 **See workflow YAML Phase 6 for complete workflow (searched in `.claude/` then `.opencode/`).**
 
-7. **Determine output location:**
+7. **Use spec folder from Phase 1 step 3:**
    ```
-   # Search for spec-active marker (try both folders)
-   If .claude/.spec-active.$$ OR .opencode/.spec-active.$$ exists:
-     base_path = [file contents]
-   Else if .claude/.spec-active OR .opencode/.spec-active exists:
-     base_path = [file contents]
-   Else:
+   # Spec folder already determined by user choice (A/B/C/D)
+   base_path = {spec_folder_path from Phase 1}
+
+   # If user selected D (skip), fall back to /export/
+   If spec_folder_path is empty:
      base_path = /export/
-     Use sequential numbering: [###]-prompt-analysis-[timestamp].md
+     Use sequential numbering: [###]-enhanced-prompt/
    ```
 
-8. **Write both files:**
-   - File 1: `{base_path}/prompt_analysis.md` (7 sections: header, quality, RICCE, framework, cognitive rigor, improvements, metadata)
-   - File 2: `{base_path}/enhanced_prompt.yaml` (metadata + framework-specific prompt components)
-   - **Critical:** Both must succeed for STATUS=OK (atomic guarantee)
+8. **Write both output files to spec folder:**
+   - **File 1 - spec.md** (SpecKit specification format):
+     - Front matter with metadata
+     - Problem statement (why enhancement needed)
+     - Solution (DEPTH methodology summary)
+     - Framework applied (description and rationale)
+     - Enhanced Prompt (full formatted text)
+     - Success Criteria (CLEAR scores, RICCE validation)
+     - Usage instructions
+
+   - **File 2 - enhanced_prompt.yaml** (machine-readable):
+     - Metadata section (framework, complexity, scores, timestamps)
+     - Framework-specific prompt components
+     - Usage examples for Python/Node.js
 
 9. **Report success:**
    ```
-   ✅ Enhanced prompt generated successfully!
+   ✅ Enhanced prompt created successfully!
 
+   📁 Spec folder: {spec_folder_path}
    📄 Files created:
-   - Analysis: {analysis_file_path}
-   - Prompt:   {prompt_file_path}
+   - spec.md (SpecKit specification)
+   - enhanced_prompt.yaml (machine-readable)
 
    📊 Quality:
-   - Original: {original_score}/50
-   - Enhanced: {enhanced_score}/50
+   - Original CLEAR Score: {original_score}/50
+   - Enhanced CLEAR Score: {enhanced_score}/50
    - Improvement: +{delta} points
 
    🔧 Framework: {framework_name}
 
-   STATUS=OK ANALYSIS={analysis_path} PROMPT={prompt_path}
+   STATUS=OK SPEC={spec_folder_path} FILES=spec.md,enhanced_prompt.yaml
    ```
 
 ---
