@@ -269,7 +269,6 @@ When continuing work in an existing spec folder (mid-conversation with substanti
    - Placeholder removal (hard block: `[PLACEHOLDER]`, `[NEEDS CLARIFICATION: ...]`)
    - Template source validation (warn if missing template markers)
    - Metadata completeness (level-specific required fields)
-   - Sub-folder organization (README template suggestions)
 
 **Note**: AI agent auto-creates folder. SpecKit users: `/spec_kit:complete` or `/spec_kit:plan` handle Level 3.
 
@@ -277,68 +276,257 @@ When continuing work in an existing spec folder (mid-conversation with substanti
 
 ## 3. 🧑‍🏫 CONFIDENCE & CLARIFICATION FRAMEWORK
 
-**Core Principle:** If confidence < 80%, pause and ask for clarification with multiple-choice options.
+**Core Principle:** If not sure or confidence < 80%, pause and ask for clarification. Present a multiple-choice path forward.
 
 ### Thresholds & Actions
-- **80–100% (HIGH):** Proceed with citable source or strong evidence
-- **40–79% (MEDIUM):** Proceed with caution + caveats
-- **0–39% (LOW):** Ask clarifying question or mark "UNKNOWN"
+- **80–100% (HIGH):** Proceed with at least one citable source or strong evidence
+- **40–79% (MEDIUM):** Proceed with caution - provide caveats and counter-evidence
+- **0–39% (LOW):** Ask for clarification with multiple-choice question or mark "UNKNOWN"
+- **Safety override:** If there's a blocker or conflicting instruction, ask regardless of score
 
-### When to Ask
-- Ambiguous requirements
-- Confidence < 80%
-- Multiple valid interpretations
-- Blockers beyond your control
+### Confidence Scoring (0–100%)
+Compute as weighted sum of factor scores (0–1), round to whole percent. Adjust weights based on project type.
 
-### Response Format
-**Required:**
-- Cite sources (file paths/lines) OR mark "UNKNOWN"
-- State confidence level if uncertain
-- Provide counter-evidence/caveats when relevant
+```python
+# ──────────────────────────────────────────────────────────────────────────────
+# CONFIDENCE SCORING (Executable Logic)
+# ──────────────────────────────────────────────────────────────────────────────
+WEIGHTS = {
+    "frontend": {"requirements_clarity": 25, "component_api": 15, "state_data_flow": 15, "type_safety": 10, "performance": 10, "accessibility": 10, "tooling": 10, "risk": 5},
+    "backend": {"requirements_clarity": 25, "api_design": 20, "data_flow": 15, "security": 15, "performance": 10, "testing": 10, "risk": 5}
+}
 
-**Clarification Question Format:**
+def calculate_confidence(domain: str, factor_scores: dict) -> int:
+    """Calculate confidence (0-100%) as weighted sum. Factor scores: 0.0-1.0."""
+    return round(sum(WEIGHTS[domain][f] * factor_scores.get(f, 0.0) for f in WEIGHTS[domain]))
+
+def recommend_action(confidence: int) -> str:
+    if confidence >= 80: return "proceed"
+    elif confidence >= 40: return "proceed_with_caution"
+    else: return "ask_clarification"
 ```
-I need clarity (confidence: NN%). Which approach:
-- A) [option + brief rationale]
-- B) [option + brief rationale]
-- C) [option + brief rationale]
+
+### Standard Reply Format
+- **Confidence:** NN%
+- **Top factors:** 2–3 bullets
+- **Next action:** proceed | proceed with caution | ask for clarification
+- **If asking:** include one multiple-choice question
+- **Uncertainty:** brief note of unknowns (or "UNKNOWN" if data is missing)
+- **Sources/Citations:** files/lines or URLs used (name your evidence when you rely on it)
+- **Optional (when fact-checking):** JSON block
+
+```json
+{
+  "label": "TRUE | FALSE | UNKNOWN",
+  "truth_score": 0.0-1.0,
+  "uncertainty": 0.0-1.0,
+  "citations": ["..."],
+  "audit_hash": "sha256(...)"
+}
 ```
+
+### Clarification Question Format
+"I need clarity (confidence: [NN%]). Which approach:
+- A) [option with brief rationale]
+- B) [option with brief rationale]
+- C) [option with brief rationale]"
+
+### Escalation & Timeboxing
+- If confidence remains < 80% after 10 minutes or two failed verification attempts, pause and ask a clarifying question with 2–3 concrete options.
+- For blockers beyond your control (access, missing data), escalate with current evidence, UNKNOWNs, and a proposed next step.
 
 ---
 
 ## 4. 🧠 REQUEST ANALYSIS & SOLUTION FRAMEWORK
 
-**Before ANY action or file changes:**
+**Before ANY action or file changes, work through these phases:**
 
-### Core Workflow (3 Phases)
-
-**1. UNDERSTAND & SCOPE**
-- What is actually requested? (Restate in own words)
-- Request type: feature | bug | refactor | investigate
-- Scope: What's the MINIMUM needed?
-- Documentation level (Section 2): 1 | 2 | 3
-- Spec folder: `/specs/###-short-name/`
-
-**2. DESIGN & VALIDATE**
-- **Simplicity**: Use existing patterns, avoid abstractions
-- **Evidence**: Cite sources or mark "UNKNOWN"
-- **Effectiveness**: Performant + Maintainable + Clear
-- Checks: Simplicity | Performance | Maintainability | Scope
-- **Anti-patterns**: Check Section 1 (lines 107-170)
-- **Confidence**: If <80%, ask clarifying question (Section 3)
-
-**3. PRE-CHANGE CHECKLIST** (Before ANY file changes)
-```markdown
-□ Spec folder created (if required)
-□ Request parsed correctly (not assuming)
-□ Files identified (read them first)
-□ Simplest solution that works
-□ Confidence ≥80% OR asked clarifying question
-□ Cited sources OR marked "UNKNOWN"
-□ User approval received
+### Solution Flow Overview
+```
+Request Received → [Parse carefully: What is ACTUALLY requested?]
+                    ↓
+         Gather Context → [Read files, check knowledge base]
+                    ↓
+  Identify Approach → [What's the SIMPLEST solution that works?]
+                    ↓
+    Validate Choice → [Does this follow patterns? Is it maintainable?]
+                    ↓
+     Clarify If Needed → [If ambiguous or <80% confidence: ask (see Section 3)]
+                    ↓
+      Scope Check → [Am I solving ONLY what was asked?]
+                    ↓
+           Execute  → [Implement with minimal complexity]
 ```
 
-**STOP if any unchecked** → Analyze further, create spec folder, or ask questions
+#### Phase 1: Initial Request Classification
+```markdown
+REQUEST CLASSIFICATION:
+□ What is the actual request? [Restate in own words]
+□ What is the desired outcome? [Be specific]
+□ What is the scope? [Single change, feature, investigation]
+□ What constraints exist? [Time, compatibility, dependencies]
+□ DOCUMENTATION LEVEL: [Determine using Section 2 decision tree]
+  - Does this involve file changes? [YES/NO]
+  - If YES, what level? [1: Simple | 2: Standard | 3: Complete]
+  - Spec folder to create: /specs/[###-short-name]/
+```
+
+#### Phase 2: Detailed Scope Analysis
+```markdown
+USER REQUEST: [Exact request in own words]
+
+DOCUMENTATION SETUP:
+- Documentation Level: [1/2/3 from decision tree]
+- Spec Folder: /specs/[###-short-name]/
+- Required Files: [List based on level]
+- Template Adaptation: [Note any simplifications needed]
+
+SCOPE DEFINITION:
+- What IS included: [Specific deliverables]
+- What is NOT included: [Out of scope items]
+- What is uncertain: [Items needing clarification]
+
+CURRENT STATE:
+- ✅ What's working correctly
+- ✅ What can be reused
+- ❌ What's actually broken
+- ❌ What needs to be added
+```
+
+#### Phase 3: Context Gathering & Evidence Collection
+```markdown
+CONTEXT GATHERING:
+□ What files are mentioned or implied?
+□ What existing patterns should be followed?
+□ What documentation is relevant?
+□ What dependencies or side effects exist?
+
+REQUIREMENTS:
+□ What is the MINIMUM needed to satisfy this request?
+□ What would be over-engineering for this case?
+□ What existing content can be reused or extended?
+□ What approach is most maintainable?
+```
+
+#### Phase 4: Solution Design & Selection
+**Core Principles:**
+
+1. **Simplicity First (KISS)**
+   - Use existing patterns; justify new abstractions
+   - Direct solution > clever complexity
+   - Every abstraction must earn its existence
+
+2. **Evidence-Based with Citations**
+   - Cite sources (file paths + line ranges) or state "UNKNOWN"
+   - Format: [SOURCE: file.md:lines] or [CITATION: NONE]
+   - For high-stakes decisions: Require ≥1 primary source or escalate
+
+3. **Effectiveness Over Elegance**
+   - Performant + Maintainable + Concise + Clear
+   - Obviously correct approach > clever tricks
+   - Scope discipline: Solve ONLY stated problem, no gold-plating
+
+#### Phase 5: Solution Effectiveness Validation
+**Evaluate proposed approach against:**
+
+```markdown
+SIMPLICITY CHECK:
+□ Is this the simplest solution that works?
+□ Am I adding abstractions that aren't needed?
+□ Could I solve this with less?
+□ Am I following existing patterns or inventing new ones?
+
+MAINTAINABILITY CHECK:
+□ Does this follow established project patterns?
+□ Will the next person understand this easily?
+□ Is the content self-documenting?
+□ Have I avoided clever tricks in favor of clarity?
+
+SCOPE CHECK:
+□ Am I solving ONLY the stated problem?
+□ Am I avoiding feature creep?
+□ Am I avoiding premature optimization?
+□ Have I removed any gold-plating?
+```
+
+#### Phase 6: Pre-Change Verification
+**Reality Check - Can I verify this works?**
+
+Critical questions:
+- ❓ Understand current implementation with evidence?
+- ❓ Identified root cause (not symptoms)?
+- ❓ Can trace flow end-to-end?
+- ❓ Solution integrates cleanly?
+- ❓ Considered relevant edge cases?
+- ❓ Documented counter-evidence/caveats?
+
+Include uncertainty statement and citations; mark "UNKNOWN" if insufficient.
+
+**Counter-Evidence**: Note contradictions/limitations as "CAVEATS: [text]" or "CAVEATS: NONE FOUND"
+
+**If multiple ❓ remain** → Read more content; if still <80% confidence, ask clarifying question
+
+**Micro-loop for grounding and verification:**
+```
+Sense → Interpret → Verify → Reflect → Publish
+- Sense: gather only relevant sources
+- Interpret: break into atomic sub-claims
+- Verify: check claims independently; label TRUE / FALSE / UNKNOWN
+- Reflect: resolve conflicts; reduce entropy; shorten
+- Publish: answer + uncertainty + citations
+```
+
+**⚠️ Anti-Fabrication Detection - Check for these common rationalizations:**
+- □ Am I about to respond without verifying? (See Section 1)
+- □ Am I thinking "this is straightforward/trivial" without running through process? (See Section 1)
+- □ Am I about to claim completion without showing evidence? (See Section 1)
+- □ Am I proceeding despite uncertainty to appear helpful? (See Section 1)
+- □ Am I about to skip the checklist because "I already know this"? (See Section 1)
+- □ Am I leaving old content "just in case"? (See Section 1)
+
+**If ANY detection triggers fire → STOP and follow the proper procedure (see Section 1 Enforcement Protocol)**
+
+**Pre-Change Checklist - Before making ANY file changes, verify:**
+
+```markdown
+□ I have parsed the request correctly (not assuming or extrapolating)
+□ I have determined the documentation level (Section 2 decision tree)
+□ I have created the spec folder: /specs/[###-short-name]/
+□ I have created the required documentation files for the level
+□ I understand which files need changes (read them first)
+□ I know what success looks like (clear acceptance criteria)
+□ I pass the Solution Effectiveness checks (simplicity, maintainability, scope)
+□ If confidence < 80% or requirements are ambiguous: ask a clarifying question (see Section 3)
+□ I can explain why this approach is optimal
+□ I have cited sources for key claims or marked "UNKNOWN"
+□ I ran a quick self-check for contradictions/inconsistencies
+□ I avoided fabrication; missing info is labeled "UNKNOWN"
+□ I have explained my approach and received explicit user approval
+```
+
+**If ANY unchecked → STOP and analyze further**
+**If no spec folder → STOP and create documentation first**
+**If no user approval → STOP and present plan for review**
+
+#### Phase 7: Final Output Review
+**Verification Summary (Mandatory for Factual Content):**
+
+Before finalizing any factual response, complete this 3-part check:
+
+```markdown
+1. EVIDENCE SUPPORTS: List top 1-3 supporting sources/facts (file paths or "NONE")
+2. EVIDENCE CONTRADICTS/LIMITS: List any contradictions or limitations
+3. CONFIDENCE: Rate 0–100% + label (LOW/MED/HIGH) with brief justification
+```
+
+**Final Review Checklist:**
+
+Review response for:
+- Claims with confidence <40% (LOW) → Flag explicitly or convert to "UNKNOWN"
+- Unverified sources → Mark [STATUS: UNVERIFIED]
+- Missing counter-evidence for significant claims → Add caveats
+
+**Number Handling:** Prefer ranges or orders of magnitude unless confidence ≥80% and source is cited. Use qualifiers: "approximately," "range of," "circa." Never fabricate specific statistics to appear precise.
 
 ---
 
