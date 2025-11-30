@@ -35,8 +35,17 @@ source "$HOOKS_DIR/lib/output-helpers.sh" || exit 0
 LOG_DIR="$HOOKS_DIR/logs"
 LOG_FILE="$LOG_DIR/$(basename "$0" .sh).log"
 
-# Performance timing START
-START_TIME=$(date +%s%N)
+# Helper function for cross-platform nanosecond timing (defined early for START_TIME)
+_get_nano_time() {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo $(($(date +%s) * 1000000000))
+  else
+    date +%s%N 2>/dev/null || echo $(($(date +%s) * 1000000000))
+  fi
+}
+
+# Performance timing START (cross-platform)
+START_TIME=$(_get_nano_time)
 
 # Read JSON input from stdin
 INPUT=$(cat)
@@ -72,19 +81,19 @@ fi
 if echo "$TOOL_NAME_LOWER" | grep -qE "^(webflow_|figma_|chrome_devtools_|semantic_search_)"; then
   IS_DIRECT_MCP_CALL=true
 
-  # Determine which platform
+  # Determine which platform (use TOOL_NAME_LOWER consistently for suffix removal)
   if echo "$TOOL_NAME_LOWER" | grep -q "^webflow_"; then
     MCP_PLATFORM="Webflow"
-    SUGGESTED_CODE_MODE_CALL="webflow.webflow_${TOOL_NAME#webflow_}"
+    SUGGESTED_CODE_MODE_CALL="webflow.webflow_${TOOL_NAME_LOWER#webflow_}"
   elif echo "$TOOL_NAME_LOWER" | grep -q "^figma_"; then
     MCP_PLATFORM="Figma"
-    SUGGESTED_CODE_MODE_CALL="figma.figma_${TOOL_NAME#figma_}"
+    SUGGESTED_CODE_MODE_CALL="figma.figma_${TOOL_NAME_LOWER#figma_}"
   elif echo "$TOOL_NAME_LOWER" | grep -q "^chrome_devtools_"; then
     MCP_PLATFORM="Chrome DevTools"
-    SUGGESTED_CODE_MODE_CALL="chrome_devtools_1.chrome_devtools_${TOOL_NAME#chrome_devtools_}"
+    SUGGESTED_CODE_MODE_CALL="chrome_devtools_1.chrome_devtools_${TOOL_NAME_LOWER#chrome_devtools_}"
   elif echo "$TOOL_NAME_LOWER" | grep -q "^semantic_search_"; then
     MCP_PLATFORM="Semantic Search"
-    SUGGESTED_CODE_MODE_CALL="semantic_search.semantic_search_${TOOL_NAME#semantic_search_}"
+    SUGGESTED_CODE_MODE_CALL="semantic_search.semantic_search_${TOOL_NAME_LOWER#semantic_search_}"
   fi
 fi
 
@@ -92,10 +101,13 @@ fi
 # OUTPUT HANDLING
 # ───────────────────────────────────────────────────────────────
 
+# Use _get_nano_time defined earlier for END_TIME
+get_nano_time() { _get_nano_time; }
+
 # Case 1: Code Mode tool detected (correct usage)
 if [ "$IS_CODE_MODE_TOOL" = true ]; then
   # Silent success - this is the correct pattern
-  END_TIME=$(date +%s%N)
+  END_TIME=$(get_nano_time)
   DURATION=$(( (END_TIME - START_TIME) / 1000000 ))
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] validate-mcp-calls.sh ${DURATION}ms - Code Mode detected (correct)" >> "$HOOKS_DIR/logs/performance.log"
   exit 0
@@ -114,7 +126,7 @@ if [ "$IS_DIRECT_MCP_CALL" = true ]; then
   echo ""
 
   # Log the anti-pattern detection
-  END_TIME=$(date +%s%N)
+  END_TIME=$(get_nano_time)
   DURATION=$(( (END_TIME - START_TIME) / 1000000 ))
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] validate-mcp-calls.sh ${DURATION}ms - Direct MCP call: $TOOL_NAME ($MCP_PLATFORM)" >> "$HOOKS_DIR/logs/performance.log"
 
@@ -124,7 +136,7 @@ fi
 
 # Case 3: Neither Code Mode nor direct MCP call (probably a regular tool)
 # Silent success - don't interfere with non-MCP tools
-END_TIME=$(date +%s%N)
+END_TIME=$(get_nano_time)
 DURATION=$(( (END_TIME - START_TIME) / 1000000 ))
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] validate-mcp-calls.sh ${DURATION}ms - Regular tool: $TOOL_NAME" >> "$HOOKS_DIR/logs/performance.log"
 exit 0

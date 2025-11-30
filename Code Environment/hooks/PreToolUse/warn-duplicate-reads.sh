@@ -240,70 +240,85 @@ if echo "$HISTORY" | jq -e ".signatures.\"$SIGNATURE\"" >/dev/null 2>&1; then
     SESSION_WASTE=$(echo "$HISTORY" | jq -r '.session_token_waste // 0' 2>/dev/null)
     NEW_SESSION_WASTE=$((SESSION_WASTE + TOKEN_WASTE_THIS_CALL))
 
-    # Emit machine-readable JSON intelligence
-    cat <<EOF
+    # Emit machine-readable JSON intelligence (using jq for safe JSON construction)
+    local sig_short
+    sig_short=$(echo "$SIGNATURE" | head -c 60)
 
-╔══════════════════════════════════════════════════════════════╗
-║  DUPLICATE DETECTION INTELLIGENCE (Machine-Readable Signal)  ║
-╚══════════════════════════════════════════════════════════════╝
+    echo ""
+    echo "╔══════════════════════════════════════════════════════════════╗"
+    echo "║  DUPLICATE DETECTION INTELLIGENCE (Machine-Readable Signal)  ║"
+    echo "╚══════════════════════════════════════════════════════════════╝"
+    echo ""
 
-{
-  "duplicate_detected": true,
-  "tool_name": "$TOOL_NAME",
-  "file_path": "$FILE_PATH",
-  "pattern": "$PATTERN",
-  "previous_call": {
-    "message_number": $PREV_MSG,
-    "time_ago_seconds": $TIME_ELAPSED,
-    "time_ago_human": "$TIME_AGO"
-  },
-  "analysis": {
-    "is_legitimate": false,
-    "false_positive": false,
-    "reason_ignored": null
-  },
-  "token_impact": {
-    "estimated_waste_this_call": $TOKEN_WASTE_THIS_CALL,
-    "session_total_waste": $NEW_SESSION_WASTE,
-    "potential_savings": "Consider reusing previous output"
-  },
-  "actionable_suggestion": "REUSE_PREVIOUS_OUTPUT",
-  "signature": "$(echo "$SIGNATURE" | head -c 60)..."
-}
+    jq -n \
+      --arg tool "$TOOL_NAME" \
+      --arg path "$FILE_PATH" \
+      --arg pattern "$PATTERN" \
+      --argjson prev_msg "$PREV_MSG" \
+      --argjson time_elapsed "$TIME_ELAPSED" \
+      --arg time_ago "$TIME_AGO" \
+      --argjson waste "$TOKEN_WASTE_THIS_CALL" \
+      --argjson session_waste "$NEW_SESSION_WASTE" \
+      --arg sig "${sig_short}..." \
+      '{
+        duplicate_detected: true,
+        tool_name: $tool,
+        file_path: $path,
+        pattern: $pattern,
+        previous_call: {
+          message_number: $prev_msg,
+          time_ago_seconds: $time_elapsed,
+          time_ago_human: $time_ago
+        },
+        analysis: {
+          is_legitimate: false,
+          false_positive: false,
+          reason_ignored: null
+        },
+        token_impact: {
+          estimated_waste_this_call: $waste,
+          session_total_waste: $session_waste,
+          potential_savings: "Consider reusing previous output"
+        },
+        actionable_suggestion: "REUSE_PREVIOUS_OUTPUT",
+        signature: $sig
+      }'
 
-╔══════════════════════════════════════════════════════════════╗
-║  RECOMMENDATION: Reference previous output from message #$PREV_MSG  ║
-║  ESTIMATED TOKENS WASTED: $TOKEN_WASTE_THIS_CALL                              ║
-║  SESSION TOTAL WASTE: $NEW_SESSION_WASTE tokens                    ║
-╚══════════════════════════════════════════════════════════════╝
-
-EOF
+    echo ""
+    echo "╔══════════════════════════════════════════════════════════════╗"
+    printf "║  RECOMMENDATION: Reference previous output from message #%-5s║\n" "$PREV_MSG"
+    printf "║  ESTIMATED TOKENS WASTED: %-35s║\n" "$TOKEN_WASTE_THIS_CALL"
+    printf "║  SESSION TOTAL WASTE: %-35s║\n" "$NEW_SESSION_WASTE tokens"
+    echo "╚══════════════════════════════════════════════════════════════╝"
+    echo ""
 
     # Update session waste counter in history
     HISTORY=$(echo "$HISTORY" | jq --arg waste "$NEW_SESSION_WASTE" \
       '.session_token_waste = ($waste | tonumber)' 2>/dev/null)
 
   else
-    # Legitimate re-read: Emit informational signal (low priority)
-    cat <<EOF
-
-{
-  "duplicate_detected": true,
-  "tool_name": "$TOOL_NAME",
-  "file_path": "$FILE_PATH",
-  "analysis": {
-    "is_legitimate": true,
-    "false_positive": false,
-    "reason_ignored": "$LEGITIMATE_REASON"
-  },
-  "token_impact": {
-    "estimated_waste_this_call": 0,
-    "reason": "Legitimate re-read pattern detected"
-  },
-  "actionable_suggestion": "PROCEED_AS_PLANNED"
-}
-
-EOF
+    # Legitimate re-read: Emit informational signal (low priority, using jq for safe JSON)
+    echo ""
+    jq -n \
+      --arg tool "$TOOL_NAME" \
+      --arg path "$FILE_PATH" \
+      --arg reason "$LEGITIMATE_REASON" \
+      '{
+        duplicate_detected: true,
+        tool_name: $tool,
+        file_path: $path,
+        analysis: {
+          is_legitimate: true,
+          false_positive: false,
+          reason_ignored: $reason
+        },
+        token_impact: {
+          estimated_waste_this_call: 0,
+          reason: "Legitimate re-read pattern detected"
+        },
+        actionable_suggestion: "PROCEED_AS_PLANNED"
+      }'
+    echo ""
   fi
 fi
 

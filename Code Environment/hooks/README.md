@@ -640,7 +640,7 @@ Pattern matching, validation logic, minimal I/O:
 
 ### Analysis Hooks (<200ms)
 File reading, content analysis, git operations:
-- `enforce-markdown-post.sh` - File renaming, git operations: ~60-120ms
+- `enforce-markdown-naming.sh` - File renaming, git operations: ~60-120ms
 - `enforce-markdown-strict.sh` - Markdown validation, multiple rules: ~100-180ms
 - `validate-post-response.sh` - File scanning, security analysis: ~80-150ms
 - `remind-cdn-versioning.sh` - File path checks, pattern matching: ~20-50ms
@@ -702,14 +702,14 @@ User Prompt
 │ 3. suggest-semantic-search  → mcp_semantic_search.md        │
 │                             → MCP tools reminder            │
 │                                                             │
-│ 4. suggest-code-mode        → mcp_code_mode.md              │
+│ 4. suggest-mcp-tools        → mcp_code_mode.md              │
 │                             → Code Mode benefits reminder   │
 │                             → MCP tool efficiency guidance  │
+│                             → Multi-tool workflow detection │
+│                             → (merged: suggest-code-mode +  │
+│                             │  detect-mcp-workflow)         │
 │                                                             │
-│ 5. detect-mcp-workflow      → Multi-tool workflow detection │
-│                             → Code Mode pattern suggestion  │
-│                                                             │
-│ 6. enforce-spec-folder     → specs/** + skill-rules.json    │
+│ 5. enforce-spec-folder     → specs/** + skill-rules.json    │
 │                             → conversation_documentation.md │
 │                             → Discovers related specs       │
 │                             → Hard-blocks missing docs      │
@@ -780,10 +780,12 @@ Tool Executes (Bash, Write, Edit, etc.)
 │                             → Duration and tool usage       │
 │                             → Logs to task-dispatch.log     │
 │                                                             │
-│ 7. enforce-markdown-post-task→ Post-Task markdown cleanup   │
+│ 7. enforce-markdown-naming  → Unified markdown naming fix   │
 │                             → Scans for ALL CAPS violations │
 │                             → Auto-fixes sub-agent files    │
-│                             → Logs to enforce-markdown-...  │
+│                             → (merged: enforce-markdown-    │
+│                             │  post + enforce-markdown-     │
+│                             │  post-task)                   │
 └─────────────────────────────────────────────────────────────┘
     ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -824,7 +826,7 @@ The configuration file `.claude/configs/skill-rules.json` is the **central conne
 Most hooks write to `.claude/hooks/logs/`:
 - `workflows-save-context-trigger.sh` → `auto-workflows-save-context.log`
 - `validate-skill-activation.sh` → `skill-recommendations.log`
-- `enforce-markdown-post.sh` → `quality-checks.log`
+- `enforce-markdown-naming.sh` → `quality-checks.log`
 - `enforce-markdown-strict.sh` → `quality-checks.log`
 - `validate-post-response.sh` → `quality-checks.log`
 - `enforce-spec-folder.sh` → `spec-enforcement.log`
@@ -1535,7 +1537,7 @@ The `validate-skill-activation.sh` hook suggests relevant skills based on prompt
 - `skill-scaffold-trigger.sh` → Creates structure following create-documentation standards
 
 **Hooks → Knowledge Base**:
-- `suggest-code-mode.sh` → References mcp_code_mode.md
+- `suggest-mcp-tools.sh` → References mcp_code_mode.md
 - `suggest-semantic-search.sh` → References mcp_semantic_search.md
 - Multiple hooks → Reference code_standards.md for enforcement
 

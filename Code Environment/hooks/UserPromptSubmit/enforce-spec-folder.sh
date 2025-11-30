@@ -129,36 +129,9 @@ detect_user_choice() {
 }
 
 # ───────────────────────────────────────────────────────────────
-# find_memory_directory - Locate memory directory for a spec folder
+# NOTE: find_memory_directory() is defined later in this file (line ~1740)
+# with enhanced support for parent hierarchy traversal and stale marker handling
 # ───────────────────────────────────────────────────────────────
-# Arguments: $1 - spec folder path
-# Returns: Sets MEMORY_DIR variable (empty if not found)
-# ───────────────────────────────────────────────────────────────
-find_memory_directory() {
-  local spec_folder="$1"
-  MEMORY_DIR=""
-
-  if [ -z "$spec_folder" ] || [ ! -d "$spec_folder" ]; then
-    return 1
-  fi
-
-  # Check for .spec-active marker first
-  if [ -f "$SPEC_MARKER" ]; then
-    local active_path=$(cat "$SPEC_MARKER" 2>/dev/null | tr -d '\n')
-    if [ -n "$active_path" ] && { [[ "$active_path" == "$spec_folder" ]] || [[ "$active_path" == "$spec_folder"/* ]]; } && [ -d "$active_path/memory" ]; then
-      MEMORY_DIR="$active_path/memory"
-      return 0
-    fi
-  fi
-
-  # Fallback to root memory/
-  if [ -d "$spec_folder/memory" ]; then
-    MEMORY_DIR="$spec_folder/memory"
-    return 0
-  fi
-
-  return 1
-}
 
 # ───────────────────────────────────────────────────────────────
 # build_memory_files_json - Build JSON array of memory files
@@ -290,7 +263,7 @@ handle_stage_spec_folder() {
   fi
 
   # User chose A - check for memory files
-  find_memory_directory "$stored_folder"
+  MEMORY_DIR=$(find_memory_directory "$stored_folder" 2>/dev/null) || MEMORY_DIR=""
   build_memory_files_json "$MEMORY_DIR"
 
   if [ "$MEMORY_COUNT" -gt 0 ]; then
@@ -332,7 +305,7 @@ handle_stage_spec_folder_confirm() {
   # User chose A - continue in existing folder
   echo "[FLOW_TRANSITION] Mid-conv: User confirmed spec folder $spec_name (choice A)" >> "$LOG_FILE" 2>/dev/null || true
 
-  find_memory_directory "$stored_folder"
+  MEMORY_DIR=$(find_memory_directory "$stored_folder" 2>/dev/null) || MEMORY_DIR=""
   build_memory_files_json "$MEMORY_DIR"
 
   if [ "$MEMORY_COUNT" -gt 0 ]; then

@@ -35,8 +35,12 @@ LOG_DIR="$HOOKS_DIR/logs"
 mkdir -p "$LOG_DIR" 2>/dev/null
 LOG_FILE="$LOG_DIR/$(basename "$0" .sh).log"
 
-# Performance timing START
-START_TIME=$(date +%s%N)
+# Performance timing START (cross-platform)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  START_TIME=$(($(date +%s) * 1000000000))
+else
+  START_TIME=$(date +%s%N 2>/dev/null || echo $(($(date +%s) * 1000000000)))
+fi
 
 # Read JSON input from stdin
 INPUT=$(cat)
@@ -113,10 +117,14 @@ if echo "$PATTERN" | grep -qiE '\b(implement|handle|manage|process|validate|init
   echo ""
 fi
 
-# Performance timing END
-END_TIME=$(date +%s%N)
+# Performance timing END (cross-platform)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  END_TIME=$(($(date +%s) * 1000000000))
+else
+  END_TIME=$(date +%s%N 2>/dev/null || echo $(($(date +%s) * 1000000000)))
+fi
 DURATION=$(( (END_TIME - START_TIME) / 1000000 ))
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] enforce-semantic-search.sh ${DURATION}ms" >> "$HOOKS_DIR/logs/performance.log"
 
 # Always allow (educational only in v1.0.0)
-exit $EXIT_SUCCESS
+exit $EXIT_ALLOW
