@@ -236,6 +236,17 @@ STATUS=OK PATH=specs/NNN-short-name/
   - **Autonomous (`:auto`)**: Executes all steps without user approval gates. Self-validates at each checkpoint. Makes informed decisions based on best judgment. Documents all significant decisions. Logs deviations from expected patterns.
   - **Interactive (`:confirm`)**: Pauses after each step for user approval. Presents options: Approve, Review Details, Modify, Skip, Abort. Documents user decisions at each checkpoint. Allows course correction throughout workflow.
 
+- **Parallel Sub-Agent Dispatch:**
+  - Eligible phases (Specification, Analysis, Development) can dispatch parallel sub-agents for faster execution
+  - Complexity scoring evaluates: domain count (35%), file count (25%), LOC estimate (15%), parallel opportunity (20%), task type (5%)
+  - **Dispatch Thresholds:**
+    - <20% complexity → Execute directly (silent)
+    - ≥20% + 2 domains → Ask user via AskUserQuestion
+    - ≥50% + 3 domains → Auto-dispatch with notification
+  - **Session Preference:** User's choice persists for 1 hour
+  - **Override Phrases:** "proceed directly", "use parallel agents", "auto-decide"
+  - Step 6 (Planning) automatically uses 4-agent parallel exploration via workflows-planning skill
+
 - **Integration:**
   - Works with spec folder system for documentation
   - Plans can feed into `/spec_kit:implement` workflow

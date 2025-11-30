@@ -120,6 +120,68 @@ available_templates:
   checklist: .opencode/speckit/templates/checklist.md
 
 # ─────────────────────────────────────────────────────────────────
+# PARALLEL DISPATCH CONFIGURATION
+# ─────────────────────────────────────────────────────────────────
+parallel_dispatch_config:
+  enabled: true
+  version: "1.0.0"
+
+  complexity_scoring:
+    domain_count:
+      weight: 0.35
+      domains: [code, analysis, docs, git, testing, devops]
+      scoring: "1=0.0, 2=0.5, 3+=1.0"
+    file_count:
+      weight: 0.25
+      scoring: "1-2=0.0, 3-5=0.5, 6+=1.0"
+    loc_estimate:
+      weight: 0.15
+      scoring: "<50=0.0, 50-200=0.5, >200=1.0"
+    parallel_opportunity:
+      weight: 0.20
+      scoring: "sequential=0.0, some=0.5, high=1.0"
+    task_type:
+      weight: 0.05
+      scoring: "trivial=0.0, moderate=0.5, complex=1.0"
+
+  thresholds:
+    direct_max: 20
+    ask_min: 20
+    auto_dispatch_min: 50
+    min_domains_for_ask: 2
+    min_domains_for_auto: 3
+
+  session_preference:
+    persist_duration_seconds: 3600
+
+  override_phrases:
+    direct: ["proceed directly", "handle directly", "skip parallel", "skip agents"]
+    parallel: ["use parallel", "dispatch agents", "parallelize", "use agents"]
+    auto: ["auto-decide", "auto mode", "decide for me"]
+
+  question_template:
+    tool: AskUserQuestion
+    header: "Parallel Dispatch"
+    format: |
+      **Phase: {phase_name}**
+      Complexity: {complexity_score}% | Domains: {domain_count} ({domains_list})
+
+      This phase may benefit from parallel sub-agents for faster execution.
+    options:
+      - id: A
+        label: "Handle directly"
+        description: "Execute phase sequentially without parallel agents"
+      - id: B
+        label: "Use parallel agents"
+        description: "Dispatch specialized agents for faster parallel execution"
+      - id: C
+        label: "Auto-decide for session"
+        description: "Let system decide based on complexity thresholds (1 hour)"
+
+  eligible_phases:
+    - step_6_development
+
+# ─────────────────────────────────────────────────────────────────
 # WORKFLOW (8 STEPS - STANDALONE IMPLEMENTATION)
 # ─────────────────────────────────────────────────────────────────
 workflow:
@@ -207,6 +269,26 @@ workflow:
 
   step_6_development:
     purpose: Execute implementation following task plan
+
+    # PRE-PHASE: Smart parallel dispatch check
+    pre_phase_parallel_check:
+      enabled: true
+      phase_domains: [code, testing]
+      complexity_boost: 15
+      decision_logic: |
+        BEFORE starting this phase, evaluate parallel dispatch using parallel_dispatch_config thresholds.
+      on_parallel_dispatch:
+        agents:
+          - name: "implementation_agent"
+            focus: "Core implementation tasks from tasks.md"
+            model: "sonnet"
+          - name: "test_agent"
+            focus: "Test implementation and validation"
+            model: "sonnet"
+        dispatch_note: "Spawn agents in SINGLE message for parallel execution"
+        warning: "Development tasks may have dependencies - verify task order"
+      fallback: "Proceed with activities below if dispatch fails or user chooses direct"
+
     activities:
     - Parse tasks.md structure
     - Execute phase by phase

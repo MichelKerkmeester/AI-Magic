@@ -232,6 +232,16 @@ STATUS=OK PATH=specs/NNN-short-name/
   - **Autonomous (`:auto`)**: Executes all steps without user approval gates. Self-validates research completeness. Makes informed decisions on research depth. Documents all findings systematically.
   - **Interactive (`:confirm`)**: Pauses after each step for user approval. Presents options: Approve, Review Details, Modify, Skip, Abort. Allows redirection of research focus. Presents findings for review before proceeding. Enables iterative exploration.
 
+- **Parallel Sub-Agent Dispatch:**
+  - Eligible phases (Codebase Investigation, External Research, Technical Analysis) can dispatch parallel sub-agents for faster execution
+  - Complexity scoring evaluates: domain count (35%), file count (25%), LOC estimate (15%), parallel opportunity (20%), task type (5%)
+  - **Dispatch Thresholds:**
+    - <20% complexity → Execute directly (silent)
+    - ≥20% + 2 domains → Ask user via AskUserQuestion
+    - ≥50% + 3 domains → Auto-dispatch with notification
+  - **Session Preference:** User's choice persists for 1 hour
+  - **Override Phrases:** "proceed directly", "use parallel agents", "auto-decide"
+
 - **Integration:**
   - Works with spec folder system for documentation
   - Feeds into `/spec_kit:plan` or `/spec_kit:complete` workflows

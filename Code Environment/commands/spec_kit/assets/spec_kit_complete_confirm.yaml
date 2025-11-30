@@ -128,6 +128,81 @@ available_templates:
   research_spike: .opencode/speckit/templates/research-spike.md
 
 # ─────────────────────────────────────────────────────────────────
+# PARALLEL DISPATCH CONFIGURATION
+# ─────────────────────────────────────────────────────────────────
+# Smart parallel sub-agent dispatch for eligible workflow phases.
+# Uses complexity scoring from create-parallel-sub-agents skill.
+# Thresholds: <20% = direct, 20-49% + 2 domains = ask, ≥50% + 3 domains = auto
+parallel_dispatch_config:
+  enabled: true
+  version: "1.0.0"
+
+  # Complexity scoring algorithm (5 dimensions, weighted)
+  complexity_scoring:
+    domain_count:
+      weight: 0.35
+      domains: [code, analysis, docs, git, testing, devops]
+      scoring: "1=0.0, 2=0.5, 3+=1.0"
+    file_count:
+      weight: 0.25
+      scoring: "1-2=0.0, 3-5=0.5, 6+=1.0"
+    loc_estimate:
+      weight: 0.15
+      scoring: "<50=0.0, 50-200=0.5, >200=1.0"
+    parallel_opportunity:
+      weight: 0.20
+      scoring: "sequential=0.0, some=0.5, high=1.0"
+    task_type:
+      weight: 0.05
+      scoring: "trivial=0.0, moderate=0.5, complex=1.0"
+
+  # Decision thresholds
+  thresholds:
+    direct_max: 20
+    ask_min: 20
+    auto_dispatch_min: 50
+    min_domains_for_ask: 2
+    min_domains_for_auto: 3
+
+  # Session preference (1 hour persistence)
+  session_preference:
+    persist_duration_seconds: 3600
+    storage: "session_context"
+
+  # Override phrases for power users
+  override_phrases:
+    direct: ["proceed directly", "handle directly", "skip parallel", "skip agents"]
+    parallel: ["use parallel", "dispatch agents", "parallelize", "use agents"]
+    auto: ["auto-decide", "auto mode", "decide for me"]
+
+  # Question template for AskUserQuestion
+  question_template:
+    tool: AskUserQuestion
+    header: "Parallel Dispatch"
+    format: |
+      **Phase: {phase_name}**
+      Complexity: {complexity_score}% | Domains: {domain_count} ({domains_list})
+
+      This phase may benefit from parallel sub-agents for faster execution.
+    options:
+      - id: A
+        label: "Handle directly"
+        description: "Execute phase sequentially without parallel agents"
+      - id: B
+        label: "Use parallel agents"
+        description: "Dispatch specialized agents for faster parallel execution"
+      - id: C
+        label: "Auto-decide for session"
+        description: "Let system decide based on complexity thresholds (1 hour)"
+
+  # Eligible phases in this workflow
+  eligible_phases:
+    - step_3_specification
+    - step_6_planning  # Already has skill_invocation - uses workflows-planning
+    - step_8_analysis
+    - step_10_development
+
+# ─────────────────────────────────────────────────────────────────
 # CHECKPOINT OPTIONS (Used at each step)
 # ─────────────────────────────────────────────────────────────────
 checkpoint_options:
@@ -187,6 +262,33 @@ workflow:
 
   step_3_specification:
     purpose: Create comprehensive feature specification
+
+    # PRE-PHASE: Smart parallel dispatch check
+    pre_phase_parallel_check:
+      enabled: true
+      phase_domains: [code, docs]
+      complexity_boost: 0
+      decision_logic: |
+        BEFORE starting this phase, evaluate parallel dispatch:
+        1. Check for override phrases in user request
+        2. Check for session preference (from previous "Auto-decide" selection)
+        3. Check for sequential dependencies (skip if detected)
+        4. Calculate phase complexity using parallel_dispatch_config
+        5. Apply thresholds:
+           - <20% → proceed directly (silent)
+           - ≥50% + 3 domains → auto-dispatch with notification
+           - ≥20% + 2 domains → ask user via AskUserQuestion
+      on_parallel_dispatch:
+        agents:
+          - name: "spec_explorer"
+            focus: "Existing specifications and patterns in codebase"
+            model: "sonnet"
+          - name: "requirement_analyzer"
+            focus: "Similar features and their requirements"
+            model: "sonnet"
+        dispatch_note: "Spawn agents in SINGLE message for parallel execution"
+      fallback: "Proceed with activities below if dispatch fails or user chooses direct"
+
     activities:
     - Generate concise short name for branch
     - Check for existing branches
@@ -246,6 +348,13 @@ workflow:
 
   step_6_planning:
     purpose: Create technical plan with implementation approach
+
+    # PRE-PHASE: This step already uses parallel agents via workflows-planning skill
+    # No additional pre_phase_parallel_check needed - skill_invocation handles it
+    parallel_dispatch_note: |
+      This phase already dispatches 4 parallel Sonnet agents via the workflows-planning skill.
+      The skill handles: Architecture Explorer, Feature Explorer, Dependency Explorer, Test Explorer.
+      No additional question is asked because parallel dispatch is integral to this phase.
 
     # ENHANCED: Invoke parallel exploration skill for comprehensive planning
     skill_invocation:
@@ -311,6 +420,30 @@ workflow:
 
   step_8_analysis:
     purpose: Verify consistency across all artifacts
+
+    # PRE-PHASE: Smart parallel dispatch check
+    pre_phase_parallel_check:
+      enabled: true
+      phase_domains: [code, docs, analysis]
+      complexity_boost: 10
+      decision_logic: |
+        BEFORE starting this phase, evaluate parallel dispatch:
+        1. Check for override phrases in user request
+        2. Check for session preference
+        3. Check for sequential dependencies
+        4. Calculate phase complexity using parallel_dispatch_config
+        5. Apply thresholds
+      on_parallel_dispatch:
+        agents:
+          - name: "consistency_analyzer"
+            focus: "Cross-artifact consistency and requirement coverage"
+            model: "sonnet"
+          - name: "gap_detector"
+            focus: "Missing requirements, underspecification, edge cases"
+            model: "sonnet"
+        dispatch_note: "Spawn agents in SINGLE message for parallel execution"
+      fallback: "Proceed with activities below if dispatch fails or user chooses direct"
+
     activities:
     - Build requirements inventory
     - Build task coverage mapping
@@ -351,6 +484,31 @@ workflow:
 
   step_10_development:
     purpose: Execute implementation following task plan
+
+    # PRE-PHASE: Smart parallel dispatch check
+    pre_phase_parallel_check:
+      enabled: true
+      phase_domains: [code, testing]
+      complexity_boost: 15
+      decision_logic: |
+        BEFORE starting this phase, evaluate parallel dispatch:
+        1. Check for override phrases in user request
+        2. Check for session preference
+        3. Check for sequential dependencies
+        4. Calculate phase complexity using parallel_dispatch_config
+        5. Apply thresholds
+      on_parallel_dispatch:
+        agents:
+          - name: "implementation_agent"
+            focus: "Core implementation tasks from tasks.md"
+            model: "sonnet"
+          - name: "test_agent"
+            focus: "Test implementation and validation"
+            model: "sonnet"
+        dispatch_note: "Spawn agents in SINGLE message for parallel execution"
+        warning: "Development tasks may have dependencies - verify task order"
+      fallback: "Proceed with activities below if dispatch fails or user chooses direct"
+
     activities:
     - Parse tasks.md structure
     - Execute phase by phase

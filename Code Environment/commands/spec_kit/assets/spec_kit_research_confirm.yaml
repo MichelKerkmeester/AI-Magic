@@ -125,6 +125,70 @@ available_templates:
   spec: .opencode/speckit/templates/spec.md
 
 # ─────────────────────────────────────────────────────────────────
+# PARALLEL DISPATCH CONFIGURATION
+# ─────────────────────────────────────────────────────────────────
+parallel_dispatch_config:
+  enabled: true
+  version: "1.0.0"
+
+  complexity_scoring:
+    domain_count:
+      weight: 0.35
+      domains: [code, analysis, docs, git, testing, devops]
+      scoring: "1=0.0, 2=0.5, 3+=1.0"
+    file_count:
+      weight: 0.25
+      scoring: "1-2=0.0, 3-5=0.5, 6+=1.0"
+    loc_estimate:
+      weight: 0.15
+      scoring: "<50=0.0, 50-200=0.5, >200=1.0"
+    parallel_opportunity:
+      weight: 0.20
+      scoring: "sequential=0.0, some=0.5, high=1.0"
+    task_type:
+      weight: 0.05
+      scoring: "trivial=0.0, moderate=0.5, complex=1.0"
+
+  thresholds:
+    direct_max: 20
+    ask_min: 20
+    auto_dispatch_min: 50
+    min_domains_for_ask: 2
+    min_domains_for_auto: 3
+
+  session_preference:
+    persist_duration_seconds: 3600
+
+  override_phrases:
+    direct: ["proceed directly", "handle directly", "skip parallel", "skip agents"]
+    parallel: ["use parallel", "dispatch agents", "parallelize", "use agents"]
+    auto: ["auto-decide", "auto mode", "decide for me"]
+
+  question_template:
+    tool: AskUserQuestion
+    header: "Parallel Dispatch"
+    format: |
+      **Phase: {phase_name}**
+      Complexity: {complexity_score}% | Domains: {domain_count} ({domains_list})
+
+      This phase may benefit from parallel sub-agents for faster execution.
+    options:
+      - id: A
+        label: "Handle directly"
+        description: "Execute phase sequentially without parallel agents"
+      - id: B
+        label: "Use parallel agents"
+        description: "Dispatch specialized agents for faster parallel execution"
+      - id: C
+        label: "Auto-decide for session"
+        description: "Let system decide based on complexity thresholds (1 hour)"
+
+  eligible_phases:
+    - step_3_codebase_investigation
+    - step_4_external_research
+    - step_5_technical_analysis
+
+# ─────────────────────────────────────────────────────────────────
 # CHECKPOINT OPTIONS
 # ─────────────────────────────────────────────────────────────────
 checkpoint_options:
@@ -202,6 +266,25 @@ workflow:
 
   step_3_codebase_investigation:
     purpose: Explore existing codebase for patterns and implementations
+
+    # PRE-PHASE: Smart parallel dispatch check
+    pre_phase_parallel_check:
+      enabled: true
+      phase_domains: [code, analysis]
+      complexity_boost: 10
+      decision_logic: |
+        BEFORE starting this phase, evaluate parallel dispatch using parallel_dispatch_config thresholds.
+      on_parallel_dispatch:
+        agents:
+          - name: "pattern_explorer"
+            focus: "Search for related code patterns and implementations"
+            model: "sonnet"
+          - name: "architecture_analyzer"
+            focus: "Analyze current architecture and integration points"
+            model: "sonnet"
+        dispatch_note: "Spawn agents in SINGLE message for parallel execution"
+      fallback: "Proceed with activities below if dispatch fails or user chooses direct"
+
     activities:
     - Search for related code patterns
     - Analyze existing implementations
@@ -222,6 +305,25 @@ workflow:
 
   step_4_external_research:
     purpose: Research external documentation and best practices
+
+    # PRE-PHASE: Smart parallel dispatch check
+    pre_phase_parallel_check:
+      enabled: true
+      phase_domains: [docs, analysis]
+      complexity_boost: 5
+      decision_logic: |
+        BEFORE starting this phase, evaluate parallel dispatch using parallel_dispatch_config thresholds.
+      on_parallel_dispatch:
+        agents:
+          - name: "documentation_researcher"
+            focus: "Search official documentation and API references"
+            model: "sonnet"
+          - name: "best_practices_explorer"
+            focus: "Analyze community best practices and alternatives"
+            model: "sonnet"
+        dispatch_note: "Spawn agents in SINGLE message for parallel execution"
+      fallback: "Proceed with activities below if dispatch fails or user chooses direct"
+
     activities:
     - Search official documentation
     - Review API references
@@ -242,6 +344,25 @@ workflow:
 
   step_5_technical_analysis:
     purpose: Perform feasibility assessment and technical analysis
+
+    # PRE-PHASE: Smart parallel dispatch check
+    pre_phase_parallel_check:
+      enabled: true
+      phase_domains: [code, analysis, testing]
+      complexity_boost: 15
+      decision_logic: |
+        BEFORE starting this phase, evaluate parallel dispatch using parallel_dispatch_config thresholds.
+      on_parallel_dispatch:
+        agents:
+          - name: "feasibility_analyzer"
+            focus: "Evaluate technical feasibility and performance"
+            model: "sonnet"
+          - name: "risk_assessor"
+            focus: "Analyze security, scalability, and risks"
+            model: "sonnet"
+        dispatch_note: "Spawn agents in SINGLE message for parallel execution"
+      fallback: "Proceed with activities below if dispatch fails or user chooses direct"
+
     activities:
     - Evaluate technical feasibility
     - Assess performance implications
