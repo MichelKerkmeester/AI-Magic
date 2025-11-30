@@ -223,9 +223,23 @@ validate_all_metadata() {
 # ============================================================================
 
 main() {
-  # Detect if we're in a spec folder
+  # Read JSON input from stdin (PreToolUse hooks receive tool input as JSON)
+  INPUT=$(cat)
+
+  # Extract file path from tool input (supports Edit, Write, Read tools)
+  local file_path
+  file_path=$(echo "$INPUT" | jq -r '.tool_input.file_path // .tool_input.path // .parameters.file_path // empty' 2>/dev/null)
+
+  # Detect spec folder from file path or current directory
   local spec_folder
-  spec_folder=$(detect_spec_folder 2>/dev/null) || spec_folder=""
+  if [ -n "$file_path" ] && [[ "$file_path" =~ specs/[0-9]{3}-[a-z-]+ ]]; then
+    # Extract spec folder from file path
+    spec_folder=$(echo "$file_path" | grep -oE 'specs/[0-9]{3}-[a-z-]+(/[0-9]{3}-[a-z-]+)?' | head -1)
+    spec_folder="${REPO_ROOT}/${spec_folder}"
+  else
+    # Fallback to pwd-based detection
+    spec_folder=$(detect_spec_folder 2>/dev/null) || spec_folder=""
+  fi
 
   if [ -z "$spec_folder" ]; then
     # Not in spec folder, allow commit

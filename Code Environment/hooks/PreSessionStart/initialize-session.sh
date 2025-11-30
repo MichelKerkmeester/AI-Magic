@@ -34,6 +34,7 @@ PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || (cd "$SCRIPT_DIR/../
 # Source libraries silently
 source "$HOOKS_DIR/lib/output-helpers.sh" 2>/dev/null || true
 source "$HOOKS_DIR/lib/shared-state.sh" 2>/dev/null || true
+source "$HOOKS_DIR/lib/exit-codes.sh" 2>/dev/null || true
 
 # Directories
 LOG_DIR="$HOOKS_DIR/logs"
@@ -105,4 +106,4 @@ if [ "$START_TIME" -gt 0 ] && [ "$END_TIME" -gt 0 ]; then
 fi
 
 # Always allow (non-blocking, initialization)
-exit 0
+exit ${EXIT_ALLOW:-0}

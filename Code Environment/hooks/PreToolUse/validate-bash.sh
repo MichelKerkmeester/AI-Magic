@@ -136,49 +136,62 @@ if echo "$COMMAND" | grep -qE '<<'; then
   fi
 fi
 
-# Check if command contains any forbidden patterns
-for pattern in "${FORBIDDEN_PATTERNS[@]}"; do
-  if echo "$COMMAND_TO_CHECK" | grep -qE "$pattern"; then
-    # Determine the category and provide helpful message
-    case "$pattern" in
-      "node_modules"|"build/"|"dist/"|"venv/"|"__pycache__")
-        print_error_box "COMMAND BLOCKED - Performance" \
-          "Pattern: $pattern" \
-          "Reason: Large directory wastes tokens and slows execution" \
-          "" \
-          "Alternative: Use targeted file reads:" \
-          "  • Read specific files directly" \
-          "  • Use grep/glob patterns to find files" \
-          "  • Search with code-specific tools"
-        ;;
-      "\.env"|"\.ssh/"|"\.aws/"|"\.pem$"|"\.key$"|"id_rsa"|"credentials\.json"|"secrets\."|"password")
-        print_error_box "COMMAND BLOCKED - Security" \
-          "Pattern: $pattern" \
-          "Reason: Sensitive files may contain credentials" \
-          "" \
-          "Security Risk: This could expose:" \
-          "  • API keys and tokens" \
-          "  • Passwords and secrets" \
-          "  • Private SSH keys" \
-          "" \
-          "Do not access sensitive files in conversations."
-        ;;
-      *)
-        print_error_box "COMMAND BLOCKED - Security" \
-          "Pattern: $pattern" \
-          "Reason: Dangerous command blocked by security policy" \
-          "" \
-          "This command could:" \
-          "  • Delete important files" \
-          "  • Modify system settings" \
-          "  • Compromise system security" \
-          "" \
-          "Please use safer alternatives."
-        ;;
-    esac
-    exit $EXIT_BLOCK  # Block execution with user warning
-  fi
-done
+# ───────────────────────────────────────────────────────────────
+# OPTIMIZED PATTERN MATCHING (O(1) detection, O(n) only on match)
+# ───────────────────────────────────────────────────────────────
+# Combine all patterns into single regex with alternation for fast detection
+# Only loop to find specific match if initial check passes
+COMBINED_PATTERN=$(IFS='|'; echo "${FORBIDDEN_PATTERNS[*]}")
+
+if echo "$COMMAND_TO_CHECK" | grep -qE "$COMBINED_PATTERN"; then
+  # Match found - now identify which pattern matched for error message
+  MATCHED_PATTERN=""
+  for pattern in "${FORBIDDEN_PATTERNS[@]}"; do
+    if echo "$COMMAND_TO_CHECK" | grep -qE "$pattern"; then
+      MATCHED_PATTERN="$pattern"
+      break
+    fi
+  done
+
+  # Determine the category and provide helpful message
+  case "$MATCHED_PATTERN" in
+    "node_modules"|"build/"|"dist/"|"venv/"|"__pycache__"|"frontend/node_modules")
+      print_error_box "COMMAND BLOCKED - Performance" \
+        "Pattern: $MATCHED_PATTERN" \
+        "Reason: Large directory wastes tokens and slows execution" \
+        "" \
+        "Alternative: Use targeted file reads:" \
+        "  • Read specific files directly" \
+        "  • Use grep/glob patterns to find files" \
+        "  • Search with code-specific tools"
+      ;;
+    "\.env"|"\.ssh/"|"\.aws/"|"\.pem$"|"\.key$"|"id_rsa"|"credentials\.json"|"secrets\."|"password"|"\.git/config"|"\.git/objects")
+      print_error_box "COMMAND BLOCKED - Security" \
+        "Pattern: $MATCHED_PATTERN" \
+        "Reason: Sensitive files may contain credentials" \
+        "" \
+        "Security Risk: This could expose:" \
+        "  • API keys and tokens" \
+        "  • Passwords and secrets" \
+        "  • Private SSH keys" \
+        "" \
+        "Do not access sensitive files in conversations."
+      ;;
+    *)
+      print_error_box "COMMAND BLOCKED - Security" \
+        "Pattern: $MATCHED_PATTERN" \
+        "Reason: Dangerous command blocked by security policy" \
+        "" \
+        "This command could:" \
+        "  • Delete important files" \
+        "  • Modify system settings" \
+        "  • Compromise system security" \
+        "" \
+        "Please use safer alternatives."
+      ;;
+  esac
+  exit $EXIT_BLOCK  # Block execution with user warning
+fi
 
 # Performance timing END
 END_TIME=$(date +%s%N)

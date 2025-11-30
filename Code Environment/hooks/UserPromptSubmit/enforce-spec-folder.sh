@@ -112,6 +112,370 @@ SPEC_MARKER=$(get_spec_marker_path "$SESSION_ID")
 # TWO SEPARATE decisions. Memory is ONLY asked AFTER spec confirmed.
 # ───────────────────────────────────────────────────────────────
 
+# ───────────────────────────────────────────────────────────────
+# detect_user_choice - Parse user's A/B/C/D response from prompt
+# ───────────────────────────────────────────────────────────────
+# Returns: Sets USER_CHOICE variable (empty if no clear choice)
+# ───────────────────────────────────────────────────────────────
+detect_user_choice() {
+  USER_CHOICE=""
+  if echo "$PROMPT_LOWER" | grep -qE "^[[:space:]]*[abcd][[:space:]]*$"; then
+    USER_CHOICE=$(echo "$PROMPT" | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')
+  elif echo "$PROMPT_LOWER" | grep -qiE "(option|choice|select|pick|choose)[[:space:]]*(a|b|c|d)"; then
+    USER_CHOICE=$(echo "$PROMPT_LOWER" | grep -oiE "(option|choice|select|pick|choose)[[:space:]]*(a|b|c|d)" | grep -oiE "[abcd]" | tail -1 | tr '[:lower:]' '[:upper:]')
+  elif echo "$PROMPT_LOWER" | grep -qiE "^[[:space:]]*(a\)|b\)|c\)|d\))"; then
+    USER_CHOICE=$(echo "$PROMPT_LOWER" | grep -oE "^[[:space:]]*[abcd]" | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')
+  fi
+}
+
+# ───────────────────────────────────────────────────────────────
+# find_memory_directory - Locate memory directory for a spec folder
+# ───────────────────────────────────────────────────────────────
+# Arguments: $1 - spec folder path
+# Returns: Sets MEMORY_DIR variable (empty if not found)
+# ───────────────────────────────────────────────────────────────
+find_memory_directory() {
+  local spec_folder="$1"
+  MEMORY_DIR=""
+
+  if [ -z "$spec_folder" ] || [ ! -d "$spec_folder" ]; then
+    return 1
+  fi
+
+  # Check for .spec-active marker first
+  if [ -f "$SPEC_MARKER" ]; then
+    local active_path=$(cat "$SPEC_MARKER" 2>/dev/null | tr -d '\n')
+    if [ -n "$active_path" ] && { [[ "$active_path" == "$spec_folder" ]] || [[ "$active_path" == "$spec_folder"/* ]]; } && [ -d "$active_path/memory" ]; then
+      MEMORY_DIR="$active_path/memory"
+      return 0
+    fi
+  fi
+
+  # Fallback to root memory/
+  if [ -d "$spec_folder/memory" ]; then
+    MEMORY_DIR="$spec_folder/memory"
+    return 0
+  fi
+
+  return 1
+}
+
+# ───────────────────────────────────────────────────────────────
+# build_memory_files_json - Build JSON array of memory files
+# ───────────────────────────────────────────────────────────────
+# Arguments: $1 - memory directory path
+# Returns: Sets MEMORY_FILES_JSON and MEMORY_COUNT variables
+# ───────────────────────────────────────────────────────────────
+build_memory_files_json() {
+  local memory_dir="$1"
+  MEMORY_FILES_JSON="[]"
+  MEMORY_COUNT=0
+
+  if [ -z "$memory_dir" ] || [ ! -d "$memory_dir" ]; then
+    return 1
+  fi
+
+  MEMORY_COUNT=$(find "$memory_dir" -maxdepth 1 -type f -name "*__*.md" 2>/dev/null | wc -l | tr -d ' ')
+
+  if [ "$MEMORY_COUNT" -gt 0 ]; then
+    local files_json="["
+    local first=true
+    while IFS= read -r file; do
+      [ -z "$file" ] && continue
+      local file_name=$(basename "$file")
+      if [ "$first" = true ]; then
+        files_json="$files_json\"$file_name\""
+        first=false
+      else
+        files_json="$files_json,\"$file_name\""
+      fi
+    done < <(find "$memory_dir" -maxdepth 1 -type f -name "*__*.md" -exec basename {} \; 2>/dev/null | sort -r | head -5)
+    files_json="$files_json]"
+    MEMORY_FILES_JSON="$files_json"
+  fi
+}
+
+# ───────────────────────────────────────────────────────────────
+# create_validated_spec_marker - Create marker with subfolder validation
+# ───────────────────────────────────────────────────────────────
+# Arguments: $1 - spec folder path
+# ───────────────────────────────────────────────────────────────
+create_validated_spec_marker() {
+  local spec_folder="$1"
+  local target_folder="$spec_folder"
+
+  if has_root_level_content "$spec_folder" && [ -f "$SPEC_MARKER" ]; then
+    target_folder=$(cat "$SPEC_MARKER" 2>/dev/null | tr -d '\n')
+  fi
+
+  create_spec_marker "$target_folder"
+}
+
+# ───────────────────────────────────────────────────────────────
+# handle_skip_choice - Handle user choosing to skip documentation
+# ───────────────────────────────────────────────────────────────
+# Arguments: $1 - log message prefix
+# ───────────────────────────────────────────────────────────────
+handle_skip_choice() {
+  local prefix="${1:-}"
+  echo "[FLOW_COMPLETE] ${prefix}User skipped documentation (choice D)" >> "$LOG_FILE" 2>/dev/null || true
+  clear_question_flow
+  mkdir -p "$PROJECT_ROOT/.claude" 2>/dev/null
+  echo "skip" > "$PROJECT_ROOT/.claude/.spec-skip"
+  exit 0
+}
+
+# ───────────────────────────────────────────────────────────────
+# handle_new_folder_choice - Handle user choosing to create new folder
+# ───────────────────────────────────────────────────────────────
+# Arguments: $1 - log message prefix
+# ───────────────────────────────────────────────────────────────
+handle_new_folder_choice() {
+  local prefix="${1:-}"
+  echo "[FLOW_TRANSITION] ${prefix}User wants new spec folder (choice B)" >> "$LOG_FILE" 2>/dev/null || true
+  cleanup_spec_marker 2>/dev/null || rm -f "$SPEC_MARKER" 2>/dev/null
+  clear_question_flow
+  echo ""
+  echo "🆕 Creating new spec folder..."
+  echo ""
+  return 1
+}
+
+# ───────────────────────────────────────────────────────────────
+# transition_to_memory_stage - Transition to memory loading stage
+# ───────────────────────────────────────────────────────────────
+# Arguments: $1 - stored folder, $2 - user choice, $3 - display message
+# ───────────────────────────────────────────────────────────────
+transition_to_memory_stage() {
+  local stored_folder="$1"
+  local user_choice="$2"
+  local display_msg="${3:-Spec folder selected}"
+
+  echo "[FLOW_TRANSITION] Moving to memory_load stage ($MEMORY_COUNT memory files found)" >> "$LOG_FILE" 2>/dev/null || true
+
+  set_question_flow "memory_load" "$stored_folder" "$MEMORY_FILES_JSON" "$user_choice"
+
+  echo ""
+  echo "📁 $display_msg: $(basename "$stored_folder")"
+  echo ""
+  echo "🧠 MEMORY FILES DETECTED"
+  echo "Found $MEMORY_COUNT previous session file(s) in memory/:"
+  find "$MEMORY_DIR" -maxdepth 1 -type f -name "*__*.md" -exec basename {} \; 2>/dev/null | sort -r | head -3 | while read -r f; do
+    echo "   • $f"
+  done
+  echo ""
+
+  emit_memory_load_question "$MEMORY_FILES_JSON"
+  exit 1
+}
+
+# ───────────────────────────────────────────────────────────────
+# handle_stage_spec_folder - Handle spec_folder stage response
+# ───────────────────────────────────────────────────────────────
+handle_stage_spec_folder() {
+  if [ -z "$USER_CHOICE" ]; then
+    return 1
+  fi
+
+  local stored_folder=$(get_flow_spec_folder)
+
+  if [ "$USER_CHOICE" = "D" ]; then
+    handle_skip_choice ""
+  fi
+
+  if [ "$USER_CHOICE" != "A" ]; then
+    echo "[FLOW_COMPLETE] User chose $USER_CHOICE (not reuse), skipping memory check" >> "$LOG_FILE" 2>/dev/null || true
+    clear_question_flow
+    return 1
+  fi
+
+  # User chose A - check for memory files
+  find_memory_directory "$stored_folder"
+  build_memory_files_json "$MEMORY_DIR"
+
+  if [ "$MEMORY_COUNT" -gt 0 ]; then
+    transition_to_memory_stage "$stored_folder" "$USER_CHOICE" "Spec folder selected"
+  else
+    echo "[FLOW_COMPLETE] Spec folder selected, no memory files" >> "$LOG_FILE" 2>/dev/null || true
+    create_validated_spec_marker "$stored_folder"
+    clear_question_flow
+    return 1
+  fi
+}
+
+# ───────────────────────────────────────────────────────────────
+# handle_stage_spec_folder_confirm - Handle spec_folder_confirm stage
+# ───────────────────────────────────────────────────────────────
+handle_stage_spec_folder_confirm() {
+  if [ -z "$USER_CHOICE" ]; then
+    return 1
+  fi
+
+  local stored_folder=$(get_flow_spec_folder)
+  local spec_name=$(basename "$stored_folder" 2>/dev/null || echo "unknown")
+
+  if [ "$USER_CHOICE" = "D" ]; then
+    echo "[FLOW_COMPLETE] Mid-conv: User skipped documentation (choice D)" >> "$LOG_FILE" 2>/dev/null || true
+    clear_question_flow
+    create_skip_marker 2>/dev/null || {
+      mkdir -p "$PROJECT_ROOT/.claude" 2>/dev/null
+      echo "skip" > "$PROJECT_ROOT/$SKIP_MARKER"
+    }
+    exit 0
+  fi
+
+  if [ "$USER_CHOICE" = "B" ]; then
+    handle_new_folder_choice "Mid-conv: "
+    return $?
+  fi
+
+  # User chose A - continue in existing folder
+  echo "[FLOW_TRANSITION] Mid-conv: User confirmed spec folder $spec_name (choice A)" >> "$LOG_FILE" 2>/dev/null || true
+
+  find_memory_directory "$stored_folder"
+  build_memory_files_json "$MEMORY_DIR"
+
+  if [ "$MEMORY_COUNT" -gt 0 ]; then
+    transition_to_memory_stage "$stored_folder" "$USER_CHOICE" "Spec folder confirmed"
+  else
+    echo "[FLOW_COMPLETE] Spec folder confirmed, no memory files" >> "$LOG_FILE" 2>/dev/null || true
+    create_validated_spec_marker "$stored_folder"
+    clear_question_flow
+    echo ""
+    echo "✅ Continuing in spec folder: $spec_name"
+    echo ""
+    exit 0
+  fi
+}
+
+# ───────────────────────────────────────────────────────────────
+# handle_stage_memory_load - Handle memory_load stage response
+# ───────────────────────────────────────────────────────────────
+handle_stage_memory_load() {
+  if [ -z "$USER_CHOICE" ]; then
+    if echo "$PROMPT_LOWER" | grep -qiE "(load|skip|fresh|recent|all|specific)"; then
+      echo "[FLOW_COMPLETE] Memory question answered (inferred from content)" >> "$LOG_FILE" 2>/dev/null || true
+      clear_question_flow
+      exit 0
+    fi
+    return 1
+  fi
+
+  echo "[FLOW_COMPLETE] Memory question answered: $USER_CHOICE" >> "$LOG_FILE" 2>/dev/null || true
+
+  local stored_folder=$(get_flow_spec_folder)
+  local memory_files=$(get_flow_memory_files)
+
+  echo ""
+  echo "✅ QUESTION FLOW COMPLETE"
+  echo "   Spec folder: $(basename "$stored_folder")"
+  echo "   Memory choice: $USER_CHOICE"
+  echo ""
+
+  # V9.0: Load context using anchor-based retrieval script
+  if [ "$USER_CHOICE" != "D" ]; then
+    local spec_folder_name=$(basename "$stored_folder")
+    local load_script="$SCRIPT_DIR/../lib/load-related-context.sh"
+
+    if [ -x "$load_script" ]; then
+      case "$USER_CHOICE" in
+        A)
+          echo "📚 Loading context from most recent session..."
+          echo ""
+          "$load_script" "$spec_folder_name" summary 2>&1 || true
+          echo ""
+          ;;
+        B)
+          echo "📚 Loading summaries from recent sessions..."
+          echo ""
+          "$load_script" "$spec_folder_name" recent 3 2>&1 || true
+          echo ""
+          echo "💡 Use 'extract <anchor-id>' to load specific sections"
+          echo ""
+          ;;
+        C)
+          echo "📚 Available sessions:"
+          echo ""
+          "$load_script" "$spec_folder_name" list 2>&1 || true
+          echo ""
+          echo "💡 Commands available:"
+          echo "   - Read tool to load complete files"
+          echo "   - 'extract <anchor-id>' to load specific sections"
+          echo "   - 'search <keyword>' to find anchors"
+          echo ""
+          ;;
+      esac
+    else
+      echo "📖 AI: Load the selected memory file(s) using the Read tool before proceeding."
+      echo ""
+    fi
+  fi
+
+  create_validated_spec_marker "$stored_folder"
+  clear_question_flow
+  exit 0
+}
+
+# ───────────────────────────────────────────────────────────────
+# handle_stage_task_change - Handle task_change stage response
+# ───────────────────────────────────────────────────────────────
+handle_stage_task_change() {
+  local choice="$USER_CHOICE"
+
+  # Infer choice from keywords if not explicit
+  if [ -z "$choice" ]; then
+    if echo "$PROMPT_LOWER" | grep -qiE "(continue|stay|current|same|related)"; then
+      choice="A"
+    elif echo "$PROMPT_LOWER" | grep -qiE "(new|create|fresh|different|separate)"; then
+      choice="B"
+    elif echo "$PROMPT_LOWER" | grep -qiE "(switch|existing|other|choose)"; then
+      choice="C"
+    fi
+  fi
+
+  if [ -z "$choice" ]; then
+    return 1
+  fi
+
+  local stored_folder=$(get_flow_spec_folder)
+
+  case "$choice" in
+    A)
+      echo "[FLOW_COMPLETE] User confirmed current spec folder (choice A)" >> "$LOG_FILE" 2>/dev/null || true
+      echo ""
+      echo "✅ Continuing in $(basename "$stored_folder")"
+      echo ""
+      create_validated_spec_marker "$stored_folder"
+      clear_question_flow
+      exit 0
+      ;;
+    B)
+      echo "[FLOW_TRANSITION] User wants new spec folder (choice B)" >> "$LOG_FILE" 2>/dev/null || true
+      cleanup_spec_marker 2>/dev/null || rm -f "$SPEC_MARKER" 2>/dev/null
+      clear_question_flow
+      echo ""
+      echo "🆕 Creating new spec folder for this task..."
+      echo ""
+      return 1
+      ;;
+    C)
+      echo "[FLOW_TRANSITION] User wants to switch to existing spec (choice C)" >> "$LOG_FILE" 2>/dev/null || true
+      cleanup_spec_marker 2>/dev/null || rm -f "$SPEC_MARKER" 2>/dev/null
+      clear_question_flow
+      echo ""
+      echo "🔄 Select from existing spec folders..."
+      echo ""
+      return 1
+      ;;
+  esac
+
+  clear_question_flow
+  return 1
+}
+
+# ───────────────────────────────────────────────────────────────
+# handle_question_flow - Main question flow dispatcher
+# ───────────────────────────────────────────────────────────────
 handle_question_flow() {
   local current_stage=$(get_question_stage)
 
@@ -121,391 +485,33 @@ handle_question_flow() {
   fi
 
   # Detect user's response pattern (A/B/C/D or explicit choice)
-  local user_choice=""
-  if echo "$PROMPT_LOWER" | grep -qE "^[[:space:]]*[abcd][[:space:]]*$"; then
-    user_choice=$(echo "$PROMPT" | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')
-  elif echo "$PROMPT_LOWER" | grep -qiE "(option|choice|select|pick|choose)[[:space:]]*(a|b|c|d)"; then
-    # Extract the letter after option/choice/select/pick/choose (not end-of-line)
-    user_choice=$(echo "$PROMPT_LOWER" | grep -oiE "(option|choice|select|pick|choose)[[:space:]]*(a|b|c|d)" | grep -oiE "[abcd]" | tail -1 | tr '[:lower:]' '[:upper:]')
-  elif echo "$PROMPT_LOWER" | grep -qiE "^[[:space:]]*(a\)|b\)|c\)|d\))"; then
-    user_choice=$(echo "$PROMPT_LOWER" | grep -oE "^[[:space:]]*[abcd]" | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')
-  fi
+  detect_user_choice
+  echo "[FLOW_CHECK] Stage: $current_stage, Detected choice: ${USER_CHOICE:-none}" >> "$LOG_FILE" 2>/dev/null || true
 
-  # Note: log_event not yet defined, use inline logging
-  echo "[FLOW_CHECK] Stage: $current_stage, Detected choice: ${user_choice:-none}" >> "$LOG_FILE" 2>/dev/null || true
-
-  # Stage 1: Spec folder question was asked, waiting for answer
-  if [ "$current_stage" = "spec_folder" ]; then
-    if [ -z "$user_choice" ]; then
-      # No clear choice detected - still waiting for response
-      # Re-emit the question signal (user might have asked a follow-up)
-      return 1  # Continue to normal processing (will re-ask)
-    fi
-
-    # User made a choice - check if we need memory load question
-    local stored_folder=$(get_flow_spec_folder)
-
-    if [ "$user_choice" = "D" ]; then
-      # User chose to skip - complete the flow
-      echo "[FLOW_COMPLETE] User skipped documentation (choice D)" >> "$LOG_FILE" 2>/dev/null || true
+  # Dispatch to stage-specific handler
+  case "$current_stage" in
+    "spec_folder")
+      handle_stage_spec_folder
+      return $?
+      ;;
+    "spec_folder_confirm")
+      handle_stage_spec_folder_confirm
+      return $?
+      ;;
+    "memory_load")
+      handle_stage_memory_load
+      return $?
+      ;;
+    "task_change")
+      handle_stage_task_change
+      return $?
+      ;;
+    *)
+      # Unknown stage - clear and continue
       clear_question_flow
-      # Create skip marker
-      mkdir -p "$PROJECT_ROOT/.claude" 2>/dev/null
-      echo "skip" > "$PROJECT_ROOT/.claude/.spec-skip"
-      exit 0  # Allow to proceed
-    fi
-
-    # Only check memory files for Option A (reuse existing folder)
-    # Options B (new folder) and C (related spec) don't need memory loading
-    if [ "$user_choice" != "A" ]; then
-      # B or C chosen - complete flow, let normal processing handle it
-      echo "[FLOW_COMPLETE] User chose $user_choice (not reuse), skipping memory check" >> "$LOG_FILE" 2>/dev/null || true
-      clear_question_flow
-      return 1  # Continue normal processing
-    fi
-
-    # User chose A - check if folder has memory files
-    local memory_dir=""
-    local memory_files="[]"
-    local memory_count=0
-
-    if [ -n "$stored_folder" ] && [ -d "$stored_folder" ]; then
-      # Inline memory directory detection (simple fallback - avoids function ordering issue)
-      # Check for .spec-active marker first, then root memory/
-      if [ -f "$SPEC_MARKER" ]; then
-        local active_path=$(cat "$SPEC_MARKER" 2>/dev/null | tr -d '\n')
-        # Check if active_path is the stored_folder OR a subdirectory of it
-        if [ -n "$active_path" ] && { [[ "$active_path" == "$stored_folder" ]] || [[ "$active_path" == "$stored_folder"/* ]]; } && [ -d "$active_path/memory" ]; then
-          memory_dir="$active_path/memory"
-        fi
-      fi
-      # Fallback to root memory/
-      if [ -z "$memory_dir" ] && [ -d "$stored_folder/memory" ]; then
-        memory_dir="$stored_folder/memory"
-      fi
-
-      if [ -n "$memory_dir" ] && [ -d "$memory_dir" ]; then
-        memory_count=$(find "$memory_dir" -maxdepth 1 -type f -name "*__*.md" 2>/dev/null | wc -l | tr -d ' ')
-        if [ "$memory_count" -gt 0 ]; then
-          # Build JSON array of memory files
-          local files_json="["
-          local first=true
-          while IFS= read -r file; do
-            [ -z "$file" ] && continue
-            local file_name=$(basename "$file")
-            if [ "$first" = true ]; then
-              files_json="$files_json\"$file_name\""
-              first=false
-            else
-              files_json="$files_json,\"$file_name\""
-            fi
-          done < <(find "$memory_dir" -maxdepth 1 -type f -name "*__*.md" -exec basename {} \; 2>/dev/null | sort -r | head -5)
-          files_json="$files_json]"
-          memory_files="$files_json"
-        fi
-      fi
-    fi
-
-    if [ "$memory_count" -gt 0 ]; then
-      # Folder has memory files - emit MEMORY_LOAD question
-      echo "[FLOW_TRANSITION] Moving to memory_load stage ($memory_count memory files found)" >> "$LOG_FILE" 2>/dev/null || true
-
-      # Update flow state to stage 2
-      set_question_flow "memory_load" "$stored_folder" "$memory_files" "$user_choice"
-
-      # Display memory files info
-      echo ""
-      echo "📁 Spec folder selected: $(basename "$stored_folder")"
-      echo ""
-      echo "🧠 MEMORY FILES DETECTED"
-      echo "Found $memory_count previous session file(s) in memory/:"
-      find "$memory_dir" -maxdepth 1 -type f -name "*__*.md" -exec basename {} \; 2>/dev/null | sort -r | head -3 | while read -r f; do
-        echo "   • $f"
-      done
-      echo ""
-
-      # Emit memory load question using the library function
-      emit_memory_load_question "$memory_files"
-
-      exit 1  # Block until memory question is answered
-    else
-      # No memory files - complete the flow
-      echo "[FLOW_COMPLETE] Spec folder selected, no memory files" >> "$LOG_FILE" 2>/dev/null || true
-      # BUG FIX: Create spec marker when folder is confirmed
-      # SUBFOLDER FIX: Validate if sub-folder needed before creating marker
-      local target_folder="$stored_folder"
-      if has_root_level_content "$stored_folder" && [ -f "$SPEC_MARKER" ]; then
-        # Sub-folder exists - use path from existing marker
-        target_folder=$(cat "$SPEC_MARKER" 2>/dev/null | tr -d '\n')
-      fi
-      create_spec_marker "$target_folder"
-      clear_question_flow
-      return 1  # Continue normal processing (will validate folder)
-    fi
-  fi
-
-  # Stage 1b: Spec folder CONFIRM question was asked (mid-conversation)
-  # This is a NEW stage for the bug fix - ensures we ask about spec folder
-  # BEFORE asking about memory loading
-  if [ "$current_stage" = "spec_folder_confirm" ]; then
-    if [ -z "$user_choice" ]; then
-      # No clear choice detected - still waiting for response
-      return 1  # Continue to normal processing (will re-ask)
-    fi
-
-    local stored_folder=$(get_flow_spec_folder)
-    local spec_name=$(basename "$stored_folder" 2>/dev/null || echo "unknown")
-
-    if [ "$user_choice" = "D" ]; then
-      # User chose to skip documentation
-      echo "[FLOW_COMPLETE] Mid-conv: User skipped documentation (choice D)" >> "$LOG_FILE" 2>/dev/null || true
-      clear_question_flow
-      # Create skip marker (use SKIP_MARKER variable for consistency)
-      create_skip_marker 2>/dev/null || {
-        mkdir -p "$PROJECT_ROOT/.claude" 2>/dev/null
-        echo "skip" > "$PROJECT_ROOT/$SKIP_MARKER"
-      }
-      exit 0  # Allow to proceed
-    fi
-
-    if [ "$user_choice" = "B" ]; then
-      # User wants a NEW spec folder - clear marker and return to normal flow
-      echo "[FLOW_TRANSITION] Mid-conv: User wants new spec folder (choice B)" >> "$LOG_FILE" 2>/dev/null || true
-      cleanup_spec_marker 2>/dev/null || rm -f "$SPEC_MARKER" 2>/dev/null
-      clear_question_flow
-      echo ""
-      echo "🆕 Creating new spec folder..."
-      echo ""
-      return 1  # Continue to normal flow (will show spec folder prompt)
-    fi
-
-    # User chose A - continue in existing folder
-    # NOW check for memory files and ask about loading them
-    echo "[FLOW_TRANSITION] Mid-conv: User confirmed spec folder $spec_name (choice A)" >> "$LOG_FILE" 2>/dev/null || true
-
-    local memory_dir=""
-    local memory_files="[]"
-    local memory_count=0
-
-    if [ -n "$stored_folder" ] && [ -d "$stored_folder" ]; then
-      # Check for memory directory
-      if [ -f "$SPEC_MARKER" ]; then
-        local active_path=$(cat "$SPEC_MARKER" 2>/dev/null | tr -d '\n')
-        if [ -n "$active_path" ] && { [[ "$active_path" == "$stored_folder" ]] || [[ "$active_path" == "$stored_folder"/* ]]; } && [ -d "$active_path/memory" ]; then
-          memory_dir="$active_path/memory"
-        fi
-      fi
-      if [ -z "$memory_dir" ] && [ -d "$stored_folder/memory" ]; then
-        memory_dir="$stored_folder/memory"
-      fi
-
-      if [ -n "$memory_dir" ] && [ -d "$memory_dir" ]; then
-        memory_count=$(find "$memory_dir" -maxdepth 1 -type f -name "*__*.md" 2>/dev/null | wc -l | tr -d ' ')
-        if [ "$memory_count" -gt 0 ]; then
-          local files_json="["
-          local first=true
-          while IFS= read -r file; do
-            [ -z "$file" ] && continue
-            local file_name=$(basename "$file")
-            if [ "$first" = true ]; then
-              files_json="$files_json\"$file_name\""
-              first=false
-            else
-              files_json="$files_json,\"$file_name\""
-            fi
-          done < <(find "$memory_dir" -maxdepth 1 -type f -name "*__*.md" -exec basename {} \; 2>/dev/null | sort -r | head -5)
-          files_json="$files_json]"
-          memory_files="$files_json"
-        fi
-      fi
-    fi
-
-    if [ "$memory_count" -gt 0 ]; then
-      # Folder has memory files - NOW ask about loading them (stage 2)
-      echo "[FLOW_TRANSITION] Moving to memory_load stage ($memory_count memory files)" >> "$LOG_FILE" 2>/dev/null || true
-
-      set_question_flow "memory_load" "$stored_folder" "$memory_files" "$user_choice"
-
-      echo ""
-      echo "📁 Spec folder confirmed: $spec_name"
-      echo ""
-      echo "🧠 MEMORY FILES AVAILABLE"
-      echo "Found $memory_count previous session file(s):"
-      find "$memory_dir" -maxdepth 1 -type f -name "*__*.md" -exec basename {} \; 2>/dev/null | sort -r | head -3 | while read -r f; do
-        echo "   • $f"
-      done
-      echo ""
-
-      emit_memory_load_question "$memory_files"
-
-      exit 1  # Block until memory question is answered
-    else
-      # No memory files - complete the flow
-      echo "[FLOW_COMPLETE] Spec folder confirmed, no memory files" >> "$LOG_FILE" 2>/dev/null || true
-      # SUBFOLDER FIX: Validate if sub-folder needed before creating marker
-      local target_folder="$stored_folder"
-      if has_root_level_content "$stored_folder" && [ -f "$SPEC_MARKER" ]; then
-        # Sub-folder exists - use path from existing marker
-        target_folder=$(cat "$SPEC_MARKER" 2>/dev/null | tr -d '\n')
-      fi
-      create_spec_marker "$target_folder"
-      clear_question_flow
-      echo ""
-      echo "✅ Continuing in spec folder: $spec_name"
-      echo ""
-      exit 0  # Allow to proceed
-    fi
-  fi
-
-  # Stage 2: Memory load question was asked, waiting for answer
-  if [ "$current_stage" = "memory_load" ]; then
-    if [ -z "$user_choice" ]; then
-      # No clear choice detected - might need guidance
-      # Check if prompt contains memory-related content indicating they answered
-      if echo "$PROMPT_LOWER" | grep -qiE "(load|skip|fresh|recent|all|specific)"; then
-        # Assume they answered - complete flow
-        echo "[FLOW_COMPLETE] Memory question answered (inferred from content)" >> "$LOG_FILE" 2>/dev/null || true
-        clear_question_flow
-        exit 0  # Allow to proceed
-      fi
-      return 1  # Continue (will re-emit question if needed)
-    fi
-
-    # User made a memory choice - complete the flow
-    echo "[FLOW_COMPLETE] Memory question answered: $user_choice" >> "$LOG_FILE" 2>/dev/null || true
-
-    # Store the choice for AI to act on
-    local stored_folder=$(get_flow_spec_folder)
-    local memory_files=$(get_flow_memory_files)
-
-    echo ""
-    echo "✅ QUESTION FLOW COMPLETE"
-    echo "   Spec folder: $(basename "$stored_folder")"
-    echo "   Memory choice: $user_choice"
-    echo ""
-
-    # V9.0: Load context using anchor-based retrieval script
-    if [ "$user_choice" != "D" ]; then
-      local spec_folder_name=$(basename "$stored_folder")
-      local load_script="$SCRIPT_DIR/../lib/load-related-context.sh"
-
-      if [ -x "$load_script" ]; then
-        case "$user_choice" in
-          A)
-            # Load most recent - summary only
-            echo "📚 Loading context from most recent session..."
-            echo ""
-            "$load_script" "$spec_folder_name" summary 2>&1 || true
-            echo ""
-            ;;
-          B)
-            # Load all recent - summaries from last 3 files
-            echo "📚 Loading summaries from recent sessions..."
-            echo ""
-            "$load_script" "$spec_folder_name" recent 3 2>&1 || true
-            echo ""
-            echo "💡 Use 'extract <anchor-id>' to load specific sections"
-            echo ""
-            ;;
-          C)
-            # Select specific - show list
-            echo "📚 Available sessions:"
-            echo ""
-            "$load_script" "$spec_folder_name" list 2>&1 || true
-            echo ""
-            echo "💡 Commands available:"
-            echo "   - Read tool to load complete files"
-            echo "   - 'extract <anchor-id>' to load specific sections"
-            echo "   - 'search <keyword>' to find anchors"
-            echo ""
-            ;;
-        esac
-      else
-        # Fallback if script not available
-        echo "📖 AI: Load the selected memory file(s) using the Read tool before proceeding."
-        echo ""
-      fi
-    fi
-
-    # BUG FIX: Create spec marker when folder is confirmed after memory selection
-    # SUBFOLDER FIX: Validate if sub-folder needed before creating marker
-    local target_folder="$stored_folder"
-    if has_root_level_content "$stored_folder" && [ -f "$SPEC_MARKER" ]; then
-      # Sub-folder exists - use path from existing marker
-      target_folder=$(cat "$SPEC_MARKER" 2>/dev/null | tr -d '\n')
-    fi
-    create_spec_marker "$target_folder"
-    clear_question_flow
-    exit 0  # Allow to proceed
-  fi
-
-  # Stage 3: Task change question was asked, waiting for answer
-  if [ "$current_stage" = "task_change" ]; then
-    if [ -z "$user_choice" ]; then
-      # No clear choice detected - check for keywords indicating choice
-      if echo "$PROMPT_LOWER" | grep -qiE "(continue|stay|current|same|related)"; then
-        user_choice="A"
-      elif echo "$PROMPT_LOWER" | grep -qiE "(new|create|fresh|different|separate)"; then
-        user_choice="B"
-      elif echo "$PROMPT_LOWER" | grep -qiE "(switch|existing|other|choose)"; then
-        user_choice="C"
-      fi
-    fi
-
-    if [ -z "$user_choice" ]; then
-      return 1  # Still waiting for response
-    fi
-
-    local stored_folder=$(get_flow_spec_folder)
-
-    case "$user_choice" in
-      A)
-        # Continue in current spec - user confirmed this is related work
-        echo "[FLOW_COMPLETE] User confirmed current spec folder (choice A)" >> "$LOG_FILE" 2>/dev/null || true
-        echo ""
-        echo "✅ Continuing in $(basename "$stored_folder")"
-        echo ""
-        # BUG FIX: Create spec marker when folder is confirmed
-        # SUBFOLDER FIX: Validate if sub-folder needed before creating marker
-        local target_folder="$stored_folder"
-        if has_root_level_content "$stored_folder" && [ -f "$SPEC_MARKER" ]; then
-          # Sub-folder exists - use path from existing marker
-          target_folder=$(cat "$SPEC_MARKER" 2>/dev/null | tr -d '\n')
-        fi
-        create_spec_marker "$target_folder"
-        clear_question_flow
-        exit 0  # Allow to proceed
-        ;;
-      B)
-        # Create new spec folder - clear marker and trigger normal flow
-        echo "[FLOW_TRANSITION] User wants new spec folder (choice B)" >> "$LOG_FILE" 2>/dev/null || true
-        cleanup_spec_marker 2>/dev/null || rm -f "$SPEC_MARKER" 2>/dev/null
-        clear_question_flow
-        echo ""
-        echo "🆕 Creating new spec folder for this task..."
-        echo ""
-        return 1  # Continue to normal flow which will show spec folder prompt
-        ;;
-      C)
-        # Switch to existing spec - clear marker and let user choose
-        echo "[FLOW_TRANSITION] User wants to switch to existing spec (choice C)" >> "$LOG_FILE" 2>/dev/null || true
-        cleanup_spec_marker 2>/dev/null || rm -f "$SPEC_MARKER" 2>/dev/null
-        clear_question_flow
-        echo ""
-        echo "🔄 Select from existing spec folders..."
-        echo ""
-        return 1  # Continue to normal flow which will show related specs
-        ;;
-    esac
-
-    # Unknown choice - clear and continue
-    clear_question_flow
-    return 1
-  fi
-
-  # Unknown stage - clear and continue
-  clear_question_flow
-  return 1
+      return 1
+      ;;
+  esac
 }
 
 # Check for ongoing question flow FIRST

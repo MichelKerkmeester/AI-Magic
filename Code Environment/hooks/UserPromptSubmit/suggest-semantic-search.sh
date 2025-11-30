@@ -137,56 +137,59 @@ fi
 # ───────────────────────────────────────────────────────────────
 
 if [ "$SHOULD_SUGGEST" = true ]; then
+  # ─────────────────────────────────────────────────────────────────
+  # TERMINAL-VISIBLE NOTIFICATION (JSON systemMessage)
+  # This appears in the user's terminal as a visible notification
+  # ─────────────────────────────────────────────────────────────────
+  echo "{\"systemMessage\": \"Semantic search recommended for this query - use /index:search or mcp-semantic-search skill\"}"
+
+  # ─────────────────────────────────────────────────────────────────
+  # CLAUDE CONTEXT (Plain text instructions for Claude)
+  # This goes to Claude's context to guide behavior, not shown to user
+  # ─────────────────────────────────────────────────────────────────
   echo ""
-  echo "💡 Code Exploration Detected - Semantic Search Recommended"
-  echo "───────────────────────────────────────────────────────────────"
+  echo "SEMANTIC SEARCH RECOMMENDATION"
+  echo "==============================="
 
   case "$SUGGESTION_TYPE" in
     exploratory)
-      echo "Context: You're exploring where/how functionality is implemented"
-      echo "Tool: Use search_codebase() via mcp-code-mode for intent-based discovery"
+      echo "Context: User is exploring where/how functionality is implemented"
+      echo "Action: Use search_codebase() via mcp-code-mode for intent-based discovery"
       ;;
     architecture)
-      echo "Context: You're understanding how components work together"
-      echo "Tool: Use search_codebase() to find related code and dependencies"
+      echo "Context: User is understanding how components work together"
+      echo "Action: Use search_codebase() to find related code and dependencies"
       ;;
     navigation)
-      echo "Context: You're navigating usage patterns across the codebase"
-      echo "Tool: Use search_codebase() for comprehensive pattern discovery"
+      echo "Context: User is navigating usage patterns across the codebase"
+      echo "Action: Use search_codebase() for comprehensive pattern discovery"
       ;;
     relationships)
-      echo "Context: You're discovering code relationships and dependencies"
-      echo "Tool: Use search_codebase() with relationship queries"
+      echo "Context: User is discovering code relationships and dependencies"
+      echo "Action: Use search_codebase() with relationship queries"
       ;;
     feature_discovery)
-      echo "Context: You're finding implementation patterns for features"
-      echo "Tool: Use search_codebase() to discover feature implementations"
+      echo "Context: User is finding implementation patterns for features"
+      echo "Action: Use search_codebase() to discover feature implementations"
       ;;
     refactoring)
-      echo "Context: You're identifying similar code for refactoring"
-      echo "Tool: Use search_codebase() to find similar patterns"
+      echo "Context: User is identifying similar code for refactoring"
+      echo "Action: Use search_codebase() to find similar patterns"
       ;;
   esac
 
   echo ""
-  echo "Suggested Query Template:"
-  echo "  \"$QUERY_TEMPLATE\""
+  echo "Suggested Query: \"$QUERY_TEMPLATE\""
   echo ""
-  echo "Why Semantic Search?"
-  echo "  ✓ Finds code by what it does (not just what it's called)"
-  echo "  ✓ Understands intent and relationships"
-  echo "  ✓ Returns ranked results with context"
+  echo "Instructions for Claude:"
+  echo "  1. Activate mcp-semantic-search skill if not already loaded"
+  echo "  2. Use mcp-code-mode to execute search_codebase(\"$QUERY_TEMPLATE\")"
+  echo "  3. Read specific files from results for full context"
   echo ""
-  echo "How to Use:"
-  echo "  1. Activate: Use Skill tool to load 'mcp-semantic-search' skill"
-  echo "  2. Execute: Use mcp-code-mode to run search_codebase(\"your query\")"
-  echo "  3. Follow-up: Read specific files for full context"
-  echo ""
-  echo "Documentation:"
-  echo "  📖 Semantic Search: .claude/skills/mcp-semantic-search/SKILL.md"
-  echo "  📖 Code Mode: .claude/skills/mcp-code-mode/SKILL.md"
-  echo "  📖 Query Examples: .claude/skills/mcp-semantic-search/assets/query_examples.md"
-  echo "───────────────────────────────────────────────────────────────"
+  echo "References:"
+  echo "  - Semantic Search: .claude/skills/mcp-semantic-search/SKILL.md"
+  echo "  - Code Mode: .claude/skills/mcp-code-mode/SKILL.md"
+  echo "==============================="
   echo ""
 
   # Log suggestion

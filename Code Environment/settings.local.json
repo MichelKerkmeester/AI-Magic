@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/PostToolUse/enforce-markdown-post.sh"
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/PostToolUse/enforce-markdown-naming.sh"
           },
           {
             "type": "command",
@@ -61,7 +61,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/PostToolUse/enforce-markdown-post.sh"
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/PostToolUse/enforce-markdown-naming.sh"
           },
           {
             "type": "command",
@@ -78,7 +78,7 @@
           },
           {
             "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/PostToolUse/enforce-markdown-post-task.sh"
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/PostToolUse/enforce-markdown-naming.sh"
           }
         ]
       },
@@ -87,7 +87,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/PostToolUse/enforce-markdown-post.sh"
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/PostToolUse/enforce-markdown-naming.sh"
           },
           {
             "type": "command",
@@ -188,6 +188,10 @@
           {
             "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/PreToolUse/warn-duplicate-reads.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/PreToolUse/enforce-semantic-search.sh"
           }
         ]
       },
@@ -197,6 +201,10 @@
           {
             "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/PreToolUse/warn-duplicate-reads.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/PreToolUse/enforce-semantic-search.sh"
           }
         ]
       },
@@ -250,7 +258,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/UserPromptSubmit/detect-mcp-workflow.sh"
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/UserPromptSubmit/suggest-mcp-tools.sh"
           },
           {
             "type": "command",
@@ -262,15 +270,15 @@
           },
           {
             "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/UserPromptSubmit/enforce-git-workspace-choice.sh"
+          },
+          {
+            "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/UserPromptSubmit/enforce-verification.sh"
           },
           {
             "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/UserPromptSubmit/orchestrate-skill-validation.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/UserPromptSubmit/suggest-code-mode.sh"
           },
           {
             "type": "command",

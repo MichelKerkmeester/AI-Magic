@@ -49,7 +49,44 @@ Use this orchestrator when:
 
 ---
 
-## 2. 🧭 SMART ROUTING
+## 2. 🚨 WORKSPACE CHOICE ENFORCEMENT
+
+**MANDATORY**: The AI must NEVER autonomously decide between creating a branch or worktree.
+
+### Hook Enforcement
+
+Git workspace strategy is enforced by the `enforce-git-workspace-choice.sh` UserPromptSubmit hook. When git workspace triggers are detected (new feature, create branch, worktree, etc.), the user MUST explicitly choose:
+
+| Option | Description | Best For |
+|--------|-------------|----------|
+| **A) Create a new branch** | Standard branch on current repo | Quick fixes, small changes |
+| **B) Create a git worktree** | Isolated workspace in separate directory | Parallel work, complex features |
+| **C) Work on current branch** | No new branch created | Trivial changes, exploration |
+
+### AI Behavior Requirements
+
+1. **WAIT** for user to answer the workspace question before proceeding
+2. **NEVER** assume which workspace strategy the user wants
+3. **RESPECT** the user's choice throughout the workflow
+4. If user has already answered this session, reuse their preference
+
+### Override Phrases
+
+Power users can bypass the question with explicit phrases:
+- `"use branch"` / `"create branch"` → Branch selected
+- `"use worktree"` / `"in a worktree"` → Worktree selected
+- `"current branch"` / `"on this branch"` → Current branch selected
+
+### Session Persistence
+
+Once user chooses, their preference is stored for 1 hour. The hook won't re-ask unless:
+- Session expires (1 hour)
+- User explicitly overrides with a different phrase
+- User starts a new Claude Code session
+
+---
+
+## 3. 🧭 SMART ROUTING
 
 ```python
 def route_git_resources(task):
@@ -84,7 +121,7 @@ def route_git_resources(task):
 
 ---
 
-## 3. 🗂️ REFERENCES
+## 4. 🗂️ REFERENCES
 
 ### Core Framework & Workflow Phases
 | Document                             | Purpose                                    | Key Insight                                              |
@@ -107,7 +144,7 @@ def route_git_resources(task):
 
 ---
 
-## 4. 🛠️ HOW TO USE
+## 5. 🛠️ HOW TO USE
 
 ### Git Development Lifecycle Map
 
@@ -138,7 +175,7 @@ Git development flows through 3 phases:
 
 ---
 
-## 5. 🗺️ SKILL SELECTION DECISION TREE
+## 6. 🗺️ SKILL SELECTION DECISION TREE
 
 **What are you doing?**
 
@@ -190,7 +227,7 @@ git-finish (feature A) → git-finish (feature B)
 
 ---
 
-## 6. 📋 SHARED PATTERNS
+## 7. 📋 SHARED PATTERNS
 
 Common git patterns, commands, and conventions are documented in detail.
 
@@ -203,7 +240,7 @@ Common git patterns, commands, and conventions are documented in detail.
 
 ---
 
-## 7. 💡 INTEGRATION EXAMPLES
+## 8. 💡 INTEGRATION EXAMPLES
 
 ### Example 1: New Authentication Feature
 
@@ -236,7 +273,7 @@ Common git patterns, commands, and conventions are documented in detail.
 
 ---
 
-## 8. ⚡ QUICK REFERENCE
+## 9. ⚡ QUICK REFERENCE
 
 **For one-page cheat sheet**: See [quick_reference.md](./references/quick_reference.md)
 

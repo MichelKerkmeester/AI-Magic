@@ -44,9 +44,9 @@ INPUT=$(cat)
 # Check dependencies
 check_dependency "jq" "brew install jq (macOS) or apt install jq (Linux)" || exit 0
 
-# Extract tool name and parameters
-TOOL=$(echo "$INPUT" | jq -r '.tool // empty' 2>/dev/null)
-PARAMS=$(echo "$INPUT" | jq -r '.parameters // {}' 2>/dev/null)
+# Extract tool name and parameters (PreToolUse payload uses .name, not .tool)
+TOOL=$(echo "$INPUT" | jq -r '.name // empty' 2>/dev/null)
+PARAMS=$(echo "$INPUT" | jq -r '.tool_input // .parameters // {}' 2>/dev/null)
 
 # Only check Grep tool (not Read/Glob - those have legitimate uses)
 if [ "$TOOL" != "Grep" ]; then

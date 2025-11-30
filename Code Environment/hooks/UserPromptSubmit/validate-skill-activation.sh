@@ -43,9 +43,12 @@ if [ -z "$PROMPT" ]; then
   exit 0
 fi
 
-# Load skill rules configuration
-SKILL_RULES="$(cd "$SCRIPT_DIR/../.." && pwd)/configs/skill-rules.json"
+# Standardized config path resolution
 PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || (cd "$SCRIPT_DIR/../.." && pwd))
+CONFIGS_DIR="${CONFIGS_DIR:-$PROJECT_ROOT/.claude/configs}"
+
+# Load skill rules configuration
+SKILL_RULES="$CONFIGS_DIR/skill-rules.json"
 SPECS_DIR="$PROJECT_ROOT/specs"
 DOC_GUIDE="$PROJECT_ROOT/.claude/knowledge/conversation_documentation.md"
 

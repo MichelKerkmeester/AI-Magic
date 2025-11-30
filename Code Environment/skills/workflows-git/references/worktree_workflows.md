@@ -4,6 +4,21 @@ Complete workflow documentation for creating isolated git workspaces with minima
 
 ---
 
+## 🚨 IMPORTANT: WORKSPACE CHOICE ENFORCEMENT
+
+**This workflow only applies when user has explicitly chosen "Create a git worktree" (Option B).**
+
+Git workspace strategy is enforced by the `enforce-git-workspace-choice.sh` hook. The AI:
+- **MUST WAIT** for user to answer the workspace question before executing any commands
+- **NEVER** autonomously decides between branch and worktree
+- Only proceeds with worktree creation after user selects Option B
+
+If the user has not been prompted or selected a different option:
+- Option A (Branch) → Do NOT use this workflow, create a standard branch instead
+- Option C (Current branch) → Do NOT use this workflow, work on the existing branch
+
+---
+
 ## 1. 🎯 OVERVIEW
 
 Git worktrees create isolated working directories sharing the same repository database. Each worktree can have a different branch checked out, allowing parallel work without context switching.

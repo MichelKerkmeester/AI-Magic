@@ -79,10 +79,14 @@ fi
 # LOAD CONFIGURATION
 # ───────────────────────────────────────────────────────────────
 
-# Check project config first
-CONFIG_PATH="$CWD/.claude/configs/context-pruning.json"
+# Standardized config path resolution
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "$CWD")
+CONFIGS_DIR="${CONFIGS_DIR:-$PROJECT_ROOT/.claude/configs}"
 
-# Fallback to default if not found
+# Check project config
+CONFIG_PATH="$CONFIGS_DIR/context-pruning.json"
+
+# Fallback to hooks-relative path if not found
 if [ ! -f "$CONFIG_PATH" ]; then
   CONFIG_PATH="$HOOKS_DIR/../configs/context-pruning.json"
 fi
@@ -242,6 +246,16 @@ TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 END_TIME=$(date +%s%N)
 DURATION=$(( (END_TIME - START_TIME) / 1000000 ))
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] prune-context.sh ${DURATION}ms" >> "$LOG_DIR/performance.log"
+
+# ───────────────────────────────────────────────────────────────
+# VISIBLE NOTIFICATION (systemMessage for always-visible output)
+# ───────────────────────────────────────────────────────────────
+# PreCompact stdout only shows in verbose mode (Ctrl+O).
+# JSON with systemMessage is always visible in terminal.
+
+if [ $EXIT_CODE -eq 0 ]; then
+  echo '{"systemMessage": "Context pruned successfully - optimized for compaction"}'
+fi
 
 # Always allow compaction to proceed (PreCompact cannot block)
 exit $EXIT_ALLOW

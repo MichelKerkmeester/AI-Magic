@@ -194,6 +194,8 @@ start_agent_tracking "$AGENT_ID" "$DESCRIPTION" "$MODEL" "$TIMEOUT" 2>/dev/null 
 # Create timestamp file for enforce-markdown-post-task.sh to find recently created files
 # This file is checked by the post-task hook to only process files created during this Task
 touch "/tmp/.claude_task_start_$$" 2>/dev/null || true
+# Cleanup trap to prevent temp file resource leak
+trap "rm -f /tmp/.claude_task_start_$$" EXIT
 
 # Store enhanced metadata in agent state
 STATE_FILE="/tmp/claude_hooks_state/agent_tracking.json"
@@ -289,11 +291,31 @@ COMPLEXITY_LABEL=$(get_complexity_label "$COMPLEXITY_SCORE")
 # ENHANCED DISPLAY OUTPUT
 # ───────────────────────────────────────────────────────────────
 
+# Helper: Escape JSON string (handles quotes, backslashes, newlines)
+json_escape() {
+  local str="$1"
+  # Use jq if available for proper escaping
+  if command -v jq >/dev/null 2>&1; then
+    printf '%s' "$str" | jq -Rs '.' | sed 's/^"//;s/"$//'
+  else
+    # Fallback: basic escaping for common characters
+    printf '%s' "$str" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g' | tr -d '\n'
+  fi
+}
+
 # Display logic: Enhanced format for all agents with rich metadata
 if [ -z "$BATCH_ID" ]; then
   # ─────────────────────────────────────────────────────────────
   # SINGLE AGENT FORMAT (enhanced with metadata)
   # ─────────────────────────────────────────────────────────────
+
+  # JSON systemMessage for terminal visibility (REQUIRED for Claude Code)
+  ESCAPED_DESC=$(json_escape "$DESC_SHORT")
+  ESCAPED_TYPE=$(json_escape "$SUBAGENT_TYPE")
+  ESCAPED_MODEL=$(json_escape "$MODEL")
+  echo "{\"systemMessage\": \"Agent #${AGENT_COUNT} DISPATCHED: ${ESCAPED_TYPE} | Model: ${ESCAPED_MODEL} | Domain: ${PRIMARY_DOMAIN} | Task: ${ESCAPED_DESC}\"}"
+
+  # Detailed box format for logs/verbose mode
   {
     echo ""
     echo "╔══════════════════════════════════════════════════════════╗"
@@ -311,6 +333,14 @@ else
   # ─────────────────────────────────────────────────────────────
   # BATCH FORMAT (parallel dispatch with position)
   # ─────────────────────────────────────────────────────────────
+
+  # JSON systemMessage for terminal visibility (REQUIRED for Claude Code)
+  ESCAPED_DESC=$(json_escape "$DESC_SHORT")
+  ESCAPED_TYPE=$(json_escape "$SUBAGENT_TYPE")
+  ESCAPED_MODEL=$(json_escape "$MODEL")
+  echo "{\"systemMessage\": \"PARALLEL BATCH [${BATCH_POSITION}]: ${ESCAPED_TYPE} | Model: ${ESCAPED_MODEL} | Domain: ${PRIMARY_DOMAIN} | Task: ${ESCAPED_DESC}\"}"
+
+  # Detailed box format for logs/verbose mode
   {
     echo ""
     echo "╔══════════════════════════════════════════════════════════╗"

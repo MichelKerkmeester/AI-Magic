@@ -167,7 +167,6 @@ parallel_dispatch_config:
   # Session preference (1 hour persistence)
   session_preference:
     persist_duration_seconds: 3600
-    storage: "session_context"
 
   # Override phrases for power users
   override_phrases:

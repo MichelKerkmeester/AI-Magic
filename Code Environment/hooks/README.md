@@ -7,15 +7,16 @@ Automated workflows and quality checks for Claude Code interactions. Hooks trigg
 1. [📖 OVERVIEW](#1--overview)
 2. [🔄 HOOK LIFECYCLE](#2--hook-lifecycle)
 3. [🎯 INSTALLED HOOKS](#3--installed-hooks)
-4. [🔑 EXIT CODE CONVENTION](#4--exit-code-convention)
-5. [⚡ PERFORMANCE EXPECTATIONS](#5--performance-expectations)
-6. [🔗 HOW HOOKS CONNECT](#6--how-hooks-connect)
-7. [📚 SHARED LIBRARIES](#7--shared-libraries)
-8. [📊 LOGS DIRECTORY](#8--logs-directory)
-9. [⚙️ CONFIGURATION](#9-️-configuration)
-10. [🛠️ HELPER SCRIPTS](#10-️-helper-scripts)
-11. [💡 KEY BEHAVIORAL FEATURES](#11--key-behavioral-features)
-12. [📖 ADDITIONAL RESOURCES](#12--additional-resources)
+4. [📤 HOOK OUTPUT VISIBILITY](#4--hook-output-visibility)
+5. [🔑 EXIT CODE CONVENTION](#5--exit-code-convention)
+6. [⚡ PERFORMANCE EXPECTATIONS](#6--performance-expectations)
+7. [🔗 HOW HOOKS CONNECT](#7--how-hooks-connect)
+8. [📚 SHARED LIBRARIES](#8--shared-libraries)
+9. [📊 LOGS DIRECTORY](#9--logs-directory)
+10. [⚙️ CONFIGURATION](#10-️-configuration)
+11. [🛠️ HELPER SCRIPTS](#11-️-helper-scripts)
+12. [💡 KEY BEHAVIORAL FEATURES](#12--key-behavioral-features)
+13. [📖 ADDITIONAL RESOURCES](#13--additional-resources)
 
 ---
 
@@ -89,9 +90,9 @@ User Action
 │  - validate-skill-activation.sh (0)     │
 │  - orchestrate-skill-validation.sh (0) 🆕│
 │  - suggest-semantic-search.sh (0) 🆕    │
-│  - suggest-code-mode.sh (0) 🆕          │
-│  - detect-mcp-workflow.sh (0) 🆕        │
+│  - suggest-mcp-tools.sh (0) 🆕          │
 │  - enforce-spec-folder.sh (0*)          │
+│  - enforce-git-workspace-choice.sh (0*) │
 │  - enforce-verification.sh (1)          │
 │  - enforce-markdown-strict.sh (1)       │
 │  Note: (0*) = prompts but allows        │
@@ -114,12 +115,14 @@ User Action
 │  - validate-spec-final.sh (1) 🆕        │
 │  - announce-task-dispatch.sh (0) 🎯     │
 │  - warn-duplicate-reads.sh (0) 🔄       │
+│  - enforce-semantic-search.sh (0) 🔍    │
 │  Note: (1) = blocks execution           │
 │        (0) = educational warning        │
 │        🆕  = Code Mode / SpecKit        │
 │        🎯  = Agent lifecycle visibility │
 │        🔄  = Context optimization       │
 │        🛡️  = Filename enforcement       │
+│        🔍  = Semantic search suggestion │
 └────────┬────────────────────────────────┘
          │
          ▼
@@ -131,8 +134,7 @@ User Action
          ▼
 ┌─────────────────────────────────────────┐
 │  PostToolUse Hooks                      │
-│  - enforce-markdown-post.sh (0)         │
-│  - enforce-markdown-post-task.sh (0) 🆕 │
+│  - enforce-markdown-naming.sh (0) 🔀    │
 │  - validate-post-response.sh (0)        │
 │  - remind-cdn-versioning.sh (0)         │
 │  - skill-scaffold-trigger.sh (0)        │
@@ -141,7 +143,7 @@ User Action
 │  Note: (0) = non-blocking auto-fix      │
 │        🎯  = Agent lifecycle visibility │
 │        📊  = Scope monitoring           │
-│        🆕  = Post-Task enforcement      │
+│        🔀  = Merged (v2.0.0)            │
 └────────┬────────────────────────────────┘
          │
          ▼
@@ -184,10 +186,10 @@ User Action
 | validate-skill-activation | UserPromptSubmit | Match prompts to skills (v2.0.0 - pre-compiled cache) | Every prompt | 0 | 97-1200ms |
 | orchestrate-skill-validation | UserPromptSubmit | Calculate complexity, emit mandatory dispatch questions | Complexity ≥20% + 2+ domains | 0 | <100ms |
 | suggest-semantic-search | UserPromptSubmit | Semantic search MCP (v2.0.0 - contextual patterns) | `find code`, `locate` | 0 | ~13ms |
-| suggest-code-mode | UserPromptSubmit | Code Mode for MCP tools | `webflow`, `figma`, `notion` | 0 | ~15ms |
+| suggest-mcp-tools | UserPromptSubmit | MCP tools + Code Mode (merged v2.0.0) | `webflow`, `figma`, `notion` | 0 | ~20ms |
 | suggest-prompt-improvement | UserPromptSubmit | Prompt quality reminders | All prompts | 0 | ~15ms |
-| detect-mcp-workflow | UserPromptSubmit | MCP workflow guidance | MCP operations | 0 | ~12ms |
 | enforce-spec-folder | UserPromptSubmit | Spec folder validation | File modifications | 0* | <200ms |
+| enforce-git-workspace-choice | UserPromptSubmit | Git workspace mandatory question | `new feature`, `create branch` | 0* | <100ms |
 | enforce-verification | UserPromptSubmit | Require verification (v3.0.0 - 0% false positives) | Implementation tasks | 1 | ~50ms |
 | enforce-markdown-strict | UserPromptSubmit | Markdown structure validation | Markdown edits | 1 | <200ms |
 | validate-bash | PreToolUse | Block wasteful commands | Bash tool | 1 | <50ms |
@@ -198,8 +200,7 @@ User Action
 | validate-spec-final | PreToolUse | Final spec validation | Write/Edit/NotebookEdit | 1 | ~40ms |
 | announce-task-dispatch | PreToolUse | Agent dispatch (v2.0.0 - rich metadata) | Task tool | 0 | <20ms |
 | warn-duplicate-reads | PreToolUse | Duplicate detection (v2.0.0 - JSON intelligence) | Read/Grep/Glob | 0 | 25-55ms |
-| enforce-markdown-post | PostToolUse | Filename auto-correction | Write/Edit markdown | 0 | <50ms |
-| enforce-markdown-post-task | PostToolUse | Post-Task markdown cleanup (v1.0.0) | Task tool | 0 | <500ms |
+| enforce-markdown-naming | PostToolUse | Filename enforcement (merged v2.0.0) | Write/Edit/Task | 0 | <200ms |
 | remind-cdn-versioning | PostToolUse | CDN reminders (v2.0.0 - multi-tier detection) | Edit CSS/JS | 0 | <20ms |
 | skill-scaffold-trigger | PostToolUse | Auto-scaffold skill directories | Write SKILL.md | 0 | ~30ms |
 | suggest-cli-verification | PostToolUse | CLI testing (fixed: 0%→100% detection) | Edit implementation | 0 | ~25ms |
@@ -216,6 +217,79 @@ User Action
 **Exit Codes**: `0` = Non-blocking | `0*` = Prompts user | `1` = Blocking
 
 **Common Integrations**: All hooks log to `.claude/hooks/logs/` | Config: `skill-rules.json`, `template-validation.json` | Libraries: `lib/output-helpers.sh`, `lib/spec-context.sh`, `lib/signal-output.sh`
+
+---
+
+## 4. 📤 HOOK OUTPUT VISIBILITY
+
+**CRITICAL**: Understanding how Claude Code displays hook output is essential for effective hook development.
+
+### Output Visibility Rules
+
+| Goal | Method | Exit Code | Stream | When Visible |
+|------|--------|-----------|--------|--------------|
+| **Always visible to user** | `echo '{"systemMessage": "..."}'` | 0 | stdout | Terminal (always) |
+| Block + show message to user | `{"decision": "block", "reason": "..."}` | 0 | stdout (JSON) | Terminal |
+| Claude context only | Plain text (UserPromptSubmit hooks) | 0 | stdout | Not visible to user |
+| Verbose mode only | Plain stdout (other hook types) | 0 | stdout | Ctrl+O to see |
+| Block with error to Claude | stderr message | 2 | stderr | Fed to Claude |
+
+### JSON systemMessage Format
+
+For messages that should **ALWAYS** appear in the user's terminal (regardless of verbose mode):
+
+```bash
+# Single-line JSON with systemMessage field
+echo '{"systemMessage": "Your visible message here"}'
+```
+
+**Example - Agent dispatch notification:**
+```bash
+echo '{"systemMessage": "Agent #1 DISPATCHED: code-specialist | Model: opus | Task: Fix authentication bug"}'
+```
+
+**Example - Context pruning notification:**
+```bash
+echo '{"systemMessage": "Context pruned successfully - optimized for compaction"}'
+```
+
+### Common Mistakes
+
+1. **Using plain echo expecting visibility** - Plain stdout only shows in verbose mode (Ctrl+O)
+2. **Wrong exit code** - Exit 2 feeds stderr to Claude, exit 1 shows in verbose mode only
+3. **Not enabling verbose mode during development** - Press Ctrl+O to see hook output
+4. **UserPromptSubmit stdout confusion** - For this hook type, stdout becomes Claude context, not user-visible
+
+### Safe JSON Construction
+
+Use `jq` for proper JSON escaping:
+
+```bash
+# Safe JSON construction with dynamic values
+local msg
+msg=$(jq -n --arg text "$DYNAMIC_VALUE" '{systemMessage: $text}')
+echo "$msg"
+```
+
+**Fallback for when jq unavailable:**
+```bash
+# Manual escaping helper
+json_escape() {
+  printf '%s' "$1" | jq -Rs '.' 2>/dev/null | sed 's/^"//;s/"$//' || \
+  printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'
+}
+```
+
+### Hooks Using systemMessage
+
+| Hook | Message Type |
+|------|--------------|
+| `signal-output.sh` | Mandatory question notifications |
+| `announce-task-dispatch.sh` | Agent dispatch notifications |
+| `prune-context.sh` | Context pruning status |
+| `suggest-semantic-search.sh` | Semantic search recommendations |
+
+---
 
 ### 3.1 Critical Hooks (Detailed)
 
@@ -301,10 +375,15 @@ User Action
 
 ### 3.2 Quality & Documentation Hooks
 
-#### enforce-markdown-post.sh (PostToolUse)
+#### enforce-markdown-naming.sh (PostToolUse) - v2.0.0 Merged
+**Purpose**: Unified markdown filename enforcement (merged from enforce-markdown-post.sh + enforce-markdown-post-task.sh)
 **Auto-fixes**: ALL CAPS → lowercase, hyphens → underscores
-**Preserves**: README.md, SKILL.md exceptions
+**Preserves**: README.md, SKILL.md, AGENTS.md, CLAUDE.md, GEMINI.md exceptions
 **Output**: Condensed (one-line per fix)
+**Features**:
+  - Handles both direct Write/Edit operations AND Task tool sub-agent modifications
+  - Scans directories for violations after Task completion
+  - Atomic rename support for case-insensitive filesystems
 
 #### enforce-markdown-strict.sh (UserPromptSubmit)
 **Validates**: Frontmatter, section order, heading hierarchy
@@ -399,13 +478,17 @@ User Action
   - Architecture understanding: "how does X work" → "How does X work?"
   - Code navigation: "find all X usage" → "Find all X usage patterns"
 **Deduplication**: Prevents overlap with validate-skill-activation.sh (skips implementation prompts)
-**Output**: Contextual intelligence with actionable query templates (not generic suggestions)
+**Output**: JSON systemMessage for terminal visibility + Claude context for AI guidance
 **References**: `mcp_semantic_search.md`, `mcp_code_mode.md`
 
-#### suggest-code-mode.sh (UserPromptSubmit)
-**Detects**: Webflow, Figma, Notion, GitHub API operations
-**Purpose**: Remind about Code Mode efficiency (68% fewer tokens)
-**Performance**: ~15ms
+#### suggest-mcp-tools.sh (UserPromptSubmit) - v2.0.0 Merged
+**Purpose**: Unified MCP tools + Code Mode suggestions (merged from suggest-code-mode.sh + detect-mcp-workflow.sh)
+**Detects**: Webflow, Figma, Notion, GitHub API, ClickUp, multi-tool workflow patterns
+**Features**:
+  - Domain detection via lib/domain-detection.sh library
+  - Complexity scoring for parallel dispatch decisions
+  - Code Mode efficiency reminders (68% fewer tokens)
+**Performance**: ~20ms
 
 #### announce-task-dispatch.sh (PreToolUse) - v2.0.0 Rich Metadata
 **Purpose**: Announce agent dispatch with rich lifecycle tracking before Task tool execution
@@ -424,18 +507,27 @@ User Action
   - Auto-recovery from corruption
 **Output**: Success/failure status, accurate execution time, files modified count
 
-#### enforce-markdown-post-task.sh (PostToolUse) - v1.0.0 Post-Task Cleanup
-**Purpose**: Enforce markdown filename conventions after Task tool completion
-**Problem Solved**: Sub-agents spawned by Task tool run in separate contexts and bypass parent session's PostToolUse hooks
-**Scans**: Root, `.claude/hooks/`, `specs/` directories for markdown files modified in last 5 minutes
-**Enforces**: lowercase_snake_case naming (same rules as enforce-markdown-post.sh)
-**Exceptions**: README.md, AGENTS.md, CLAUDE.md, GEMINI.md, SKILL.md (in appropriate locations)
+#### enforce-semantic-search.sh (PreToolUse) - v1.0.0
+**Purpose**: Suggest semantic search before Glob/Grep operations for exploratory queries
+**Triggers**: Glob and Grep tool calls matching exploratory patterns
+**Output**: JSON systemMessage for terminal visibility
 **Features**:
-  - Atomic rename support for case-insensitive filesystems
-  - Two-step rename process (temp → final) for case-only changes
-  - Auto-rollback on failure
-**Performance**: <500ms (limited depth scan for efficiency)
-**Integration**: Works alongside enforce-markdown-post.sh (direct Write/Edit) for complete coverage
+  - Pattern matching for code discovery queries
+  - Integration with mcp-semantic-search skill
+**Performance**: <30ms
+
+#### enforce-git-workspace-choice.sh (UserPromptSubmit) - v1.0.0
+**Purpose**: Mandatory question for git workspace strategy before feature work
+**Triggers**: "new feature", "create branch", "worktree", "fix bug", "hotfix"
+**Options**:
+  - A) Create a new branch (standard workflow)
+  - B) Create a git worktree (isolated workspace)
+  - C) Work on current branch (quick fixes)
+**Features**:
+  - 1-hour session preference caching
+  - Override phrases: "use branch", "use worktree", "current branch"
+  - Integration with lib/signal-output.sh for mandatory questions
+**Performance**: <100ms
 
 ### 3.5 Verification & Compliance Hooks
 
@@ -483,14 +575,16 @@ User Action
 
 ---
 
-## 4. 🔑 EXIT CODE CONVENTION
+## 5. 🔑 EXIT CODE CONVENTION
 
-**Standardized across all 20 hooks** (updated Nov 2025):
+**Standardized across all hooks** (updated Nov 2025):
 
 ```
 0 = Allow (hook passed, continue execution)
 1 = Block (hook failed, stop execution with warning)
-2 = Error (reserved for critical failures - currently unused)
+2 = Error (reserved for blocking with stderr fed to Claude)
+3 = Warning (advisory, non-blocking - from lib/exit-codes.sh)
+4 = Skip (skip remaining hooks in chain - from lib/exit-codes.sh)
 ```
 
 ### Blocking Hooks (use exit 1)
@@ -506,11 +600,12 @@ User Action
 - `validate-skill-activation.sh` - Skill suggestions (non-blocking)
 - `orchestrate-skill-validation.sh` - Skill orchestration (non-blocking)
 - `suggest-semantic-search.sh` - Search reminders (non-blocking)
-- `suggest-code-mode.sh` - Code Mode suggestions (non-blocking)
-- `detect-mcp-workflow.sh` - MCP workflow detection (non-blocking)
+- `suggest-mcp-tools.sh` - MCP tools + Code Mode suggestions (merged v2.0.0)
 - `enforce-spec-folder.sh` - Spec folder prompts (non-blocking)
+- `enforce-git-workspace-choice.sh` - Git workspace selection (non-blocking)
 - `validate-mcp-calls.sh` - MCP call pattern education (non-blocking)
-- `enforce-markdown-post.sh` - Auto-fix filenames (non-blocking)
+- `enforce-markdown-naming.sh` - Auto-fix filenames (merged v2.0.0)
+- `enforce-semantic-search.sh` - Semantic search suggestions for Glob/Grep (non-blocking)
 - `validate-post-response.sh` - Quality reminders (non-blocking)
 - `skill-scaffold-trigger.sh` - Directory scaffolding (non-blocking)
 - `remind-cdn-versioning.sh` - CDN update reminder (non-blocking)
@@ -526,7 +621,7 @@ User Action
 
 ---
 
-## 5. ⚡ PERFORMANCE EXPECTATIONS
+## 6. ⚡ PERFORMANCE EXPECTATIONS
 
 All hooks include a `PERFORMANCE TARGET` comment in their header specifying expected execution time.
 
@@ -585,7 +680,7 @@ awk '$3 > 100 {print}' .claude/hooks/logs/performance.log
 
 ---
 
-## 6. 🔗 HOW HOOKS CONNECT
+## 7. 🔗 HOW HOOKS CONNECT
 
 ### Connection Flow
 
@@ -738,18 +833,18 @@ Most hooks write to `.claude/hooks/logs/`:
 
 ---
 
-## 7. 📚 SHARED LIBRARIES
+## 8. 📚 SHARED LIBRARIES
 
 ### Library Reference Table
 
 | Library | Purpose | Key Functions | Used By | Performance |
 |---------|---------|---------------|---------|-------------|
 | **output-helpers.sh** | Standardized hook output formatting | `log_info()`, `log_warn()`, `log_error()`, `log_success()` | All hooks | N/A (output only) |
-| **exit-codes.sh** | Exit code constants | `EXIT_SUCCESS=0`, `EXIT_BLOCK=1`, `EXIT_CONTINUE=0` | All hooks | N/A (constants) |
+| **exit-codes.sh** | Exit code constants | `EXIT_SUCCESS=0`, `EXIT_BLOCK=1`, `EXIT_WARNING=3`, `EXIT_SKIP=4` | All hooks | N/A (constants) |
 | **transform-transcript.js** | JSONL → JSON conversion | `transformTranscript()`, content filtering | workflows-save-context-trigger.sh | ~500ms |
-| **shared-state.sh** | Cross-hook state management (BSD-compatible v1.0.0) | `write_hook_state()`, `read_hook_state()`, `clear_hook_state()` | Multiple hooks | <5ms |
+| **shared-state.sh** | Cross-hook state management (BSD-compatible v1.0.0) | `write_hook_state()`, `read_hook_state()`, `clear_hook_state()`, `get_state_dir()` | Multiple hooks | <5ms |
 | **agent-tracking.sh** | Agent lifecycle tracking | `track_dispatch()`, `track_completion()` | orchestrate-skill-validation.sh, announce-task-dispatch.sh | ~10ms |
-| **signal-output.sh** | JSON signal generation | `emit_signal()`, `emit_mandatory_question()` | enforce-spec-folder.sh, check-pending-questions.sh | <5ms |
+| **signal-output.sh** | JSON signal generation (v2.0.0 - systemMessage) | `emit_signal()`, `emit_mandatory_question()` | enforce-spec-folder.sh, check-pending-questions.sh, enforce-git-workspace-choice.sh | <5ms |
 | **spec-context.sh** | Spec folder state management | `get_spec_marker_path()`, `has_substantial_content()`, `create_spec_marker()` | enforce-spec-folder.sh, workflows-save-context | ~10ms |
 | **template-validation.sh** | Template placeholder detection | `validate_template()`, `check_placeholders()` | validate-post-response.sh | ~20ms |
 | **anchor-generator.js** | HTML anchor generation for memory files | `generateAnchorId()`, `categorizeSection()` | workflows-save-context (generate-context.js) | <50ms |
@@ -757,8 +852,14 @@ Most hooks write to `.claude/hooks/logs/`:
 | **relevance-scorer.sh** | 4-dimension relevance scoring | `calculate_relevance()` (category, keywords, recency, proximity) | load-related-context.sh (smart/search_all) | ~10ms per anchor |
 | **file-scope-tracking.sh** | File modification tracking | `track_file()`, `get_modified_files()` | detect-scope-growth.sh, track-file-modifications.sh | <10ms |
 | **context-pruner.js** | Context pruning engine (v2.0.0 - DCP-style) | `extractToolCalls()`, `deduplicateToolCalls()`, `displaySummary()` | prune-context.sh | <5s |
+| **platform-utils.sh** | Cross-platform utilities (v1.0.0) | `get_file_size()`, `get_file_mtime()`, `sanitize_session_id()`, `relpath()` | Multiple hooks | <5ms |
+| **tool-input-parser.sh** | JSON input parsing (v1.0.0) | `read_tool_input()`, `parse_file_path()`, `is_file_editing_tool()` | PreToolUse/PostToolUse hooks | <5ms |
+| **perf-timing.sh** | Performance timing (v1.0.0) | `start_timing()`, `end_timing()`, `log_performance()` | All hooks | <1ms |
+| **hook-init.sh** | Common initialization boilerplate (v1.0.0) | Sources common libraries, sets up logging | All hooks | <5ms |
+| **domain-detection.sh** | Complexity domain detection (v1.0.0) | `detect_domains()`, `count_domains()`, `get_domain_keywords()` | suggest-mcp-tools.sh, orchestrate-skill-validation.sh | <10ms |
+| **markdown-naming.sh** | Markdown naming conventions (v1.0.0) | `to_snake_case()`, `is_naming_violation()`, `atomic_rename()` | enforce-markdown-naming.sh | <10ms |
 
-### 7.1 Core Libraries
+### 8.1 Core Libraries
 
 #### output-helpers.sh
 **Functions**: `log_info`, `log_warn`, `log_error`, `log_success`, `log_block`
@@ -766,10 +867,11 @@ Most hooks write to `.claude/hooks/logs/`:
 **Usage**: Source in all hooks for consistent output
 
 #### exit-codes.sh
-**Constants**: `EXIT_SUCCESS=0` (allow), `EXIT_BLOCK=1` (block), `EXIT_CONTINUE=0` (non-blocking)
+**Constants**: `EXIT_SUCCESS=0`, `EXIT_BLOCK=1`, `EXIT_CONTINUE=0`, `EXIT_WARNING=3`, `EXIT_SKIP=4`
 **Purpose**: Standardized exit codes across all hooks
+**New in v2.0.0**: `EXIT_WARNING` for advisory messages, `EXIT_SKIP` for skipping remaining hooks
 
-### 7.2 Context & State Management
+### 8.2 Context & State Management
 
 #### spec-context.sh
 **V9 Features**: Session-aware markers (`.spec-active.{SESSION_ID}`), sub-folder routing
@@ -797,7 +899,7 @@ Most hooks write to `.claude/hooks/logs/`:
 **Storage**: In-memory arrays
 **Purpose**: Detect scope creep, duplicate operations
 
-### 7.3 Memory & Retrieval
+### 8.3 Memory & Retrieval
 
 #### anchor-generator.js (V9.0)
 **8-Category Taxonomy**: decision (1.0), implementation (0.9), guide (0.85), architecture (0.8), discovery (0.7), integration (0.65), files (0.5), summary (0.4)
@@ -814,7 +916,7 @@ Most hooks write to `.claude/hooks/logs/`:
 **Output**: Relevance score 0-100
 **Usage**: Called by load-related-context.sh for smart/search_all commands
 
-### 7.4 Transformation & Processing
+### 8.4 Transformation & Processing
 
 #### transform-transcript.js
 **Input**: JSONL transcript from Claude Code
@@ -841,7 +943,7 @@ Most hooks write to `.claude/hooks/logs/`:
 **Config**: `.claude/configs/template-validation.json`
 **Purpose**: Ensure complete template population
 
-### 7.5 Agent & Workflow
+### 8.5 Agent & Workflow
 
 #### agent-tracking.sh - JSON Validation & Corruption Recovery
 **Tracks**: Agent dispatch, completion, duration
@@ -855,12 +957,68 @@ Most hooks write to `.claude/hooks/logs/`:
 **Output**: Agent lifecycle visibility in hooks
 **Used by**: announce-task-dispatch.sh, summarize-task-completion.sh
 
-#### signal-output.sh
+#### signal-output.sh (v2.0.0 - systemMessage)
 **Generates**: JSON signals for mandatory questions, blocking conditions
 **Format**: `{"signal": "MANDATORY_QUESTION", "blocking": true, "question": {...}}`
-**Purpose**: Standardized AI communication protocol
+**New in v2.0.0**: JSON systemMessage output for always-visible terminal notifications
+**Purpose**: Standardized AI communication protocol with user visibility
+**jq Dependency**: Now includes jq availability check with warning
 
-### 7.6 Usage Pattern
+### 8.6 New Utility Libraries (v2.0.0)
+
+#### platform-utils.sh
+**Purpose**: Cross-platform utilities for macOS/Linux compatibility
+**Functions**:
+  - `get_file_size(file)` - Get file size in bytes
+  - `get_file_mtime(file)` - Get file modification time
+  - `parse_timestamp(ts)` - Parse ISO timestamp
+  - `generate_unique_id()` - Generate unique identifier
+  - `sanitize_session_id(id)` - Clean session IDs for safe filenames
+  - `relpath(path, base)` - Get relative path
+**Compatibility**: BSD (macOS) and GNU (Linux) compatible
+
+#### tool-input-parser.sh
+**Purpose**: JSON input parsing for PreToolUse/PostToolUse hooks
+**Functions**:
+  - `read_tool_input()` - Read and cache stdin JSON
+  - `parse_file_path()` - Extract file_path from tool input
+  - `is_file_editing_tool()` - Check if tool modifies files
+  - `is_file_reading_tool()` - Check if tool reads files
+  - `get_prompt()` - Get user prompt from input
+  - `get_session_id()` - Get session ID from input
+
+#### perf-timing.sh
+**Purpose**: Performance timing utilities
+**Functions**:
+  - `start_timing()` - Record start time
+  - `end_timing()` - Calculate elapsed time
+  - `log_performance(hook, duration)` - Log to performance.log
+  - `auto_start_timing()` - Automatic timing on source
+**Usage**: Source at start of hook, calls auto_start_timing()
+
+#### hook-init.sh
+**Purpose**: Common initialization boilerplate
+**Sources**: output-helpers.sh, exit-codes.sh, perf-timing.sh
+**Sets Up**: LOG_DIR, LOG_FILE, HOOKS_DIR variables
+**Usage**: `source "$HOOKS_DIR/lib/hook-init.sh"` at start of hook
+
+#### domain-detection.sh
+**Purpose**: Complexity domain detection for parallel dispatch
+**Functions**:
+  - `detect_domains(prompt)` - Detect domains in prompt
+  - `count_domains(domains)` - Count unique domains
+  - `get_domain_keywords(domain)` - Get keywords for domain
+**Domains**: code, docs, testing, config, research, design
+
+#### markdown-naming.sh
+**Purpose**: Markdown filename conventions
+**Functions**:
+  - `to_snake_case(name)` - Convert to snake_case
+  - `is_naming_violation(name)` - Check for violations
+  - `atomic_rename(src, dst)` - Case-safe rename
+**Exceptions**: README.md, SKILL.md, AGENTS.md, CLAUDE.md, GEMINI.md
+
+### 8.7 Usage Pattern
 
 ```bash
 # Source libraries in hooks
@@ -877,7 +1035,7 @@ exit $EXIT_SUCCESS
 
 ---
 
-## 8. 📊 LOGS DIRECTORY
+## 9. 📊 LOGS DIRECTORY
 
 All hooks write to `.claude/hooks/logs/` for debugging and audit trail.
 
@@ -948,7 +1106,7 @@ ls -lh .claude/hooks/logs/*.log
 
 ---
 
-## 9. ⚙️ CONFIGURATION
+## 10. ⚙️ CONFIGURATION
 
 ### `.claude/configs/skill-rules.json`
 
@@ -1060,7 +1218,7 @@ bash .claude/hooks/scripts/validate-config.sh
 
 ---
 
-## 10. 🛠️ HELPER SCRIPTS
+## 11. 🛠️ HELPER SCRIPTS
 
 ### `.claude/hooks/scripts/find-related-spec.sh`
 
@@ -1283,7 +1441,7 @@ bash .claude/hooks/scripts/validate-config.sh
 **Recommended**: Run before committing changes to skill-rules.json
 ---
 
-## 11. 💡 KEY BEHAVIORAL FEATURES
+## 12. 💡 KEY BEHAVIORAL FEATURES
 
 ### Smart Spec Folder Enforcement
 
@@ -1322,7 +1480,7 @@ The `validate-skill-activation.sh` hook suggests relevant skills based on prompt
 
 ---
 
-## 12. 📖 ADDITIONAL RESOURCES
+## 13. 📖 ADDITIONAL RESOURCES
 
 ### Skills Documentation
 

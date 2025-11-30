@@ -96,6 +96,50 @@ case "$TOOL_NAME" in
 esac
 
 # ───────────────────────────────────────────────────────────────
+# HELPER FUNCTIONS (must be defined before use)
+# ───────────────────────────────────────────────────────────────
+
+# Calculate time elapsed in seconds since timestamp
+calculate_time_elapsed_seconds() {
+  local prev_time="$1"
+
+  # Get current time in seconds since epoch
+  local now_epoch
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    now_epoch=$(date +%s)
+  else
+    now_epoch=$(date +%s)
+  fi
+
+  # Parse previous time (ISO 8601 format)
+  local prev_epoch
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS: use -j for parsing
+    prev_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$prev_time" +%s 2>/dev/null || echo "$now_epoch")
+  else
+    # Linux: use -d for parsing
+    prev_epoch=$(date -d "$prev_time" +%s 2>/dev/null || echo "$now_epoch")
+  fi
+
+  echo $((now_epoch - prev_epoch))
+}
+
+# Convert seconds to human-readable format
+seconds_to_human_readable() {
+  local diff=$1
+
+  if [ $diff -lt 60 ]; then
+    echo "${diff}s"
+  elif [ $diff -lt 3600 ]; then
+    echo "$((diff / 60))m"
+  elif [ $diff -lt 86400 ]; then
+    echo "$((diff / 3600))h"
+  else
+    echo "$((diff / 86400))d"
+  fi
+}
+
+# ───────────────────────────────────────────────────────────────
 # CHECK FOR DUPLICATES (WITH CONTEXT-AWARE INTELLIGENCE)
 # ───────────────────────────────────────────────────────────────
 
@@ -296,47 +340,3 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] warn-duplicate-reads.sh ${DURATION}ms" >> "
 
 # Always allow execution (non-blocking advisory)
 exit 0
-
-# ───────────────────────────────────────────────────────────────
-# HELPER FUNCTIONS
-# ───────────────────────────────────────────────────────────────
-
-# Calculate time elapsed in seconds since timestamp
-calculate_time_elapsed_seconds() {
-  local prev_time="$1"
-
-  # Get current time in seconds since epoch
-  local now_epoch
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    now_epoch=$(date +%s)
-  else
-    now_epoch=$(date +%s)
-  fi
-
-  # Parse previous time (ISO 8601 format)
-  local prev_epoch
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    # macOS: use -j for parsing
-    prev_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$prev_time" +%s 2>/dev/null || echo "$now_epoch")
-  else
-    # Linux: use -d for parsing
-    prev_epoch=$(date -d "$prev_time" +%s 2>/dev/null || echo "$now_epoch")
-  fi
-
-  echo $((now_epoch - prev_epoch))
-}
-
-# Convert seconds to human-readable format
-seconds_to_human_readable() {
-  local diff=$1
-
-  if [ $diff -lt 60 ]; then
-    echo "${diff}s"
-  elif [ $diff -lt 3600 ]; then
-    echo "$((diff / 60))m"
-  elif [ $diff -lt 86400 ]; then
-    echo "$((diff / 3600))h"
-  else
-    echo "$((diff / 86400))d"
-  fi
-}

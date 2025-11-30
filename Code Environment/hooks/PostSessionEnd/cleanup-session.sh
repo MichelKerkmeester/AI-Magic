@@ -34,6 +34,7 @@ PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || (cd "$SCRIPT_DIR/../
 # Source libraries silently
 source "$HOOKS_DIR/lib/output-helpers.sh" 2>/dev/null || true
 source "$HOOKS_DIR/lib/shared-state.sh" 2>/dev/null || true
+source "$HOOKS_DIR/lib/exit-codes.sh" 2>/dev/null || true
 
 # Directories
 LOG_DIR="$HOOKS_DIR/logs"
@@ -71,11 +72,32 @@ fi
 # Clean up session-specific state files
 clear_hook_state "session" 2>/dev/null || true
 clear_hook_state "complexity" 2>/dev/null || true
+clear_hook_state "parallel_dispatch_completed" 2>/dev/null || true
+clear_hook_state "parallel_dispatch_asked_ever" 2>/dev/null || true
+
+# Clean up agent tracking if function exists
+if type cleanup_agent_state >/dev/null 2>&1; then
+  cleanup_agent_state 0 2>/dev/null || true
+fi
 
 # Clean up old temporary files (older than 60 minutes)
 if [ -d "$STATE_DIR" ]; then
   find "$STATE_DIR" -type f -mmin +60 -delete 2>/dev/null || true
 fi
+
+# Clean up session-specific state directory
+SESSION_STATE_DIR="$STATE_DIR/${SESSION_ID:-}"
+if [[ -n "$SESSION_ID" ]] && [[ "$SESSION_ID" != "unknown" ]] && [[ -d "$SESSION_STATE_DIR" ]]; then
+  rm -rf "$SESSION_STATE_DIR" 2>/dev/null || true
+fi
+
+# Trigger log rotation if any log exceeds 500KB
+for log in "$LOG_DIR"/*.log; do
+  if [[ -f "$log" ]] && [[ $(wc -c < "$log" 2>/dev/null | tr -d ' ') -gt 512000 ]]; then
+    bash "$HOOKS_DIR/scripts/rotate-logs.sh" --quiet 2>/dev/null || true
+    break
+  fi
+done
 
 # V9: Clean up session-specific spec marker
 # Each session has its own marker file (.claude/.spec-active.{SESSION_ID})
@@ -107,4 +129,4 @@ if [ "$START_TIME" -gt 0 ] && [ "$END_TIME" -gt 0 ]; then
 fi
 
 # Always allow (non-blocking, cleanup)
-exit 0
+exit ${EXIT_ALLOW:-0}
