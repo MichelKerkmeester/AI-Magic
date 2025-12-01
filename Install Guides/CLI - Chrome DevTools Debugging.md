@@ -66,14 +66,14 @@ Chrome DevTools CLI (`bdg`) is a lightweight terminal-based tool for direct Chro
 
 ### How It Compares
 
-| Feature | bdg (CLI) | Chrome DevTools MCP | Puppeteer |
-|---------|-----------|---------------------|-----------|
-| **Setup** | npm install -g | MCP server config | npm + code |
-| **Execution** | Direct bash | Via Code Mode | Node.js scripts |
-| **Token Cost** | Lowest | Medium | High |
-| **Discovery** | --list, --describe | Type definitions | Docs required |
-| **Use Case** | Quick tasks, terminal workflows | IDE automation | Complex testing |
-| **Learning Curve** | Minimal | Medium | Steep |
+| Feature            | bdg (CLI)                       | Chrome DevTools MCP | Puppeteer       |
+| ------------------ | ------------------------------- | ------------------- | --------------- |
+| **Setup**          | npm install -g                  | MCP server config   | npm + code      |
+| **Execution**      | Direct bash                     | Via Code Mode       | Node.js scripts |
+| **Token Cost**     | Lowest                          | Medium              | High            |
+| **Discovery**      | --list, --describe              | Type definitions    | Docs required   |
+| **Use Case**       | Quick tasks, terminal workflows | IDE automation      | Complex testing |
+| **Learning Curve** | Minimal                         | Medium              | Steep           |
 
 ### What You Can Do
 
@@ -995,13 +995,13 @@ fi
 
 ### Performance Considerations
 
-| Task | bdg (CLI) | Chrome DevTools MCP | Recommendation |
-|------|-----------|---------------------|----------------|
-| **Quick screenshot** | <2s | ~5s | Use bdg |
-| **Console monitoring** | <1s | ~3s | Use bdg |
-| **Multi-viewport testing** | <5s | ~15s | Use bdg |
-| **Complex automation** | Medium | High | Depends on workflow |
-| **Token cost (AI)** | Low (10-50 tokens) | Medium (100-300 tokens) | bdg 70% cheaper |
+| Task                       | bdg (CLI)          | Chrome DevTools MCP     | Recommendation      |
+| -------------------------- | ------------------ | ----------------------- | ------------------- |
+| **Quick screenshot**       | <2s                | ~5s                     | Use bdg             |
+| **Console monitoring**     | <1s                | ~3s                     | Use bdg             |
+| **Multi-viewport testing** | <5s                | ~15s                    | Use bdg             |
+| **Complex automation**     | Medium             | High                    | Depends on workflow |
+| **Token cost (AI)**        | Low (10-50 tokens) | Medium (100-300 tokens) | bdg 70% cheaper     |
 
 ### Project Structure
 
