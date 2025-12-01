@@ -32,6 +32,88 @@ Templates and best practices for creating production-quality slash commands in C
 
 ---
 
+## 1.5. 🚨 MANDATORY GATE PATTERN (CRITICAL)
+
+**For commands with REQUIRED arguments**, add a mandatory gate immediately after frontmatter to prevent context inference.
+
+### Why This Pattern Exists
+
+Without this gate, AI agents may:
+- Infer tasks from conversation history or open files
+- Assume what the user wants based on screenshots or context
+- Proceed with incorrect assumptions instead of asking
+
+### The Pattern
+
+Add this block **immediately after frontmatter, before any other content**:
+
+```markdown
+# 🚨 MANDATORY FIRST ACTION - DO NOT SKIP
+
+**BEFORE READING ANYTHING ELSE IN THIS FILE, CHECK `$ARGUMENTS`:**
+
+\`\`\`
+IF $ARGUMENTS is empty, undefined, or contains only whitespace (ignoring mode flags):
+    → STOP IMMEDIATELY
+    → Use AskUserQuestion tool with this exact question:
+        question: "[Context-appropriate question]"
+        options:
+          - label: "[Action label]"
+            description: "[What user will provide]"
+    → WAIT for user response
+    → Use their response as the [input type]
+    → Only THEN continue with this workflow
+
+IF $ARGUMENTS contains [expected input]:
+    → Continue reading this file
+\`\`\`
+
+**CRITICAL RULES:**
+- **DO NOT** infer [input type] from context, screenshots, or existing files
+- **DO NOT** assume what the user wants based on conversation history
+- **DO NOT** proceed past this point without an explicit [input] from the user
+- The [input] MUST come from `$ARGUMENTS` or user's answer to the question above
+```
+
+### When to Use
+
+| Argument Type | Use Mandatory Gate? | Example |
+|---------------|---------------------|---------|
+| `<required>` (angle brackets) | ✅ **YES** | `<task>`, `<query>`, `<spec-folder>` |
+| `[optional]` (square brackets) | ❌ No (has default) | `[count]`, `[--flag]` |
+| `[:auto\|:confirm]` mode flags | ❌ No (mode selection) | Mode suffixes only |
+
+### Example Questions by Command Type
+
+| Command Purpose | Question |
+|-----------------|----------|
+| Planning | "What would you like to plan?" |
+| Research | "What topic would you like to research?" |
+| Implementation | "Which spec folder would you like to implement?" |
+| File improvement | "What would you like to improve and which files?" |
+| Prompt enhancement | "What prompt would you like to improve?" |
+| Generic routing | "What request would you like to route?" |
+
+### Real Examples
+
+**Plan command:**
+```markdown
+question: "What would you like to plan?"
+options:
+  - label: "Describe my task"
+    description: "I'll provide a task description for planning"
+```
+
+**Implement command:**
+```markdown
+question: "Which spec folder would you like to implement?"
+options:
+  - label: "Specify the folder"
+    description: "I'll provide the spec folder path (e.g., specs/042-feature-name/)"
+```
+
+---
+
 ## 2. 📄 SIMPLE COMMAND TEMPLATE
 
 Use for: Single-action commands with straightforward execution.
@@ -41,6 +123,33 @@ Use for: Single-action commands with straightforward execution.
 description: [Action verb] [what it does] [context/scope]
 argument-hint: "<required-arg> [optional-arg]"
 allowed-tools: Tool1, Tool2
+---
+
+# 🚨 MANDATORY FIRST ACTION - DO NOT SKIP
+
+**BEFORE READING ANYTHING ELSE IN THIS FILE, CHECK `$ARGUMENTS`:**
+
+\`\`\`
+IF $ARGUMENTS is empty, undefined, or contains only whitespace:
+    → STOP IMMEDIATELY
+    → Use AskUserQuestion tool with this exact question:
+        question: "[What do you want to do?]"
+        options:
+          - label: "Describe my request"
+            description: "I'll provide the required information"
+    → WAIT for user response
+    → Use their response as the input
+    → Only THEN continue with this workflow
+
+IF $ARGUMENTS contains required input:
+    → Continue reading this file
+\`\`\`
+
+**CRITICAL RULES:**
+- **DO NOT** infer from context, screenshots, or conversation history
+- **DO NOT** assume what the user wants
+- **DO NOT** proceed without explicit input from the user
+
 ---
 
 # [Command Title]
@@ -129,8 +238,35 @@ Use for: Multi-step processes with defined phases and outputs.
 ```markdown
 ---
 description: [Workflow name] ([N] steps) - [brief purpose]
-argument-hint: "[topic] [context]"
+argument-hint: "<topic> [context]"
 allowed-tools: Read, Write, Edit, Bash, Task, AskUserQuestion
+---
+
+# 🚨 MANDATORY FIRST ACTION - DO NOT SKIP
+
+**BEFORE READING ANYTHING ELSE IN THIS FILE, CHECK `$ARGUMENTS`:**
+
+\`\`\`
+IF $ARGUMENTS is empty, undefined, or contains only whitespace:
+    → STOP IMMEDIATELY
+    → Use AskUserQuestion tool with this exact question:
+        question: "[What would you like to accomplish?]"
+        options:
+          - label: "Describe my goal"
+            description: "I'll provide the workflow input"
+    → WAIT for user response
+    → Use their response as the topic
+    → Only THEN continue with this workflow
+
+IF $ARGUMENTS contains topic:
+    → Continue reading this file
+\`\`\`
+
+**CRITICAL RULES:**
+- **DO NOT** infer from context, screenshots, or conversation history
+- **DO NOT** assume what the user wants
+- **DO NOT** proceed without explicit input from the user
+
 ---
 
 # [Workflow Title]
@@ -234,6 +370,35 @@ Use for: Commands supporting `:auto` and `:confirm` execution modes.
 ```markdown
 ---
 description: [Workflow name] ([N] steps) - [purpose]. Supports :auto and :confirm modes
+argument-hint: "<request> [:auto|:confirm]"
+allowed-tools: Read, Write, Edit, Bash, Task, AskUserQuestion
+---
+
+# 🚨 MANDATORY FIRST ACTION - DO NOT SKIP
+
+**BEFORE READING ANYTHING ELSE IN THIS FILE, CHECK `$ARGUMENTS`:**
+
+\`\`\`
+IF $ARGUMENTS is empty, undefined, or contains only whitespace (ignoring mode flags):
+    → STOP IMMEDIATELY
+    → Use AskUserQuestion tool with this exact question:
+        question: "[What would you like to do?]"
+        options:
+          - label: "Describe my request"
+            description: "I'll provide the request details"
+    → WAIT for user response
+    → Use their response as the request
+    → Only THEN continue with this workflow
+
+IF $ARGUMENTS contains a request:
+    → Continue reading this file
+\`\`\`
+
+**CRITICAL RULES:**
+- **DO NOT** infer from context, screenshots, or conversation history
+- **DO NOT** assume what the user wants based on open files
+- **DO NOT** proceed without explicit request from the user
+
 ---
 
 ## Smart Command: /[command-name]
@@ -561,6 +726,16 @@ Before publishing a command, verify:
 - [ ] `argument-hint` shows expected format (if args expected)
 - [ ] `allowed-tools` lists all tools used (if any)
 - [ ] No angle brackets `< >` in description (reserved for hints)
+
+### Mandatory Gate (CRITICAL for required arguments)
+- [ ] If `argument-hint` contains `<required>` args → **MANDATORY GATE present**
+- [ ] Gate is **immediately after frontmatter**, before any other content
+- [ ] Gate uses `AskUserQuestion` tool with appropriate question
+- [ ] Gate includes all 4 CRITICAL RULES (DO NOT infer, assume, proceed)
+- [ ] Question is context-appropriate for the command purpose
+- [ ] Skip gate only if ALL arguments are `[optional]` with defaults
+
+> **Rationale**: Without the mandatory gate, AI agents infer from context instead of asking users. This caused the `/plan:cc_opus` bug where commands would execute based on visible spec folders rather than asking users what they want to plan.
 
 ### Structure
 - [ ] H1 title matches command purpose (no subtitle)
