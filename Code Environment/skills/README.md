@@ -649,55 +649,9 @@ Finding authentication logic:
 
 ---
 
-### 3.5 Hook Creation & Management (1 skill)
+### 3.5 Skill Maturity Matrix
 
-#### `create-hooks` (v1.0.0)
-
-**Purpose**: Comprehensive hook creation documentation for Claude Code's 8 hook types providing templates, payload structures, best practices, and testing strategies
-
-**Maturity**: Medium | **References**: 5 files | **Assets**: 8 files | **Scripts**: 2 files
-
-**Key Capabilities**:
-- **8 Hook Types Coverage**: PreCompact, UserPromptSubmit, PreToolUse, PostToolUse, PreRead, PostRead, PreResponse, PostResponse
-- **Template Provision**: Ready-to-use templates for each hook type with payload structures
-- **Testing Strategies**: Comprehensive testing guide with validation workflows
-- **Production Examples**: Real-world hook implementations and best practices
-
-**Hook Lifecycle Phases**:
-- **Pre-Execution**: PreCompact (context optimization)
-- **User Prompt Processing**: UserPromptSubmit (validation, suggestions)
-- **Tool Execution**: PreToolUse, PostToolUse (tool validation, result processing)
-- **File Operations**: PreRead, PostRead (file access control)
-- **Response Generation**: PreResponse, PostResponse (quality checks, formatting)
-
-**When to Use**:
-- Creating custom automation workflows
-- Building project-specific quality checks
-- Implementing automated triggers
-- Understanding hook system architecture
-- Extending Claude Code with custom tooling
-
-**Example**:
-```bash
-Creating custom quality check hook:
-→ Skill(skill: "create-hooks")
-→ Select hook type: PostToolUse (after tool execution)
-→ Use template from assets/hook_template_PostToolUse.sh
-→ Implement validation logic
-→ Test with validation script
-→ Deploy to .claude/hooks/PostToolUse/
-```
-
-**Integration Points**:
-- Works with: create-documentation (documenting hooks), workflows-code (testing hooks)
-- Triggered by: workflows-spec-kit (hooks enforce spec folder creation)
-- Foundation for: All hook-assisted workflows in the system
-
----
-
-### 3.6 Skill Maturity Matrix
-
-**Overview**: All 14 skills across 6 categories with version, maturity, and documentation metrics
+**Overview**: All 13 skills across 5 categories with version, maturity, and documentation metrics
 
 | Skill | Version | Maturity | Category | References | Assets | Scripts |
 |-------|---------|----------|----------|------------|--------|---------|
@@ -713,7 +667,6 @@ Creating custom quality check hook:
 | workflows-planning | v1.0.0 | ★★★ Medium | Orchestrator | 4 | 0 | 1 |
 | mcp-semantic-search | v1.0.0 | ★★★ Medium | MCP Integration | 3 | 1 | 0 |
 | create-parallel-sub-agents | v1.0.0 | ★★★ Medium | Orchestration | 5 | 2 | 0 |
-| create-hooks | v1.0.0 | ★★★ Medium | Hook Creation | 5 | 8 | 2 |
 | cli-codex | v1.0.0 | ★★★ Medium | CLI Wrapper | 4 | 0 | 0 |
 
 **Maturity Levels**:
@@ -728,7 +681,7 @@ Creating custom quality check hook:
 - v3.x: 1 skill (7%) - Most mature
 - v2.x: 1 skill (7%) - Major update
 - v1.1.x: 2 skills (14%) - Minor updates
-- v1.0.0: 9 skills (64%) - Stable releases
+- v1.0.0: 8 skills (62%) - Stable releases
 
 **Documentation Metrics**:
 - **Average References**: 5.1 files per skill
