@@ -51,14 +51,8 @@ Before ANY code/file changes or terminal commands:
 **Exceptions**: Analysis, reading files, and explanations allowed without permission
 **Critical**: No implementation without user approval AND spec folder creation
 
-#### ⚡ Memory File Loading (Mid-Conversation)
-When continuing work in an existing spec folder with memory files, ask user:
-- **A)** Load most recent memory file
-- **B)** Load all recent files (up to 3)
-- **C)** List all files and select specific
-- **D)** Skip (start fresh)
-
-Use Read tool (parallel calls for option B) to load selected files.
+#### ⚡ Memory File Loading (After Spec Folder Selection)
+When user selects Option A (Use existing spec folder) or Option C (Update related spec), and memory files exist, ask user to choose A/B/C/D. See Section 2 "Memory File Selection" for options.
 
 #### ⚡ Git Workspace Choice (MANDATORY)
 
@@ -93,22 +87,7 @@ Ask clarifying questions when:
 - Confidence is below 80%
 - Multiple reasonable interpretations exist
 
-Pause and ask before proceeding.
-
-**Truth Standards:**
-- Prefix uncertain claims with: "I'M UNCERTAIN ABOUT THIS:"
-- Output "UNKNOWN" when information is insufficient or unverifiable
-- Never fabricate plausible-sounding details or invent details
-- State confidence levels as percentages
-- Meaning preservation and coherence are priority one
-
-Example: `I'M UNCERTAIN ABOUT THIS: The endpoint may require auth scope "read:forms".`
-
-**Enforcement Rules:**
-- If uncertain or unverifiable → output "UNKNOWN" explicitly (no guessing)
-- Fast wrong answers waste more time than admitting limitations
-- Users make critical decisions based on your output - accuracy > speed
-- Preserve truth even when it means saying "I don't know"
+Pause and ask before proceeding. See Section 3 for confidence scoring and thresholds.
 
 #### ⚡ Common Failure Patterns & Detection
 
@@ -280,29 +259,10 @@ CHECKLIST VERIFICATION RULE (Level 2+):
 - **Multi-file changes often need higher level** than LOC alone suggests
 - **Enforcement is HARD** - hooks block commits with missing required templates
 
-```python
-# ──────────────────────────────────────────────────────────────────────────────
-# DOCUMENTATION LEVEL DETECTION (Executable Logic - Progressive Enhancement)
-**Level Selection** (LOC as soft guidance):
-- Any task → Level 1 minimum | Required: spec.md, plan.md, tasks.md
-- Needs QA validation → Level 2 | Required: L1 + checklist.md
-- Complex/architectural → Level 3 | Required: L2 + decision-record.md
-- **Overrides**: High risk OR arch impact OR >5 files → bump to higher level
-- **Enforcement**: Hard block - hooks prevent commits with missing files
-- **Rule**: When in doubt → choose higher level
-```
-
 ### Spec Folder: `/specs/[###-short-name]/`
 **Find next #**: `ls -d specs/[0-9]*/ | sed 's/.*\/\([0-9]*\)-.*/\1/' | sort -n | tail -1`
 **Name format**: 2-3 words, lowercase, hyphens (e.g., `fix-typo`, `add-auth`, `mcp-code-mode`)
-**Templates**: `.opencode/speckit/templates/` - Copy these files:
-  - `spec.md` → Core requirements
-  - `plan.md` → Implementation plan
-  - `tasks.md` → Task breakdown
-  - `checklist.md` → Validation checklist
-  - `research.md` → Research documentation
-  - `research-spike.md` → Research spike (prefix with topic)
-  - `decision-record.md` → Decision records (prefix with topic)
+**Templates**: `.opencode/speckit/templates/` (see template list above)
 **MANDATORY**: Copy from templates - NEVER create documentation from scratch. Fill ALL placeholders.
 
 **Sub-Folder Versioning** (when reusing spec folders):
@@ -324,7 +284,7 @@ CHECKLIST VERIFICATION RULE (Level 2+):
 
 **Memory File Selection & Context Loading:**
 
-When continuing work in an existing spec folder (mid-conversation with substantial content), previous session memory files may be available for loading. The system shows up to 3 recent memory files with relative timestamps and offers 4 options:
+When user selects Option A (Use existing spec folder) or Option C (Update related spec), previous session memory files may be available for loading. This question is asked IMMEDIATELY after spec folder selection, not mid-conversation. The system shows up to 3 recent memory files with relative timestamps and offers 4 options:
 
 - **A)** Load most recent file (quick context refresh)
 - **B)** Load all recent files (comprehensive context)
@@ -550,15 +510,7 @@ Sense → Interpret → Verify → Reflect → Publish
 - Publish: answer + uncertainty + citations
 ```
 
-**⚠️ Anti-Fabrication Detection - Check for these common rationalizations:**
-- □ Am I about to respond without verifying? (See Section 1)
-- □ Am I thinking "this is straightforward/trivial" without running through process? (See Section 1)
-- □ Am I about to claim completion without showing evidence? (See Section 1)
-- □ Am I proceeding despite uncertainty to appear helpful? (See Section 1)
-- □ Am I about to skip the checklist because "I already know this"? (See Section 1)
-- □ Am I leaving old content "just in case"? (See Section 1)
-
-**If ANY detection triggers fire → STOP and follow the proper procedure (see Section 1 Enforcement Protocol)**
+**⚠️ Anti-Fabrication:** If tempted to skip verification, claim "straightforward", or proceed despite uncertainty → See Section 1 Failure Patterns #3, #4, #7, #10. STOP and follow Enforcement Protocol.
 
 **Pre-Change Checklist - Before making ANY file changes, verify:**
 
@@ -617,101 +569,7 @@ Review response for:
 - **Chrome DevTools (cli-chrome-devtools):** Browser debugging via terminal (bdg CLI tool) - through Code Mode
 - **Native Tools:** Read/Grep/Glob/Bash for file operations and simple tasks
 
-See executable routing logic below and Quick Decision tree in Section 6.
-
-```python
-# ──────────────────────────────────────────────────────────────────────────────
-# TOOL ROUTING (Executable Logic)
-# ──────────────────────────────────────────────────────────────────────────────
-TOOLS = {
-    "read": {"triggers": ["known_file_path"], "use": "Specific file access"},
-    "grep": {"triggers": ["exact_symbol", "keyword"], "use": "Literal text search"},
-    "glob": {"triggers": ["file_pattern"], "use": "File discovery by pattern"},
-    "bash": {"triggers": ["terminal_op"], "use": "System commands"},
-
-    # SEMANTIC SEARCH - PRIORITY ROUTING (MANDATORY for code exploration)
-    # NOTE: Native MCP - call directly, NOT through Code Mode
-    "semantic_search": {
-        "triggers": [
-            "find code that", "how does", "where do we", "where is",
-            "what handles", "show me how", "locate", "which component",
-            "what implements", "find all", "what depends", "find similar",
-            "explore", "discover", "understand how"
-        ],
-        "mandatory_for": "cli_ai_agents",
-        "priority": "FIRST for code exploration",
-        "native_mcp": True,  # Call directly: semantic_search(), NOT call_tool_chain()
-        "use_cases": [
-            "Exploring unfamiliar code",
-            "Finding by behavior/intent (not symbol name)",
-            "Understanding patterns and relationships",
-            "Discovering cross-file dependencies"
-        ],
-        "do_not_use_for": [
-            "Known exact file paths (use Read)",
-            "Specific symbol searches (use Grep)",
-            "File structure exploration (use Glob)"
-        ]
-    },
-
-    "sequential_thinking": {"triggers": ["complex reasoning", "architecture_decision"], "native_mcp": True, "availability": "optional_mcp_server"},
-    "code_mode": {"triggers": ["External MCP tools: Webflow, Figma, ClickUp, Chrome DevTools"], "mandatory": True, "benefits": "68% fewer tokens"},
-    "chrome_devtools": {"triggers": ["bdg", "browser debugging"], "tool": "browser-debugger-cli"},
-    "parallel_agents": {"triggers": ["complexity >= 20%", "multi_domain"], "thresholds": {"auto": 50, "ask": 20, "direct": 0}}
-}
-
-def route_tool(intent: str, file_known: bool = False, is_cli: bool = True, complexity: int = 0) -> str:
-    """Route to most appropriate tool with semantic search priority."""
-
-    # PRIORITY 1: Check semantic search FIRST for code exploration (MANDATORY)
-    # NOTE: Semantic search is NATIVE MCP - call directly, NOT through Code Mode
-    if is_cli and _is_code_exploration(intent):
-        if _semantic_search_available():
-            return "semantic_search"  # Native MCP: call semantic_search() directly
-        else:
-            # Fallback to grep with warning
-            log_warning("Semantic search recommended but unavailable - using grep fallback")
-            return "grep"
-
-    # PRIORITY 2: Mandatory routing
-    if complexity >= 20 and _is_multi_domain(intent): return "parallel_agents"
-    if _is_external_mcp(intent): return "code_mode"  # External tools through Code Mode
-
-    # PRIORITY 3: Intent-based (native MCP tools)
-    if any(t in intent.lower() for t in ["analyze", "design decision"]): return "sequential_thinking"  # Native MCP
-    if any(t in intent.lower() for t in ["bdg", "browser debug"]): return "chrome_devtools"  # Through Code Mode
-
-    # PRIORITY 4: File operations (only if NOT code exploration)
-    if file_known: return "read"
-    if "pattern" in intent.lower(): return "glob"
-    if "keyword" in intent.lower(): return "grep"
-    return "bash"
-
-def _is_code_exploration(intent: str) -> bool:
-    """Detect if intent is code exploration (not known file access)."""
-    # Expanded patterns from mcp-semantic-search skill (14 triggers)
-    exploration_patterns = [
-        "find code that", "how does", "where do we", "where is",
-        "what handles", "show me how", "locate", "which component",
-        "what implements", "find all", "what depends", "find similar",
-        "explore", "discover", "understand how"
-    ]
-    return any(p in intent.lower() for p in exploration_patterns)
-
-def _semantic_search_available() -> bool:
-    """Check if semantic search MCP server is available."""
-    import os
-    # Check for vector database (indicates semantic search is indexed)
-    return os.path.exists(".codebase/vectors.db")
-
-def _is_multi_domain(intent: str) -> bool:
-    return sum(d in intent.lower() for d in ["code", "docs", "git", "testing", "devops"]) >= 2
-
-def _is_external_mcp(intent: str) -> bool:
-    """Check if intent requires external MCP tools (through Code Mode).
-    Note: Sequential Thinking and Semantic Search are NATIVE MCP, not external."""
-    return any(t in intent.lower() for t in ["figma", "webflow", "notion", "clickup", "chrome devtools"])
-```
+See Quick Decision tree in Section 6 for routing logic.
 
 #### Project-Specific MCP Configuration
 
@@ -790,10 +648,6 @@ All Code Mode tool calls follow the pattern: `{manual_name}.{manual_name}_{tool_
 **workflows-save-context**
 - **Trigger:** Every 20 messages, "save context"
 - **Reference:** Auto-triggered
-
-**workflows-planning**
-- **Trigger:** Complex planning, parallel exploration, verified plan
-- **Reference:** Auto-invoked by spec_kit:plan at step_6_planning
 
 **workflows-code**
 - **Trigger:** Frontend code changes
