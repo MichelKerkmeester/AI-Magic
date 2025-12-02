@@ -7,12 +7,11 @@ Specialized automation workflows and AI orchestrators for development tasks. Ski
 1. [📖 OVERVIEW](#1--overview)
 2. [🧩 SKILL TYPES](#2--skill-types)
 3. [🎯 INSTALLED SKILLS](#3--installed-skills)
-   - 3.1 [Workflow Orchestrators](#31-workflow-orchestrators-5-skills) (5 skills)
-   - 3.2 [Documentation Specialists](#32-documentation-specialists-2-skills) (2 skills)
+   - 3.1 [Workflow Orchestrators](#31-workflow-orchestrators-4-skills) (4 skills)
+   - 3.2 [Documentation Specialists](#32-documentation-specialists-1-skill) (1 skill)
    - 3.3 [CLI Tool Wrappers](#33-cli-tool-wrappers-3-skills) (3 skills)
    - 3.4 [MCP Integration](#34-mcp-integration-2-skills) (2 skills)
-   - 3.5 [Hook Creation & Management](#35-hook-creation--management-1-skill) (1 skill)
-   - 3.6 [Skill Maturity Matrix](#36-skill-maturity-matrix)
+   - 3.5 [Skill Maturity Matrix](#35-skill-maturity-matrix)
 4. [📁 SKILL STRUCTURE](#4--skill-structure)
 5. [🔄 SKILL ACTIVATION](#5--skill-activation)
 6. [🔑 PRIORITY LEVELS](#6--priority-levels)
@@ -82,7 +81,7 @@ This directory contains skills that provide structured guidance for complex deve
 **Examples**:
 - `workflows-code` - Development workflow orchestration (implementation, debugging, verification)
 - `workflows-git` - Git workflow orchestration (worktrees, commits, completion)
-- `create-parallel-sub-agents` - Dynamic sub-agent orchestration for complex multi-domain tasks
+- `workflows-spec-kit` - Spec folder workflow orchestration (documentation levels, templates)
 
 ### 2.2 Documentation Specialists
 
@@ -92,10 +91,10 @@ This directory contains skills that provide structured guidance for complex deve
 - Document structure enforcement
 - Quality analysis (C7Score)
 - Auto-formatting and validation
+- ASCII flowchart creation
 
 **Examples**:
-- `create-documentation` - Markdown optimization, skill creation, document validation
-- `create-flowchart` - ASCII flowchart generation for workflows and decision trees
+- `create-documentation` - Markdown optimization, skill creation, document validation, ASCII flowchart generation
 - `workflows-save-context` - Conversation context preservation and documentation
 
 ### 2.3 CLI Tool Wrappers
@@ -115,56 +114,9 @@ This directory contains skills that provide structured guidance for complex deve
 
 ## 3. 🎯 INSTALLED SKILLS
 
-**Total**: 13 skills across 6 categories | **Latest Update**: 2025-12-01
+**Total**: 10 skills across 5 categories | **Latest Update**: 2025-12-02
 
 ### 3.1 Workflow Orchestrators (4 skills)
-
-#### `create-parallel-sub-agents` (v1.0.0)
-
-**Purpose**: Dynamic agent orchestration system that autonomously creates and dispatches specialized sub-agents for complex multi-step tasks
-
-**Maturity**: Medium | **References**: 5 files | **Assets**: 2 files
-
-**Key Capabilities**:
-- **Task Complexity Analysis**: Calculates complexity score (0-100%) based on domains, parallelization, and dependencies
-- **Hook Integration**: Reads skill recommendations from `.claude/hooks/logs/skill-recommendations.log`
-- **Intelligent Sub-Agent Creation**: Creates ephemeral agents with targeted skill subsets
-- **Flexible Dispatch**: Parallel, sequential, or hybrid execution strategies
-
-**Decision Thresholds**:
-- **<25% complexity**: Direct handling (no orchestration overhead)
-- **25-34%**: Asks user preference (collaborative decision)
-- **≥35%**: Auto-dispatch sub-agents (maximum efficiency)
-
-**Key References**:
-- `complexity_scoring.md` - Task complexity heuristics and scoring algorithm
-- `skill_clustering.md` - Domain-based skill grouping strategies
-- `dispatch_decision.md` - When to dispatch vs direct handling
-- `sub_agent_lifecycle.md` - Agent creation, dispatch, integration, cleanup
-- `quick_reference.md` - One-page orchestrator cheat sheet
-
-**When to Use**:
-- Complex multi-domain tasks (code + docs + git + testing)
-- Tasks spanning 3+ functional domains
-- Opportunities for parallel execution
-- Multiple independent failures to investigate
-
-**Example**:
-```
-Implementing authentication with tests and docs:
-→ Complexity: 85% (3 domains: code, testing, documentation)
-→ Auto-dispatch: 3 parallel agents
-  - Agent 1: Code domain (code-standards, workflows-code)
-  - Agent 2: Test domain (test patterns, verification)
-  - Agent 3: Docs domain (create-documentation)
-→ Result: 60% faster than sequential, integrated results
-```
-
-**Integration Points**:
-- Reads from: `.claude/hooks/logs/skill-recommendations.log`
-- Coordinates: Other workflow skills (workflows-code, workflows-git, create-documentation)
-- Logs to: `.claude/hooks/logs/orchestrator.log`
-
 
 #### `workflows-code` (v2.0.0)
 
@@ -342,18 +294,26 @@ Loading context later:
 
 ---
 
-### 3.2 Documentation Specialists (2 skills)
+### 3.2 Documentation Specialists (1 skill)
 
-#### `create-documentation` (v3.2.0)
+#### `create-documentation` (v4.0.0)
 
-**Purpose**: Unified markdown and skill management with quality enforcement
+**Purpose**: Unified markdown and skill management with quality enforcement and ASCII flowchart creation
 
-**Maturity**: Very High | **References**: 6 files | **Assets**: 5 files | **Scripts**: 4 files
+**Maturity**: Very High | **References**: 6 files | **Assets**: 13 files | **Scripts**: 5 files
 
-**Capabilities**:
-- **Document Optimization**: C7Score analysis, structure validation, AI consumption optimization
-- **Skill Creation**: Scaffolding, validation, best practices enforcement
-- **Quality Analysis**: Structure checking, frontmatter validation, style enforcement
+**Three Modes**:
+- **Mode 1 - Document Quality**: C7Score analysis, structure validation, AI consumption optimization
+- **Mode 2 - Skill Creation**: Scaffolding, validation, best practices enforcement
+- **Mode 3 - Flowchart Creation**: ASCII flowcharts for workflows, decision trees, system architectures
+
+**Flowchart Patterns** (Mode 3):
+- Sequential workflows (linear pattern)
+- Parallel execution (concurrent blocks)
+- Decision trees with branching
+- Multi-path flows with approval gates
+- Nested processes with hierarchy
+- Swimlane diagrams
 
 **Commands**:
 ```bash
@@ -365,6 +325,9 @@ create-documentation validate --file path/to/doc.md --fix
 
 # Create new skill structure
 create-documentation create-skill --name my-skill
+
+# Validate flowchart
+scripts/validate_flowchart.sh path/to/flowchart.md
 ```
 
 **When to Use**:
@@ -372,6 +335,8 @@ create-documentation create-skill --name my-skill
 - Building new skills
 - Validating documentation quality
 - Optimizing docs for AI consumption
+- Documenting complex workflows with ASCII diagrams
+- Visualizing user journeys and decision trees
 
 **Example**:
 ```
@@ -379,36 +344,10 @@ Creating new skill:
 → create-documentation create-skill --name my-workflow
 → Auto-scaffolds SKILL.md, references/, assets/
 → Provides structure templates and validation
-```
 
-
-#### `create-flowchart` (v1.1.0)
-
-**Purpose**: Generate comprehensive ASCII flowcharts for visualizing workflows
-
-**Maturity**: Medium-High | **References**: 6 files | **Scripts**: 1 file (validate.sh)
-
-**Supports**:
-- Sequential workflows (linear pattern)
-- Parallel execution (concurrent blocks)
-- Decision trees with branching
-- Multi-path flows with approval gates
-- Nested processes with hierarchy
-
-**When to Use**:
-- Documenting complex workflows
-- Visualizing user journeys
-- Mapping system architectures
-- Creating decision tree documentation
-
-**Example**:
-```
-Documenting approval workflow:
-→ Skill(skill: "create-flowchart")
-→ Generates ASCII diagram with:
-  - Multiple approval gates
-  - Parallel execution paths
-  - Clear visual hierarchy
+Creating flowchart:
+→ Skill(skill: "create-documentation") with Mode 3
+→ Generates ASCII diagram with approval gates, parallel paths, visual hierarchy
 ```
 
 ---
@@ -614,21 +553,19 @@ Finding authentication logic:
 
 ### 3.5 Skill Maturity Matrix
 
-**Overview**: All 12 skills across 5 categories with version, maturity, and documentation metrics
+**Overview**: All 10 skills across 5 categories with version, maturity, and documentation metrics
 
 | Skill | Version | Maturity | Category | References | Assets | Scripts |
 |-------|---------|----------|----------|------------|--------|---------|
 | workflows-save-context | v9.0.0 | ★★★★★ Very High | Orchestrator | 2 | 0 | 1 |
-| create-documentation | v3.2.0 | ★★★★★ Very High | Documentation | 6 | 6 | 4 |
+| create-documentation | v4.0.0 | ★★★★★ Very High | Documentation | 6 | 13 | 5 |
 | workflows-code | v2.0.0 | ★★★★★ Very High | Orchestrator | 11 | 4 | 0 |
 | cli-gemini | v1.1.0 | ★★★★ High | CLI Wrapper | 4 | 0 | 0 |
 | cli-chrome-devtools | v1.0.0 | ★★★ Medium | CLI Wrapper | 3 | 4 | 0 |
-| create-flowchart | v1.1.0 | ★★★★ High | Documentation | 6 | 0 | 1 |
 | workflows-spec-kit | v1.0.0 | ★★★★ Medium-High | Orchestrator | 4 | 2 | 0 |
 | mcp-code-mode | v1.0.0 | ★★★★ Medium-High | MCP Integration | 5 | 2 | 1 |
 | workflows-git | v1.0.0 | ★★★ Medium | Orchestrator | 5 | 3 | 0 |
 | mcp-semantic-search | v1.0.0 | ★★★ Medium | MCP Integration | 3 | 1 | 0 |
-| create-parallel-sub-agents | v1.0.0 | ★★★ Medium | Orchestration | 5 | 2 | 0 |
 | cli-codex | v1.0.0 | ★★★ Medium | CLI Wrapper | 4 | 0 | 0 |
 
 **Maturity Levels**:
@@ -639,17 +576,17 @@ Finding authentication logic:
 - ★ **Experimental** (v0.1): Alpha stage, documentation in progress, not recommended for production
 
 **Version Distribution**:
-- v9.x: 1 skill (8%) - Anchor-based retrieval major version
-- v3.x: 1 skill (8%) - Most mature
-- v2.x: 1 skill (8%) - Major update
-- v1.1.x: 2 skills (17%) - Minor updates
-- v1.0.0: 7 skills (58%) - Stable releases
+- v9.x: 1 skill (10%) - Anchor-based retrieval major version
+- v4.x: 1 skill (10%) - Unified documentation with flowcharts
+- v2.x: 1 skill (10%) - Major update
+- v1.1.x: 1 skill (10%) - Minor updates
+- v1.0.0: 6 skills (60%) - Stable releases
 
 **Documentation Metrics**:
-- **Average References**: 5.1 files per skill
-- **Average Assets**: 2.1 files per skill
-- **Average Scripts**: 0.9 files per skill
-- **Total Documentation**: 106 files across all skills
+- **Average References**: 5.4 files per skill
+- **Average Assets**: 2.3 files per skill
+- **Average Scripts**: 0.7 files per skill
+- **Total Documentation**: 99 files across all skills
 
 **Mandatory Skills** (Required for specific operations):
 - 🔴 **workflows-spec-kit**: ALL file modifications
@@ -811,13 +748,11 @@ You MUST evaluate each skill above before proceeding:
 **Skills**:
 - `workflows-code` - Implementation, debugging, verification workflows
 - `workflows-git` - Git operations, commits, PR creation
-- `create-parallel-sub-agents` - Dynamic sub-agent orchestration for complex multi-domain tasks
 - `workflows-save-context` - Context preservation at conversation milestones
 
 **When Applied**:
 - Feature implementations → workflows-code
 - Git operations → workflows-git
-- Complex multi-domain tasks → create-parallel-sub-agents
 - Long conversations → workflows-save-context
 
 ### MEDIUM Priority
@@ -825,14 +760,13 @@ You MUST evaluate each skill above before proceeding:
 **Enforcement**: SUGGESTED - AI considers based on context
 
 **Skills**:
-- `create-documentation` - Documentation creation/validation
-- `create-flowchart` - Complex workflow visualization
+- `create-documentation` - Documentation creation/validation, flowchart visualization
 - `cli-codex` - Alternative AI perspectives
 - `cli-gemini` - Web research and current information
 
 **When Applied**:
 - Creating documentation → create-documentation
-- Need flowchart → create-flowchart
+- Need flowchart → create-documentation (Mode 3)
 - Need web search → cli-gemini
 
 ---
@@ -932,20 +866,10 @@ workflows-code (implementation)
 ```
 **Use when**: Need second opinion before committing
 
-**Pattern 4: Dynamic Agent Orchestration**
+**Pattern 4: Documentation Workflow**
 ```
-create-parallel-sub-agents (complexity analysis)
-  → Dispatches: workflows-code + create-documentation + workflows-git (parallel)
-    → Integrates results
-      → workflows-save-context (documentation)
-```
-**Use when**: Complex multi-domain tasks (code + docs + git + testing)
-
-**Pattern 5: Documentation Workflow**
-```
-create-documentation (validation)
-  → create-flowchart (visualization)
-    → workflows-save-context (preservation)
+create-documentation (validation + flowcharts)
+  → workflows-save-context (preservation)
 ```
 **Use when**: Creating comprehensive documentation with diagrams
 
@@ -960,12 +884,11 @@ create-documentation (validation)
 - `workflows-code` → Can use `cli-gemini`, `cli-codex` (Phase 2 verification)
 - `workflows-git` → Referenced by `workflows-code` (Phase 3 completion)
 - `workflows-save-context` → Triggered by `workflows-spec-kit` (auto-save)
-- `create-parallel-sub-agents` → Can dispatch ALL skills as sub-agents
 
 **Integration Pairing**:
 - `mcp-code-mode` + `mcp-semantic-search` - MCP orchestration with code discovery
 - `workflows-code` + `workflows-git` - Complete implementation to commit cycle
-- `create-documentation` + `create-flowchart` - Documentation suite
+- `create-documentation` (all modes) - Unified documentation suite with flowcharts
 - `cli-codex` + `cli-gemini` - Multi-AI perspective comparison
 
 ### Cross-Skill Integration (Legacy)
@@ -1100,10 +1023,10 @@ Skills reference knowledge base files in `.claude/knowledge/`:
 
 | Type | Purpose | Examples | Characteristics |
 |------|---------|----------|-----------------|
-| **workflow** | Multi-phase orchestration | workflows-code, workflows-git, create-parallel-sub-agents | Phase-based, comprehensive references |
-| **documentation** | Doc creation/validation | workflows-save-context, create-documentation | Structure enforcement, quality analysis |
-| **cli-tool** | External tool integration | cli-codex, cli-gemini | Parallel execution, attribution required |
-| **knowledge** | Reference documentation | code-standards, animation-strategy | Always-active, no execution logic |
+| **workflow** | Multi-phase orchestration | workflows-code, workflows-git, workflows-spec-kit | Phase-based, comprehensive references |
+| **documentation** | Doc creation/validation/visualization | workflows-save-context, create-documentation | Structure enforcement, quality analysis, flowcharts |
+| **cli-tool** | External tool integration | cli-codex, cli-gemini, cli-chrome-devtools | Parallel execution, attribution required |
+| **knowledge** | Reference documentation | code-standards | Always-active, no execution logic |
 
 ---
 
@@ -1360,7 +1283,7 @@ Skills and hooks work together:
 
 **Skill Creation**:
 - `.claude/skills/create-documentation/references/skill_creation.md` - Complete skill creation guide
-- `.claude/skills/create-documentation/assets/skill_asset_template.md` - Template examples
+- `.claude/skills/create-documentation/assets/skills/skill_asset_template.md` - Template examples
 
 **Hook Integration**:
 - `.claude/hooks/README.md` - Complete hook system documentation

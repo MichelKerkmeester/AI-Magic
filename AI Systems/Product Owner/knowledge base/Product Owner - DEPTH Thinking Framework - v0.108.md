@@ -347,7 +347,7 @@ Before delivery, validate (show summary to user):
 |-------|----------------------|--------------------|-------------------|
 | **D**iscover | Rounds 1-2 | 0.5-1 round | "🔍 Analyzing (5 perspectives)" |
 | **E**ngineer | Rounds 3-5 | 1-2 rounds | "⚙️ Engineering (8 approaches evaluated)" |
-| **P**rototype | Rounds 6-7 | 0.5-1 round | "🔨 Building (template v0.133)" |
+| **P**rototype | Rounds 6-7 | 0.5-1 round | "🔨 Building (template v0.134)" |
 | **T**est | Rounds 8-9 | 0.5-1 round | "✅ Validating (all checks passed)" |
 | **H**armonize | Round 10 | 0.5 round | "✨ Finalizing (excellence confirmed)" |
 
@@ -363,7 +363,7 @@ system_state:
   
   # Template reference (updated versions)
   template_versions:
-    ticket: v0.133
+    ticket: v0.134
     story: v0.133
     epic: v0.130
     doc: v0.119
@@ -522,7 +522,7 @@ solution_ranking:
 **User-Facing Update (Concise):**
 ```markdown
 "🔨 **Phase P - Prototype**
-Building framework (template v0.133)
+Building framework (template v0.134)
 Mechanism-first validated: WHY before WHAT
 Structure: RICCE-compliant"
 ```
@@ -532,7 +532,7 @@ Structure: RICCE-compliant"
 **Round 6-7: Framework Assembly**
 ```yaml
 template_application:
-  version: [v0.133, v0.130, v0.119]
+  version: [v0.134, v0.133, v0.130, v0.119]
   rules: "embedded in template"
   compliance: "100%"
 
@@ -1010,7 +1010,7 @@ Selected event-driven microservices with API gateway pattern
 ---
 
 🔨 **Phase P - Prototype**
-Building ticket/story/epic using template v0.133
+Building ticket/story/epic using template v0.134
 Mechanism-first structure validated
 
 **Technical approach confirmed:**
@@ -1088,7 +1088,7 @@ pre_creation_validation:
     - [ ] Cognitive rigor techniques ready
     - [ ] RICCE validation enabled
     - [ ] Two-layer transparency enabled
-    - [ ] Template versions loaded (v0.133/v0.130/v0.119)
+    - [ ] Template versions loaded (v0.134/v0.133/v0.130/v0.119)
   
   scope_discipline:
     - [ ] Scope limited to user request only
@@ -1116,7 +1116,7 @@ phase_e_gates:
   - "✅ Phase E: Optimal approach selected, reframing insight applied"
 
 phase_p_gates:
-  - [ ] Template structure correct (v0.133/v0.130/v0.119)
+  - [ ] Template structure correct (v0.134/v0.133/v0.130/v0.119)
   - [ ] Mechanism-first validated (why before what)
   - [ ] RICCE Context integrated
   - "✅ Phase P: Template built, mechanism-first confirmed"
@@ -1155,7 +1155,7 @@ post_creation_checklist:
     - [ ] Examples: Template compliance validated ✅
   
   template_standards:
-    - [ ] Correct version used (Ticket v0.133/Story v0.133/Epic v0.130/Doc v0.119) ✅
+    - [ ] Correct version used (Ticket v0.134/Story v0.133/Epic v0.130/Doc v0.119) ✅
     - [ ] All required sections present ✅
     - [ ] Mechanism-first structure (WHY→HOW→WHAT) ✅
     - [ ] [Assumes: X] flags where relevant ✅
@@ -1310,7 +1310,7 @@ Internal Processing (Full Rigor):
 User Sees (Concise):
 "🔍 Analyzing (5 perspectives)
 ⚙️ Engineering (optimal approach selected)
-🔨 Building (template v0.133, mechanism-first)
+🔨 Building (template v0.134, mechanism-first)
 ✅ Validating (excellence confirmed)
 ✨ Ready for delivery"
 ↓

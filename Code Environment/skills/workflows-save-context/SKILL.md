@@ -1129,7 +1129,7 @@ Conversation → Claude Analysis → JSON → Script → Markdown Files
 
 **Pairs With**:
 - `git-commit` - Can enhance with commit SHAs in conversation flow
-- `create-flowchart` - Can contribute diagrams to output
+- `create-documentation` - Can contribute diagrams via flowchart mode (Mode 3)
 
 ---
 

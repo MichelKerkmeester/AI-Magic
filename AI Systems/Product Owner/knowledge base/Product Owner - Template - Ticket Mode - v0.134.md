@@ -76,18 +76,14 @@ For user story format (narrative without QA checklists), use `$story` command wh
 
 #### Structure Order
 1. Header (Mode | Complexity | Template) - FIRST LINE
-2. About (⌘) - Context narrative
-3. Short description (2-3 sentences) - WHAT was built/changed and WHY
-4. Features (optional) - Bulleted list when applicable
-5. User Need (numbered) - What problem this solves
-6. Business Value (numbered) - Why it matters to business
-7. Success Criteria (✦) - After Business Value
-8. Designs & References (⌥) - Bulleted list format
-9. Requirements (❖) - Specifications with H3 subsections (numbered format)
-10. Resolution Checklist (✓) - QA verification items
+2. About (⌘) - Priority, Context, Goal, Scope, Value
+3. Success Criteria (✦) - After About section
+4. Designs & References (⌥) - Bulleted list format
+5. Requirements (❖) - Specifications with H3 subsections (numbered format)
+6. Resolution Checklist (✓) - QA verification items
 
 #### Formatting Standards
-- **Dividers:** Use `---` between all major sections (not between description and User Need)
+- **Dividers:** Use `---` between all major sections
 - **Lists:** Always use `-` for bullets, `[]` for checkboxes
 - **Designs & References:** Bulleted list with categories (like Story Mode)
 - **Links:** Use `[Description](URL)` format with actual URLs or `[Link - to be added]`
@@ -105,11 +101,11 @@ For user story format (narrative without QA checklists), use `$story` command wh
 - Consistent spacing throughout
 
 ### Content Integration
-- **About Section:** Narrative context with integrated priority label (appears first)
-- **Short Description:** 2-3 sentences after About explaining WHAT and WHY
-- **Features:** Optional bulleted list of key changes (use when helpful)
-- **User Need:** Numbered section explaining problem being solved (no divider before)
-- **Business Value:** Numbered section explaining why this matters
+- **About Section:** Contains Priority, Context, Goal, Scope, and Value subsections
+- **Context:** Narrative context explaining the situation
+- **Goal:** Concise explanation of WHAT and WHY
+- **Scope:** Bulleted list of categories and details
+- **Value:** Explanation of business/user impact
 - **Practical Focus:** Implementation-ready, concise, actionable
 
 ### Ticket Focus Areas
@@ -136,11 +132,11 @@ For user story format (narrative without QA checklists), use `$story` command wh
 
 ## 3. 📏 COMPLEXITY AUTO-SCALING
 
-| Keywords | Complexity | Sections | Resolution Items | DEPTH Processing |
-|----------|------------|----------|------------------|------------------|
-| bug, fix, typo, update | Simple | 2-3 | 4-6 | 10 rounds (1-2 if $quick) |
-| feature, dashboard, interface | Standard | 4-5 | 8-12 | 10 rounds (3 if $quick) |
-| platform, migration, system | Complex | 6-8 | 12-20 | 10 rounds (5 if $quick) |
+| Keywords                      | Complexity | Sections | Resolution Items | DEPTH Processing          |
+| ----------------------------- | ---------- | -------- | ---------------- | ------------------------- |
+| bug, fix, typo, update        | Simple     | 2-3      | 4-6              | 10 rounds (1-2 if $quick) |
+| feature, dashboard, interface | Standard   | 4-5      | 8-12             | 10 rounds (3 if $quick)   |
+| platform, migration, system   | Complex    | 6-8      | 12-20            | 10 rounds (5 if $quick)   |
 
 **Important:** Complexity determines TEMPLATE SIZE, not content scope
 - User requests "bug fix" → Simple template for THAT bug only
@@ -166,11 +162,10 @@ For user story format (narrative without QA checklists), use `$story` command wh
 ### Structure Validation
 - [] Header at top as first line?
 - [] Short description (2-3 sentences) after title?
-- [] Features section included when applicable?
+- [] Scope section included with bulleted list?
 - [] About section positioned correctly?
-- [] User Need numbered section present?
-- [] Business Value numbered section present?
-- [] Success criteria after Business Value?
+- [] Context, Goal, Scope, Value subsections present?
+- [] Success criteria after About section?
 - [] Problems integrated in About narrative?
 - [] Correct symbol hierarchy applied?
 - [] Designs in bulleted list format (like Story Mode)?
@@ -192,8 +187,8 @@ For user story format (narrative without QA checklists), use `$story` command wh
 ### Mode-Specific Validation
 - [] Header at top?
 - [] About integrated with context?
-- [] User Need explains problem being solved?
-- [] Business Value explains why it matters?
+- [] Context/Goal explains problem being solved?
+- [] Value explains why it matters?
 - [] Success criteria quantified?
 - [] Resolution checklist scaled (4-6/8-12/12-20)?
 - [] Structure logical?
@@ -210,14 +205,14 @@ For user story format (narrative without QA checklists), use `$story` command wh
 #### Wrong Symbol Hierarchy
 **Fix:** Update to H1: ⌘/❖/✓, H2: ✦/⌥, H3: for Requirements subsections (numbered format)
 
-#### Success Criteria Before Business Value
-**Fix:** Move Success Criteria after Business Value section
+#### Success Criteria Before About Section
+**Fix:** Move Success Criteria after About section
 
 #### Missing Short Description
 **Fix:** Add 2-3 sentences after title explaining WHAT and WHY
 
-#### Missing User Need or Business Value
-**Fix:** Add numbered sections after About, before Success Criteria
+#### Missing Context, Goal, Scope, or Value
+**Fix:** Ensure About section contains Context, Goal, Scope, and Value subsections
 
 #### Problems Listed Separately
 **Fix:** Integrate into About narrative
@@ -250,7 +245,7 @@ For user story format (narrative without QA checklists), use `$story` command wh
 4. Verify symbol hierarchy
 5. Position sections correctly
 6. Include short description after title
-7. Add User Need and Business Value sections
+7. Ensure About section has Context, Goal, Scope, Value
 8. Integrate problems narratively
 9. Add priority labels
 10. Limit output to request
@@ -270,17 +265,17 @@ Mode: $ticket | Complexity: Simple | Template: Ticket
 
 **→ Priority:** Medium
 
+**Context**
 {Context narrative: Current situation, what changed, how it improves things. Integrate problems naturally into the narrative. Keep practical and implementation-focused.}
 
+**Goal**
 {2-3 concise sentences explaining WHAT was changed/built and WHY it matters. Focus on the practical improvement delivered.}
 
-1. **User Need**
+**Scope**
+- **{Category}:** {Details}
 
-   {What problem this solves for users and why it matters to them.}
-
-2. **Business Value**
-
-   {Why this matters to the business and expected impact.}
+**Value**
+{Why this matters to the business and expected impact.}
 
 ---
 
@@ -345,24 +340,18 @@ Mode: $ticket | Complexity: Standard | Template: Ticket
 
 **→ Priority:** Medium
 
+**Context**
 {Extended context narrative: Current situation, problems being addressed, what changed, how solution works, and expected outcomes. Integrate challenges and solutions naturally.}
 
+**Goal**
 {2-3 concise sentences explaining WHAT was built/changed, WHY it matters, and the key improvement delivered. Focus on practical value.}
 
-**Features**
-- {Key feature 1}
-- {Key feature 2}
-- {Key feature 3}
+**Scope**
+- **{Category}:** {Details}
+- **{Category}:** {Details}
 
-[Status note: "{Optional status information}"]
-
-1. **User Need**
-
-   {Detailed explanation of what problem this solves for users, including pain points and why this improvement matters for their workflow.}
-
-2. **Business Value**
-
-   {Detailed explanation of why this matters to the business, including how it supports strategic goals and measurable impact.}
+**Value**
+{Detailed explanation of why this matters to the business, including how it supports strategic goals and measurable impact.}
 
 ---
 
@@ -467,26 +456,19 @@ Mode: $ticket | Complexity: Complex | Template: Ticket
 
 **→ Priority:** Critical
 
+**Context**
 {Comprehensive context narrative: Current state challenges across segments, user impact, research findings or data, solution approach with technical context, expected outcomes, and strategic alignment. Naturally integrate problems, constraints, and solution rationale.}
 
+**Goal**
 {3 concise sentences providing comprehensive overview of WHAT was built/changed, WHY it matters strategically, and the key business value delivered. Focus on transformation achieved.}
 
-**Features**
-- {Key feature 1 with context}
-- {Key feature 2 with context}
-- {Key feature 3 with context}
-- {Key feature 4 with context}
-- {Key feature 5 with context}
+**Scope**
+- **{Category}:** {Details}
+- **{Category}:** {Details}
+- **{Category}:** {Details}
 
-[Status note: "{Optional status information}"]
-
-1. **User Need**
-
-   {Comprehensive explanation of what problem this solves for users across different segments, including detailed pain points, impacts on workflows, and why these improvements are critical for user success.}
-
-2. **Business Value**
-
-   {Comprehensive explanation of why this matters to the business, including how it supports strategic goals, reduces costs, enhances competitive position, and achieves measurable business objectives with specific metrics.}
+**Value**
+{Comprehensive explanation of why this matters to the business, including how it supports strategic goals, reduces costs, enhances competitive position, and achieves measurable business objectives with specific metrics.}
 
 ---
 
@@ -721,10 +703,10 @@ Mode: $ticket | Complexity: Standard | Template: Ticket | Quick
 
 1. **Always wait** for user response (except $quick)
 2. **Never answer** own questions
-3. **Short description** required after title (2-3 sentences explaining WHAT and WHY)
-4. **Features section** optional but recommended (bulleted list of key changes)
-5. **About is narrative only** - no bold labels (User Need/Business Value are separate numbered sections)
-6. **User Need and Business Value** as numbered sections (1. and 2.) after About
+3. **About Section** must contain Context, Goal, Scope, and Value subsections
+4. **Goal** explains WHAT and WHY (2-3 sentences)
+5. **Scope** lists features/changes as bulleted list
+6. **Value** explains business/user impact
 7. **NO "[SCOPE] Feature:"** format in title - use simple descriptive name
 8. **Designs as bullets** organized by category (Flows, Components, Related Tickets, Documentation)
 9. **H3 subsections** in Requirements (NEVER H4, numbered format like 1., 2., 3.)

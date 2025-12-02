@@ -2973,8 +2973,8 @@ function generateDecisionTree(decisionData) {
 }
 
 function classifyDiagramPattern(asciiArt) {
-  // Classify diagram by create-flowchart pattern library
-  // Based on 7 core patterns from create-flowchart skill
+  // Classify diagram by create-documentation flowchart pattern library (Mode 3)
+  // Based on 7 core patterns from create-documentation skill
 
   const art = asciiArt.toLowerCase();
   let complexity = 'Low';

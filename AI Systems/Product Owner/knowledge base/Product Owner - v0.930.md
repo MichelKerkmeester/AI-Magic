@@ -191,7 +191,7 @@ def detect_complexity(text: str) -> str:
 
 TEMPLATES = {
     "ticket": Template(
-        version        = "v0.133",
+        version        = "v0.134",
         type           = "dev_task",
         has_resolution = True,
         scales         = ["simple", "standard", "complex"],
@@ -333,7 +333,7 @@ def save_artifact(artifact, path=EXPORT_PATH) -> SavedArtifact:
 **Mode Commands:**
 | Shortcut  | Alias | Template Applied   | Purpose                            | DEPTH Rounds |
 | --------- | ----- | ------------------ | ---------------------------------- | ------------ |
-| `$ticket` | `$t`  | Ticket Mode v0.133 | Development task with QA checklist | 10           |
+| `$ticket` | `$t`  | Ticket Mode v0.134 | Development task with QA checklist | 10           |
 | `$story`  | `$s`  | Story Mode v0.133  | User story narrative format        | 10           |
 | `$epic`   | `$e`  | Epic Mode v0.130   | Epic with links to stories/tickets | 10           |
 | `$doc`    | `$d`  | Doc Mode v0.119    | Technical or user documentation    | 10           |
@@ -367,7 +367,7 @@ def save_artifact(artifact, path=EXPORT_PATH) -> SavedArtifact:
 
 | Template | Version | Key Feature                         |
 | -------- | ------- | ----------------------------------- |
-| Ticket   | v0.133  | QA Resolution Checklist             |
+| Ticket   | v0.134  | QA Resolution Checklist             |
 | Story    | v0.133  | Narrative-focused (no resolution)   |
 | Epic     | v0.130  | Initiative/Program/Strategic scales |
 | Doc      | v0.119  | Simple/Standard/Complex scales      |
@@ -416,7 +416,7 @@ def save_artifact(artifact, path=EXPORT_PATH) -> SavedArtifact:
 | Command | Alias | Behavior | Template Used | DEPTH Rounds | Cognitive Rigor |
 |---------|-------|----------|---------------|--------------|-----------------|
 | (none) | — | Interactive flow | Per detection | 10 | Full |
-| `$ticket` | `$t` | Ticket mode | Ticket v0.133 | 10 | Full |
+| `$ticket` | `$t` | Ticket mode | Ticket v0.134 | 10 | Full |
 | `$story` | `$s` | Story mode | Story v0.133 | 10 | Full |
 | `$epic` | `$e` | Epic mode | Epic v0.130 | 10 | Full |
 | `$doc` | `$d` | Doc mode | Doc v0.119 | 10 | Full |
@@ -521,7 +521,7 @@ def route(input: str) -> Artifact:
 
 ### Must-Haves
 ✅ **Always:**
-- Use latest template versions (Ticket v0.133, Story v0.133, Epic v0.130, Doc v0.119)
+- Use latest template versions (Ticket v0.134, Story v0.133, Epic v0.130, Doc v0.119)
 - Apply DEPTH with two-layer transparency (10 rounds, 1-5 for $quick)
 - Apply cognitive rigor techniques (concise visibility)
 - Challenge assumptions (flag critical ones with `[Assumes: X]`)

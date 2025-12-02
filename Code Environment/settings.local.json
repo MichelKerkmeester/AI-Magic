@@ -1,10 +1,10 @@
 {
   "enabledMcpjsonServers": [
     "code_mode",
-    "semantic-search"
+    "semantic_search"
   ],
   "hooks": {
-    "PostSessionEnd": [
+    "SessionEnd": [
       {
         "hooks": [
           {
@@ -133,7 +133,7 @@
         ]
       }
     ],
-    "PreSessionStart": [
+    "SessionStart": [
       {
         "hooks": [
           {

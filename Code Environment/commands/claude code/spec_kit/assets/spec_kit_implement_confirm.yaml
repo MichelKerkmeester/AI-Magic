@@ -144,12 +144,13 @@ parallel_dispatch_config:
       weight: 0.05
       scoring: "trivial=0.0, moderate=0.5, complex=1.0"
 
+  # Decision thresholds (AGENTS.md compliant - no auto-dispatch)
   thresholds:
     direct_max: 20
     ask_min: 20
-    auto_dispatch_min: 50
     min_domains_for_ask: 2
-    min_domains_for_auto: 3
+    # NOTE: auto_dispatch_min and min_domains_for_auto REMOVED per AGENTS.md Section 1
+    # Always ask user before parallel dispatch
 
   session_preference:
     persist_duration_seconds: 3600
@@ -344,21 +345,21 @@ workflow:
   step_6_development:
     purpose: Execute implementation following task plan
 
-    # PRE-PHASE: Smart parallel dispatch check
+    # PRE-PHASE: Smart parallel dispatch check (AGENTS.md compliant)
     pre_phase_parallel_check:
       enabled: true
       phase_domains: [code, testing]
       complexity_boost: 15
       decision_logic: |
-        BEFORE starting this phase, evaluate parallel dispatch:
+        BEFORE starting this phase, evaluate parallel dispatch (AGENTS.md compliant):
         1. Check for override phrases in user request
         2. Check for session preference (from previous "Auto-decide" selection)
         3. Check for sequential dependencies (skip if detected)
         4. Calculate phase complexity using parallel_dispatch_config
         5. Apply thresholds:
-           - <20% → proceed directly (silent)
-           - ≥50% + 3 domains → auto-dispatch with notification
-           - ≥20% + 2 domains → ask user via AskUserQuestion
+           - <20% → proceed directly (no parallel agents)
+           - ≥20% + 2 domains → ALWAYS ask user via AskUserQuestion
+           NOTE: No auto-dispatch - per AGENTS.md Section 1, always ask before parallel dispatch
       on_parallel_dispatch:
         agents:
           - name: "implementation_agent"

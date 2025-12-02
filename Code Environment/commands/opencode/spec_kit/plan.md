@@ -266,16 +266,17 @@ When creating `checklist.md` for Level 2+ projects, structure items for mandator
   - **Autonomous (`:auto`)**: Executes all steps without user approval gates. Self-validates at each checkpoint. Makes informed decisions based on best judgment. Documents all significant decisions.
   - **Interactive (`:confirm`)**: Pauses after each step for user approval. Presents options: Approve, Review Details, Modify, Skip, Abort. Allows course correction throughout planning.
 
-- **Parallel Sub-Agent Dispatch:**
+- **Parallel Sub-Agent Dispatch (AGENTS.md Compliant):**
   - Eligible phases (Specification) can dispatch parallel sub-agents for faster execution
   - Complexity scoring evaluates: domain count (35%), file count (25%), LOC estimate (15%), parallel opportunity (20%), task type (5%)
-  - **Dispatch Thresholds:**
-    - <20% complexity → Execute directly (silent)
-    - ≥20% + 2 domains → Ask user via AskUserQuestion
-    - ≥50% + 3 domains → Auto-dispatch with notification
+  - **Dispatch Behavior:**
+    - <20% complexity → Execute directly (no parallel agents)
+    - ≥20% + 2 domains → ALWAYS ask user via AskUserQuestion
+    - No auto-dispatch: Per AGENTS.md Section 1, always ask before parallel dispatch
+  - **Exception:** Step 6 (Planning) uses 4-agent parallel exploration automatically
+    - This is the core planning feature - user chose a planning workflow
   - **Session Preference:** User's choice persists for 1 hour
   - **Override Phrases:** "proceed directly", "use parallel agents", "auto-decide"
-  - Step 6 (Planning) automatically uses 4-agent parallel exploration (inline via Task tool)
 
 - **Integration:**
   - Works with spec folder system for documentation
