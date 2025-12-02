@@ -343,13 +343,13 @@ Before delivery, validate (show summary to user):
 
 ### Phase Breakdown with Round Distribution
 
-| Phase | Standard (10 rounds) | Quick (1-5 rounds) | User Update Format |
-|-------|----------------------|--------------------|-------------------|
-| **D**iscover | Rounds 1-2 | 0.5-1 round | "🔍 Analyzing (5 perspectives)" |
-| **E**ngineer | Rounds 3-5 | 1-2 rounds | "⚙️ Engineering (8 approaches evaluated)" |
-| **P**rototype | Rounds 6-7 | 0.5-1 round | "🔨 Building (template v0.134)" |
-| **T**est | Rounds 8-9 | 0.5-1 round | "✅ Validating (all checks passed)" |
-| **H**armonize | Round 10 | 0.5 round | "✨ Finalizing (excellence confirmed)" |
+| Phase         | Standard (10 rounds) | Quick (1-5 rounds) | User Update Format                       |
+| ------------- | -------------------- | ------------------ | ---------------------------------------- |
+| **D**iscover  | Rounds 1-2           | 0.5-1 round        | "🔍 Analyzing (5 perspectives)"           |
+| **E**ngineer  | Rounds 3-5           | 1-2 rounds         | "⚙️ Engineering (8 approaches evaluated)" |
+| **P**rototype | Rounds 6-7           | 0.5-1 round        | "🔨 Building (template v0.134)"           |
+| **T**est      | Rounds 8-9           | 0.5-1 round        | "✅ Validating (all checks passed)"       |
+| **H**armonize | Round 10             | 0.5 round          | "✨ Finalizing (excellence confirmed)"    |
 
 ### State Management (Transparent & Intelligent)
 
@@ -851,13 +851,13 @@ COMPLETE DELIVERABLE
 
 ### How RICCE Maps to DEPTH Phases
 
-| DEPTH Phase | RICCE Element | Validation Point |
-|-------------|---------------|------------------|
-| **Discover (D)** | Role (R) | Perspectives identified, stakeholders defined |
-| **Engineer (E)** | Instructions (I) | Solution approach structured, tasks clear |
-| **Prototype (P)** | Context (C) | All layers integrated, template applied |
-| **Test (T)** | Constraints (C) | Quality scored, standards validated |
-| **Harmonize (H)** | Examples (E) | Validation complete, quality confirmed |
+| DEPTH Phase       | RICCE Element    | Validation Point                              |
+| ----------------- | ---------------- | --------------------------------------------- |
+| **Discover (D)**  | Role (R)         | Perspectives identified, stakeholders defined |
+| **Engineer (E)**  | Instructions (I) | Solution approach structured, tasks clear     |
+| **Prototype (P)** | Context (C)      | All layers integrated, template applied       |
+| **Test (T)**      | Constraints (C)  | Quality scored, standards validated           |
+| **Harmonize (H)** | Examples (E)     | Validation complete, quality confirmed        |
 
 ### Integration Checkpoints
 
@@ -1181,14 +1181,14 @@ user_communication:
 
 ### Quality Score Targets
 
-| Dimension | Target | Threshold | Action if Below |
-|-----------|--------|-----------|-----------------|
-| **Completeness** | 8+ | 6 | Add missing context, expand technical details |
-| **Clarity** | 8+ | 6 | Simplify language, clarify acceptance criteria |
-| **Actionability** | 8+ | 6 | Add concrete steps, specify implementation details |
-| **Accuracy** | 8+ | 6 | Verify technical feasibility, validate assumptions |
-| **Relevance** | 8+ | 6 | Align with stakeholder needs, refine scope |
-| **Mechanism Depth** | 8+ | 6 | Explain WHY, document underlying principles |
+| Dimension           | Target | Threshold | Action if Below                                    |
+| ------------------- | ------ | --------- | -------------------------------------------------- |
+| **Completeness**    | 8+     | 6         | Add missing context, expand technical details      |
+| **Clarity**         | 8+     | 6         | Simplify language, clarify acceptance criteria     |
+| **Actionability**   | 8+     | 6         | Add concrete steps, specify implementation details |
+| **Accuracy**        | 8+     | 6         | Verify technical feasibility, validate assumptions |
+| **Relevance**       | 8+     | 6         | Align with stakeholder needs, refine scope         |
+| **Mechanism Depth** | 8+     | 6         | Explain WHY, document underlying principles        |
 
 ### Improvement Protocol
 

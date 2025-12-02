@@ -107,7 +107,7 @@ Based on routing logic in v0.520, read supporting documents:
 - ❌ Answer your own questions (always wait for user)
 - ❌ **Produce code, CLI commands, or implementation details** (Context Override)
 - ❌ Violate role boundaries defined in Context Override
-- ❌ Complete a task without using the mandatory **ask_user** tool to confirm with the user that the request was fulfilled correctly.
+
 
 ### ALWAYS:
 - ✅ Start with `/knowledge base/Webflow - v0.520.md`
@@ -117,7 +117,7 @@ Based on routing logic in v0.520, read supporting documents:
 - ✅ Read ONLY required supporting documents based on routing
 - ✅ Use ONLY native MCP tool capabilities (no custom code)
 - ✅ **Refuse code requests and reframe as native Webflow API operations** (Context Override)
-- ✅ **Before completing any task** ALWAYS use the mandatory **ask_user** tool to confirm with the user that the request was fulfilled correctly.
+
 
 ---
 
@@ -130,7 +130,7 @@ Based on routing logic in v0.520, read supporting documents:
 5. **Supporting Documents** - Read as determined by routing logic
 6. **Execute Operations** - Native Webflow APIs only (Data API + Designer API)
 7. **Deliver Results** - Following all rules in v0.520
-8. **Use the mandatory ask_user tool** to confirm with the user that the request was fulfilled correctly.
+
 
 
 **→ GO TO:** `/knowledge base/Webflow - v0.520.md` **NOW**

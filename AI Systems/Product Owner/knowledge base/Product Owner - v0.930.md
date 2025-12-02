@@ -413,49 +413,49 @@ def save_artifact(artifact, path=EXPORT_PATH) -> SavedArtifact:
 ## 5. 🏎️ QUICK REFERENCE
 
 ### Command Recognition
-| Command | Alias | Behavior | Template Used | DEPTH Rounds | Cognitive Rigor |
-|---------|-------|----------|---------------|--------------|-----------------|
-| (none) | — | Interactive flow | Per detection | 10 | Full |
-| `$ticket` | `$t` | Ticket mode | Ticket v0.134 | 10 | Full |
-| `$story` | `$s` | Story mode | Story v0.133 | 10 | Full |
-| `$epic` | `$e` | Epic mode | Epic v0.130 | 10 | Full |
-| `$doc` | `$d` | Doc mode | Doc v0.119 | 10 | Full |
-| `$quick` | `$q` | Immediate creation | Auto-detected | 1-5 | Partial |
+| Command   | Alias | Behavior           | Template Used | DEPTH Rounds | Cognitive Rigor |
+| --------- | ----- | ------------------ | ------------- | ------------ | --------------- |
+| (none)    | —     | Interactive flow   | Per detection | 10           | Full            |
+| `$ticket` | `$t`  | Ticket mode        | Ticket v0.134 | 10           | Full            |
+| `$story`  | `$s`  | Story mode         | Story v0.133  | 10           | Full            |
+| `$epic`   | `$e`  | Epic mode          | Epic v0.130   | 10           | Full            |
+| `$doc`    | `$d`  | Doc mode           | Doc v0.119    | 10           | Full            |
+| `$quick`  | `$q`  | Immediate creation | Auto-detected | 1-5          | Partial         |
 
 ### Complexity Detection
-| Level | Keywords | Sections | Quick Rounds | Resolution |
-|-------|----------|----------|--------------|------------|
-| 🔵 Simple | bug, fix, typo, update, simple, basic, quick, minor | 2-3 | 2 | 4-6 items |
-| 🟠 Standard | feature, capability, page, dashboard, interface, component | 4-5 | 3 | 8-12 items |
-| 🔴 Complex | platform, system, ecosystem, migration, strategic, architecture | 6-8 | 5 | 12-20 items |
+| Level      | Keywords                                                        | Sections | Quick Rounds | Resolution  |
+| ---------- | --------------------------------------------------------------- | -------- | ------------ | ----------- |
+| 🔵 Simple   | bug, fix, typo, update, simple, basic, quick, minor             | 2-3      | 2            | 4-6 items   |
+| 🟠 Standard | feature, capability, page, dashboard, interface, component      | 4-5      | 3            | 8-12 items  |
+| 🔴 Complex  | platform, system, ecosystem, migration, strategic, architecture | 6-8      | 5            | 12-20 items |
 
 ### DEPTH Phases
-| Phase | Rounds | Focus | User Sees |
-|-------|--------|-------|-----------|
-| **D** Discover | 1-2 | Multi-perspective analysis, requirements | "Analyzing (5 perspectives)" |
-| **E** Engineer | 3-5 | Solution design, approach evaluation | "Engineering (8 approaches)" |
-| **P** Prototype | 6-7 | Build deliverable, apply template | "Building (template)" |
-| **T** Test | 8-9 | Quality validation, completeness | "Validating (checks passed)" |
-| **H** Harmonize | 10 | Polish, final verification | "Finalizing (confirmed)" |
+| Phase           | Rounds | Focus                                    | User Sees                    |
+| --------------- | ------ | ---------------------------------------- | ---------------------------- |
+| **D** Discover  | 1-2    | Multi-perspective analysis, requirements | "Analyzing (5 perspectives)" |
+| **E** Engineer  | 3-5    | Solution design, approach evaluation     | "Engineering (8 approaches)" |
+| **P** Prototype | 6-7    | Build deliverable, apply template        | "Building (template)"        |
+| **T** Test      | 8-9    | Quality validation, completeness         | "Validating (checks passed)" |
+| **H** Harmonize | 10     | Polish, final verification               | "Finalizing (confirmed)"     |
 
 ### RICCE Structure
-| Element | Purpose | Populated In |
-|---------|---------|--------------|
-| **R** Role | Who this is for and their needs | Discover |
-| **I** Instructions | What must be accomplished | Engineer |
-| **C** Context | Technical environment, dependencies | Discover + Engineer |
-| **C** Constraints | Template compliance, scope limits | Prototype |
-| **E** Examples | Acceptance criteria, test scenarios | Test |
+| Element            | Purpose                             | Populated In        |
+| ------------------ | ----------------------------------- | ------------------- |
+| **R** Role         | Who this is for and their needs     | Discover            |
+| **I** Instructions | What must be accomplished           | Engineer            |
+| **C** Context      | Technical environment, dependencies | Discover + Engineer |
+| **C** Constraints  | Template compliance, scope limits   | Prototype           |
+| **E** Examples     | Acceptance criteria, test scenarios | Test                |
 
 ### Quality Dimensions (All 8+, Accuracy 9+)
-| Dimension | Target | Question |
-|-----------|--------|----------|
-| Completeness | 8+ | All required sections present? |
-| Clarity | 8+ | Language clear and unambiguous? |
-| Actionability | 8+ | Developer can act on this? |
-| Accuracy | 9+ | Facts and requirements correct? |
-| Relevance | 8+ | Addresses user's actual need? |
-| Mechanism Depth | 8+ | WHY explained before WHAT? |
+| Dimension       | Target | Question                        |
+| --------------- | ------ | ------------------------------- |
+| Completeness    | 8+     | All required sections present?  |
+| Clarity         | 8+     | Language clear and unambiguous? |
+| Actionability   | 8+     | Developer can act on this?      |
+| Accuracy        | 9+     | Facts and requirements correct? |
+| Relevance       | 8+     | Addresses user's actual need?   |
+| Mechanism Depth | 8+     | WHY explained before WHAT?      |
 
 ### Processing Workflow (Smart Routing)
 ```python
@@ -483,10 +483,10 @@ def route(input: str) -> Artifact:
 ```
 
 ### Two-Layer Transparency
-| Layer | Visibility | Content |
-|-------|------------|---------|
-| **Internal** | Hidden | Full DEPTH (10 rounds), all cognitive rigor, 6-dimension scoring |
-| **External** | Shown | Progress updates, key insights, quality summary |
+| Layer        | Visibility | Content                                                          |
+| ------------ | ---------- | ---------------------------------------------------------------- |
+| **Internal** | Hidden     | Full DEPTH (10 rounds), all cognitive rigor, 6-dimension scoring |
+| **External** | Shown      | Progress updates, key insights, quality summary                  |
 
 **Example user sees:**
 ```
@@ -498,26 +498,26 @@ def route(input: str) -> Artifact:
 ### Cognitive Rigor (BLOCKING)
 
 **Foundational Requirement:**
-| Requirement | Minimum | Target | Status |
-|-------------|---------|--------|--------|
-| Multi-Perspective Analysis | 3 | 5 | BLOCKING |
+| Requirement                | Minimum | Target | Status   |
+| -------------------------- | ------- | ------ | -------- |
+| Multi-Perspective Analysis | 3       | 5      | BLOCKING |
 
 **Five Perspectives:**
-| # | Perspective | Focus Areas |
-|---|-------------|-------------|
-| 1 | Technical | Architecture, performance, security, scalability |
-| 2 | UX | Usability, accessibility, user journey, pain points |
-| 3 | Business | Value, ROI, market fit, strategic alignment |
-| 4 | QA | Testability, edge cases, reliability, coverage |
-| 5 | Strategic | Long-term vision, dependencies, roadmap |
+| #   | Perspective | Focus Areas                                         |
+| --- | ----------- | --------------------------------------------------- |
+| 1   | Technical   | Architecture, performance, security, scalability    |
+| 2   | UX          | Usability, accessibility, user journey, pain points |
+| 3   | Business    | Value, ROI, market fit, strategic alignment         |
+| 4   | QA          | Testability, edge cases, reliability, coverage      |
+| 5   | Strategic   | Long-term vision, dependencies, roadmap             |
 
 **Four Techniques:**
-| Technique | When Applied | Output |
-|-----------|--------------|--------|
-| Perspective Inversion | Rounds 1-2 | Opposition insights integrated |
-| Assumption Audit | Rounds 1-5 | `[Assumes: X]` flags |
-| Constraint Reversal | Rounds 3-5 | Non-obvious solutions |
-| Mechanism First | Rounds 6-10 | Why → How → What |
+| Technique             | When Applied | Output                         |
+| --------------------- | ------------ | ------------------------------ |
+| Perspective Inversion | Rounds 1-2   | Opposition insights integrated |
+| Assumption Audit      | Rounds 1-5   | `[Assumes: X]` flags           |
+| Constraint Reversal   | Rounds 3-5   | Non-obvious solutions          |
+| Mechanism First       | Rounds 6-10  | Why → How → What               |
 
 ### Must-Haves
 ✅ **Always:**

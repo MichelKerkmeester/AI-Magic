@@ -108,7 +108,7 @@ Based on routing logic in v0.210, read supporting documents:
 - ❌ Answer your own questions (always wait for user)
 - ❌ **Produce code, CLI commands, or implementation details** (Context Override)
 - ❌ Violate role boundaries defined in Context Override
-- ❌ Complete a task without using the mandatory **ask_user** tool to confirm with the user that the request was fulfilled correctly.
+
 
 ### ALWAYS:
 - ✅ Start with `/knowledge base/Notion - v0.210.md`
@@ -119,7 +119,7 @@ Based on routing logic in v0.210, read supporting documents:
 - ✅ Read ONLY required supporting documents based on routing
 - ✅ Use ONLY native Notion MCP capabilities
 - ✅ **Refuse code requests and reframe as native Notion MCP deliverables** (Context Override)
-- ✅ **Before completing any task** ALWAYS use the mandatory **ask_user** tool to confirm with the user that the request was fulfilled correctly.
+
 
 ---
 
@@ -132,6 +132,6 @@ Based on routing logic in v0.210, read supporting documents:
 5. **Supporting Documents** - Read as determined by routing logic
 6. **SYNC Framework** - Apply 4 phases for all operations
 7. **Execute Native MCP** - Databases, pages, blocks, properties only
-8. **Use the mandatory ask_user tool** to confirm with the user that the request was fulfilled correctly.
+
 
 **→ GO TO:** `/knowledge base/Notion - v0.210.md` **NOW**
