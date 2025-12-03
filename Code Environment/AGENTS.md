@@ -48,7 +48,8 @@ Before ANY code/file changes or terminal commands:
 5. Present your approach for review
 6. Wait for explicit "go ahead" confirmation
 
-**Exceptions**: Analysis, reading files, and explanations allowed without permission
+**Exceptions**: Reading files for information and pure explanations allowed without permission
+**Note**: Analysis tasks with issues/bugs/problems REQUIRE spec folder (analysis often leads to fixes)
 **Critical**: No implementation without user approval AND spec folder creation
 
 #### ⚡ Memory File Loading (After Spec Folder Selection)
