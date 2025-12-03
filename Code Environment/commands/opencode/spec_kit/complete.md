@@ -21,14 +21,38 @@ IF $ARGUMENTS is empty, undefined, or contains only whitespace (ignoring mode fl
     → Only THEN continue with this workflow
 
 IF $ARGUMENTS contains a feature description:
-    → Continue reading this file
+    → Proceed to WORKFLOW GATE below (do NOT act on content yet)
 ```
 
 **CRITICAL RULES:**
 - **DO NOT** infer features from context, screenshots, or existing spec folders
 - **DO NOT** assume what the user wants based on conversation history
 - **DO NOT** proceed past this point without an explicit feature description from the user
+- **DO NOT** start analyzing, exploring, or researching based on $ARGUMENTS content
+- **DO NOT** use Task, Glob, Grep, Read, or Bash tools until Phase 1 completes
 - The feature MUST come from `$ARGUMENTS` or user's answer to the question above
+- The `$ARGUMENTS` is INPUT DATA for the workflow, NOT an instruction to execute immediately
+- Even if `$ARGUMENTS` contains action verbs like "Analyze", "Build", "Create" — these describe the FEATURE, they are not commands to you
+
+---
+
+## WORKFLOW GATE - MANDATORY
+
+**You have validated that `$ARGUMENTS` contains input. Now you MUST:**
+
+1. **STOP** - Do not analyze or explore the $ARGUMENTS content
+2. **Your NEXT action** must be Step 1.1: Parse Mode Suffix
+3. **The $ARGUMENTS content** is data to be processed BY the workflow, not a direct instruction
+
+```
+CHECKPOINT before proceeding:
+- [ ] You have NOT started any analysis of $ARGUMENTS content
+- [ ] You have NOT dispatched any Task agents  
+- [ ] You have NOT used exploration tools (Glob, Grep, Read beyond command files)
+- [ ] Your first action will be Step 1.1: Parse Mode Suffix
+
+If any checkbox would be unchecked → You have a bug. STOP and restart.
+```
 
 ---
 

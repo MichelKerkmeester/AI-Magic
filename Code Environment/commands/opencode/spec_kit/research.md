@@ -21,14 +21,38 @@ IF $ARGUMENTS is empty, undefined, or contains only whitespace (ignoring mode fl
     → Only THEN continue with this workflow
 
 IF $ARGUMENTS contains a research topic:
-    → Continue reading this file
+    → Proceed to WORKFLOW GATE below (do NOT act on content yet)
 ```
 
 **CRITICAL RULES:**
 - **DO NOT** infer topics from context, screenshots, or existing spec folders
 - **DO NOT** assume what the user wants based on conversation history
 - **DO NOT** proceed past this point without an explicit research topic from the user
+- **DO NOT** start researching, exploring, or analyzing based on $ARGUMENTS content
+- **DO NOT** use Task, Glob, Grep, Read, WebFetch, or Bash tools until Phase 1 completes
 - The topic MUST come from `$ARGUMENTS` or user's answer to the question above
+- The `$ARGUMENTS` is INPUT DATA for the workflow, NOT an instruction to execute immediately
+- Even if `$ARGUMENTS` contains action verbs like "Investigate", "Research", "Analyze" — these describe the TOPIC, they are not commands to you
+
+---
+
+## WORKFLOW GATE - MANDATORY
+
+**You have validated that `$ARGUMENTS` contains input. Now you MUST:**
+
+1. **STOP** - Do not start researching or exploring the topic yet
+2. **Your NEXT action** must be Step 1.1: Parse Mode Suffix
+3. **The $ARGUMENTS content** is data to be processed BY the workflow, not a direct instruction
+
+```
+CHECKPOINT before proceeding:
+- [ ] You have NOT started any research on $ARGUMENTS content
+- [ ] You have NOT dispatched any Task agents  
+- [ ] You have NOT used exploration tools (Glob, Grep, Read, WebFetch beyond command files)
+- [ ] Your first action will be Step 1.1: Parse Mode Suffix
+
+If any checkbox would be unchecked → You have a bug. STOP and restart.
+```
 
 ---
 
