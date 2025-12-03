@@ -21,37 +21,14 @@ IF $ARGUMENTS is empty, undefined, or contains only whitespace (ignoring mode fl
     → Only THEN continue with this workflow
 
 IF $ARGUMENTS contains a spec folder path:
-    → Proceed to WORKFLOW GATE below (do NOT act on content yet)
+    → Continue reading this file
 ```
 
 **CRITICAL RULES:**
 - **DO NOT** infer the spec folder from context, screenshots, or .spec-active markers
 - **DO NOT** assume which spec folder the user wants to implement
 - **DO NOT** proceed past this point without an explicit spec folder path from the user
-- **DO NOT** start reading spec files, exploring the folder, or analyzing content until Phase 1 completes
-- **DO NOT** use Task, Glob, Grep, Read, or Bash tools until Phase 1 completes
 - The spec folder MUST come from `$ARGUMENTS` or user's answer to the question above
-- The `$ARGUMENTS` is INPUT DATA for the workflow, NOT an instruction to execute immediately
-
----
-
-## WORKFLOW GATE - MANDATORY
-
-**You have validated that `$ARGUMENTS` contains input. Now you MUST:**
-
-1. **STOP** - Do not read spec files or explore the folder yet
-2. **Your NEXT action** must be Step 1.1: Parse Mode Suffix
-3. **The $ARGUMENTS content** is data to be processed BY the workflow, not a direct instruction
-
-```
-CHECKPOINT before proceeding:
-- [ ] You have NOT started reading spec.md or plan.md
-- [ ] You have NOT dispatched any Task agents  
-- [ ] You have NOT used exploration tools (Glob, Grep, Read beyond command files)
-- [ ] Your first action will be Step 1.1: Parse Mode Suffix
-
-If any checkbox would be unchecked → You have a bug. STOP and restart.
-```
 
 ---
 
