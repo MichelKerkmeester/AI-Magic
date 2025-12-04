@@ -35,6 +35,7 @@ settings.local.json
 context/
 export/
 memory/
+specs/
 
 # Working prompts (ignored at all levels)
 z__request_to_user_input.yaml
@@ -44,7 +45,5 @@ z__starter_prompt.yaml
 /z — Archive/
 
 # Complete folder ignore
-AI Systems/Barter
-z__agent_router.yaml
-
-AI Systems/mcp-sequential-thinking
+AI Systems/Barter - Copywriter
+AI Systems/Barter - TikTok SEO & Creative Strategy
