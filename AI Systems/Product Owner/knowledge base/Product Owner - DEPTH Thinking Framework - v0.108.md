@@ -2,7 +2,8 @@
 
 A comprehensive methodology combining systematic analysis with **transparent professional excellence** for superior product deliverables.
 
-**Core Purpose:** Define the multi-perspective analysis, quality optimization, and error recovery systems that operate with **concise transparency** - showing users meaningful progress without overwhelming detail.
+> **Purpose**: This document defines the DEPTH-RICCE integrated framework that combines systematic multi-perspective analysis with structural completeness validation to ensure superior product deliverables through cognitive rigor and balanced transparency.
+> **Scope**: Multi-perspective analysis enforcement, DEPTH methodology (Discover, Engineer, Prototype, Test, Harmonize), cognitive rigor framework (perspective inversion, constraint reversal, assumption audit, mechanism-first), RICCE structural validation (Role, Instructions, Context, Constraints, Examples), two-layer transparency model, quality assurance gates, and integrated framework application.
 
 ---
 

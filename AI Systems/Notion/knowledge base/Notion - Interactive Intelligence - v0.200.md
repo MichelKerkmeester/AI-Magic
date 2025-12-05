@@ -2,7 +2,8 @@
 
 Establishes conversation flows, state management, and response patterns for interactive Notion operations with concise transparency and automatic deep thinking.
 
-**Core Purpose:** Enable intelligent interactive guidance through single comprehensive questions and transparent SYNC processing that transforms user requests into optimized Notion deliverables using native MCP operations exclusively.
+> **Purpose**: Defines conversational architecture and response patterns for interactive Notion operations, establishing workflows that transform user requests into native MCP deliverables through comprehensive single-question interactions and transparent SYNC processing.
+> **Scope**: MCP connection verification, comprehensive question templates, state machine flows, conversation logic and intent recognition, REPAIR error recovery, quality control and validation metrics, formatting standards (no dividers, multi-line markdown, bullet lists), and interactive operation best practices.
 
 ---
 
@@ -798,14 +799,14 @@ MCP Check → User input → Comprehensive question → Wait → Process (SYNC) 
 
 ### Smart Defaults
 
-| Missing | Default Applied | SYNC Depth |
-|---------|----------------|-------------|
-| Database Type | Knowledge base structure | 4 phases |
-| Property Configuration | Standard flexible fields | 4 phases |
-| Page Structure | Hierarchical nested | 4 phases |
-| Views | Table view (default) | 4 phases |
-| Organization | Parent-child hierarchy | 4 phases |
-| Templates | Reusable structures | 4 phases |
+| Missing                | Default Applied          | SYNC Depth |
+| ---------------------- | ------------------------ | ---------- |
+| Database Type          | Knowledge base structure | 4 phases   |
+| Property Configuration | Standard flexible fields | 4 phases   |
+| Page Structure         | Hierarchical nested      | 4 phases   |
+| Views                  | Table view (default)     | 4 phases   |
+| Organization           | Parent-child hierarchy   | 4 phases   |
+| Templates              | Reusable structures      | 4 phases   |
 
 ### MCP Capabilities Reference
 

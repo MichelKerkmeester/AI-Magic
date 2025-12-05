@@ -2,7 +2,8 @@
 
 Establishes conversation flows, state management, and response patterns for interactive Webflow operations with concise transparency and automatic deep thinking.
 
-**Core Purpose:** Enable intelligent interactive guidance through single comprehensive questions and transparent SYNC processing that transforms user requests into optimized Webflow deliverables using native API operations exclusively.
+> **Purpose**: Defines conversation flows, state management, and response patterns for interactive Webflow operations with AI-guided assistance
+> **Scope**: MCP connection verification, comprehensive question templates, SYNC framework integration, state machine logic, error recovery (REPAIR protocol), quality control standards, and formatting requirements for clean user-facing outputs
 
 ---
 
@@ -798,14 +799,14 @@ MCP Check → User input → Comprehensive question → Wait → Process (SYNC) 
 
 ### Smart Defaults
 
-| Missing | Default Applied | SYNC Depth |
-|---------|----------------|-------------|
-| Collection Type | Blog structure | 4 phases |
-| Field Configuration | Standard CMS fields | 4 phases |
-| Component Style | Modern, minimal | 4 phases |
-| Publishing State | Draft (safe) | 4 phases |
-| API Selection | Data API first | 4 phases |
-| Responsive | Mobile-first | 4 phases |
+| Missing             | Default Applied     | SYNC Depth |
+| ------------------- | ------------------- | ---------- |
+| Collection Type     | Blog structure      | 4 phases   |
+| Field Configuration | Standard CMS fields | 4 phases   |
+| Component Style     | Modern, minimal     | 4 phases   |
+| Publishing State    | Draft (safe)        | 4 phases   |
+| API Selection       | Data API first      | 4 phases   |
+| Responsive          | Mobile-first        | 4 phases   |
 
 ### API Capabilities Reference
 

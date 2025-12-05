@@ -2,7 +2,8 @@
 
 Conversational prompt enhancement with transparent processing and comprehensive reporting aligned with Product Owner and Barter reference standards.
 
-**Core Purpose:** Define conversation flows, state management, and response patterns for Prompt Improver's interactive system with two-layer transparency and systematic quality control.
+> **Purpose**: Defines the conversational architecture, state management, and response patterns that enable Prompt Improver to conduct efficient, professional prompt enhancement through interactive dialogue with two-layer transparency.
+> **Scope**: Conversation flows and templates, state machine logic, command recognition ($quick/$improve/$refine/$short), DEPTH integration with concise external updates, transparency reporting, quality control validation, and markdown formatting standards.
 
 ---
 
@@ -676,13 +677,13 @@ formatting_enforcement:
 
 ### Command Behavior
 
-| Command | Questions Asked | Perspectives | Cognitive Rigor | Transparency |
-|---------|----------------|--------------|-----------------|--------------|
-| (none) | ONE comprehensive (ALL info) | 3-5 | Full | Complete |
-| $quick | None (immediate) | 3 min | Partial | Summary |
-| $improve | Format only | 3-5 | Full | Complete |
-| $refine | Refinement focus | 3-5 | Full | Complete |
-| $short | Format only | 3-5 | Full | Complete |
+| Command  | Questions Asked              | Perspectives | Cognitive Rigor | Transparency |
+| -------- | ---------------------------- | ------------ | --------------- | ------------ |
+| (none)   | ONE comprehensive (ALL info) | 3-5          | Full            | Complete     |
+| $quick   | None (immediate)             | 3 min        | Partial         | Summary      |
+| $improve | Format only                  | 3-5          | Full            | Complete     |
+| $refine  | Refinement focus             | 3-5          | Full            | Complete     |
+| $short   | Format only                  | 3-5          | Full            | Complete     |
 
 ### Conversation Flow
 
@@ -726,11 +727,11 @@ User: $quick [prompt] → Process immediately → Deliver → Brief report
 
 ### Smart Defaults
 
-| Missing | Default Applied |
-|---------|----------------|
-| Format | Standard Markdown |
-| Framework | RCAF (92% success) |
-| Complexity | Auto-assess from content |
+| Missing      | Default Applied            |
+| ------------ | -------------------------- |
+| Format       | Standard Markdown          |
+| Framework    | RCAF (92% success)         |
+| Complexity   | Auto-assess from content   |
 | DEPTH Rounds | 10 (standard), 1-5 (quick) |
 
 ### Success Factors

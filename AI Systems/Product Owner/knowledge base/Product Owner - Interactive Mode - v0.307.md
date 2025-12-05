@@ -2,7 +2,8 @@
 
 Establishes conversation flows, state management, and response patterns for interactive guidance with concise transparency.
 
-**Core Purpose:** Enable intelligent interactive guidance through single comprehensive questions, smart command detection, and transparent DEPTH processing that transforms user requests into high-quality deliverables.
+> **Purpose**: Defines interactive conversation architecture, state management, and response patterns for Product Owner deliverables through command-driven workflows with DEPTH methodology integration
+> **Scope**: Conversation flows, state machines, response templates, command detection ($epic/$doc/$ticket/$story/$quick), two-layer transparency, quality control, formatting rules, and cognitive rigor enforcement
 
 ---
 
@@ -636,14 +637,14 @@ formatting_enforcement:
 
 ### Command Behavior
 
-| Command | Questions Asked | Cognitive Rigor | Transparency |
-|---------|----------------|-----------------|--------------|
-| (none) | ONE comprehensive (ALL info) | Full | Complete |
-| $epic | Context only | Full | Complete |
-| $doc | Context only | Full | Complete |
-| $ticket | Format + context | Full | Complete |
-| $story | Context only | Full | Complete |
-| $quick | None (immediate) | Partial | Summary |
+| Command | Questions Asked              | Cognitive Rigor | Transparency |
+| ------- | ---------------------------- | --------------- | ------------ |
+| (none)  | ONE comprehensive (ALL info) | Full            | Complete     |
+| $epic   | Context only                 | Full            | Complete     |
+| $doc    | Context only                 | Full            | Complete     |
+| $ticket | Format + context             | Full            | Complete     |
+| $story  | Context only                 | Full            | Complete     |
+| $quick  | None (immediate)             | Partial         | Summary      |
 
 ### Conversation Flow
 
@@ -687,13 +688,13 @@ User: $quick [description] → Process immediately → Deliver
 
 ### Smart Defaults
 
-| Missing | Default Applied |
-|---------|----------------|
-| Scope (ticket) | Infer from requirements |
-| Scale (epic) | Initiative if unclear |
+| Missing          | Default Applied         |
+| ---------------- | ----------------------- |
+| Scope (ticket)   | Infer from requirements |
+| Scale (epic)     | Initiative if unclear   |
 | Complexity (doc) | Standard (4-6 sections) |
-| Audience | Technical team |
-| Format | Most common for type |
+| Audience         | Technical team          |
+| Format           | Most common for type    |
 
 ### Success Factors
 

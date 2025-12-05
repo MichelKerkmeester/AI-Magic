@@ -2,7 +2,8 @@
 
 Comprehensive framework library, enhancement patterns, and CLEAR evaluation methodology for systematic prompt engineering excellence.
 
-**Core Purpose:** Define the complete framework selection matrix (RCAF, COSTAR, RACE, CIDI, TIDD-EC, CRISPE, CRAFT), systematic enhancement patterns (vague-to-specific, assumption elimination, scope boundaries), CLEAR evaluation methodology (50-point scale with context-aware weighting), and practical implementation templates that enable expert-level prompt optimization.
+> **Purpose**: Provides the complete knowledge base for prompt engineering excellence through framework selection, systematic enhancement patterns, and CLEAR evaluation methodology
+> **Scope**: Framework library (RCAF, COSTAR, RACE, CIDI, TIDD-EC, CRISPE, CRAFT) with selection algorithms, enhancement patterns (vague-to-specific transformation, assumption elimination, scope boundaries), CLEAR scoring methodology (50-point scale with contextual weighting), recovery protocols, use case templates, and mastery principles
 
 ---
 
@@ -41,15 +42,15 @@ Comprehensive framework library, enhancement patterns, and CLEAR evaluation meth
 
 #### Complete Framework Matrix with Use Cases
 
-| Framework | Elements | Best For | Avoid When | Success Rate | Combination Potential |
-|-----------|----------|----------|------------|--------------|----------------------|
-| **RCAF** | Role, Context, Action, Format | 80% of prompts, general tasks | Over-complex scenarios | 92% | High - base for combinations |
-| **COSTAR** | Context, Objective, Style, Tone, Audience, Response | Content creation, communication | Technical specifications | 94% | Medium - specific use |
-| **RACE** | Role, Action, Context, Execute | Urgent tasks, quick iterations | Detailed requirements | 88% | High - good for speed |
-| **CIDI** | Context, Instructions, Details, Input | Process documentation, tutorials | Creative exploration | 90% | Low - self-contained |
-| **TIDD-EC** | Task, Instructions, Do's, Don'ts, Examples, Context | Quality-critical, compliance | Brainstorming | 93% | Medium - pairs with CoT |
-| **CRISPE** | Capacity, Insight, Statement, Personality, Experiment | Strategy, exploration | Routine tasks | 87% | High - good for iteration |
-| **CRAFT** | Context, Role, Action, Format, Target | Complex projects, planning | Simple queries | 91% | Low - already comprehensive |
+| Framework   | Elements                                              | Best For                         | Avoid When               | Success Rate | Combination Potential        |
+| ----------- | ----------------------------------------------------- | -------------------------------- | ------------------------ | ------------ | ---------------------------- |
+| **RCAF**    | Role, Context, Action, Format                         | 80% of prompts, general tasks    | Over-complex scenarios   | 92%          | High - base for combinations |
+| **COSTAR**  | Context, Objective, Style, Tone, Audience, Response   | Content creation, communication  | Technical specifications | 94%          | Medium - specific use        |
+| **RACE**    | Role, Action, Context, Execute                        | Urgent tasks, quick iterations   | Detailed requirements    | 88%          | High - good for speed        |
+| **CIDI**    | Context, Instructions, Details, Input                 | Process documentation, tutorials | Creative exploration     | 90%          | Low - self-contained         |
+| **TIDD-EC** | Task, Instructions, Do's, Don'ts, Examples, Context   | Quality-critical, compliance     | Brainstorming            | 93%          | Medium - pairs with CoT      |
+| **CRISPE**  | Capacity, Insight, Statement, Personality, Experiment | Strategy, exploration            | Routine tasks            | 87%          | High - good for iteration    |
+| **CRAFT**   | Context, Role, Action, Format, Target                 | Complex projects, planning       | Simple queries           | 91%          | Low - already comprehensive  |
 
 #### Intelligent Framework Selection Algorithm
 

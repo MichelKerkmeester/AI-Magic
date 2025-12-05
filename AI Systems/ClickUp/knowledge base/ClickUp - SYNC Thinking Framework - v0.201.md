@@ -2,7 +2,8 @@
 
 A comprehensive methodology combining systematic SYNC analysis with the RICCE completeness framework for superior ClickUp task management deliverables.
 
-**Core Purpose:** Define focused ClickUp workspace building, task management, and agile workflow systems that operate with **native MCP operations only** for every ClickUp operation.
+> **Purpose**: Intelligent framework for context assessment, native ClickUp MCP operation selection, and solution finding through systematic SYNC phases (Survey, Yield, Navigate, Create) with RICCE completeness validation
+> **Scope**: Native MCP-only operations, workspace hierarchy management (Space/Folder/List), task operations (bulk creation, updates, properties), time tracking, cognitive rigor techniques, quality gates, two-layer transparency model, integration validation
 
 ---
 
@@ -271,12 +272,12 @@ Before operations, validate:
 
 ### Phase Breakdown with Execution Flow
 
-| Phase | Standard Mode | User Update Format |
-|-------|---------------|-------------------|
-| **S**urvey | Connection + Analysis | "📊 Surveying (Sprint planning, MCP operations identified)" |
-| **Y**ield | Native pattern selection | "⚙️ Yielding (Hierarchy + tasks + tracking optimal)" |
-| **N**avigate | Sequential building | "🔄 Navigating (Folder → List → Tasks → Tracking)" |
-| **C**reate | Quality + Integration delivery | "✅ Creating (Best practices + integration complete)" |
+| Phase        | Standard Mode                  | User Update Format                                         |
+| ------------ | ------------------------------ | ---------------------------------------------------------- |
+| **S**urvey   | Connection + Analysis          | "📊 Surveying (Sprint planning, MCP operations identified)" |
+| **Y**ield    | Native pattern selection       | "⚙️ Yielding (Hierarchy + tasks + tracking optimal)"        |
+| **N**avigate | Sequential building            | "🔄 Navigating (Folder → List → Tasks → Tracking)"          |
+| **C**reate   | Quality + Integration delivery | "✅ Creating (Best practices + integration complete)"       |
 
 ### State Management
 
@@ -501,12 +502,12 @@ integration_validation:
 
 ### RICCE-SYNC Integration
 
-| SYNC Phase | RICCE Elements | Validation Point |
-|------------|----------------|------------------|
-| **Survey (S)** | Role + Context | Operation type, MCP operations, native scope |
-| **Yield (Y)** | Instructions + Constraints | Native steps selected, quality metrics |
-| **Navigate (N)** | Context + Instructions | Properties integrated, coordination executed |
-| **Create (C)** | Constraints + Examples | Quality metrics tracked, results validated |
+| SYNC Phase       | RICCE Elements             | Validation Point                             |
+| ---------------- | -------------------------- | -------------------------------------------- |
+| **Survey (S)**   | Role + Context             | Operation type, MCP operations, native scope |
+| **Yield (Y)**    | Instructions + Constraints | Native steps selected, quality metrics       |
+| **Navigate (N)** | Context + Instructions     | Properties integrated, coordination executed |
+| **Create (C)**   | Constraints + Examples     | Quality metrics tracked, results validated   |
 
 ---
 
@@ -666,13 +667,13 @@ post_operation_checklist:
 
 ### Quality Metric Targets
 
-| Metric | Target | Action if Below |
-|--------|--------|-----------------|
-| **Native Operations** | 100% | BLOCKING - remove custom code |
-| **Custom Code** | 0% | BLOCKING - eliminate all |
-| **Task Consistency** | >90% | Standardize naming |
-| **Connection Stability** | >99% | Check MCP server |
-| **Integration Success** | 100% | BLOCKING - resolve coordination |
+| Metric                   | Target | Action if Below                 |
+| ------------------------ | ------ | ------------------------------- |
+| **Native Operations**    | 100%   | BLOCKING - remove custom code   |
+| **Custom Code**          | 0%     | BLOCKING - eliminate all        |
+| **Task Consistency**     | >90%   | Standardize naming              |
+| **Connection Stability** | >99%   | Check MCP server                |
+| **Integration Success**  | 100%   | BLOCKING - resolve coordination |
 
 ---
 
@@ -682,12 +683,12 @@ post_operation_checklist:
 
 ### SYNC Phase Summary
 
-| Phase | Key Actions | User Sees |
-|-------|-------------|-----------|
-| **S**urvey | MCP verify, operations identified | "📊 Surveying (MCP: Hierarchy + Tasks)" |
-| **Y**ield | Native patterns selected | "⚙️ Yielding (Folder → List + Tasks)" |
-| **N**avigate | Native operations executing | "🔄 Navigating (Folder → List → Tasks)" |
-| **C**reate | Best practices + integration verified | "✅ Creating (100% native ✅)" |
+| Phase        | Key Actions                           | User Sees                              |
+| ------------ | ------------------------------------- | -------------------------------------- |
+| **S**urvey   | MCP verify, operations identified     | "📊 Surveying (MCP: Hierarchy + Tasks)" |
+| **Y**ield    | Native patterns selected              | "⚙️ Yielding (Folder → List + Tasks)"   |
+| **N**avigate | Native operations executing           | "🔄 Navigating (Folder → List → Tasks)" |
+| **C**reate   | Best practices + integration verified | "✅ Creating (100% native ✅)"           |
 
 ### Cognitive Rigor Quick Check
 
@@ -755,14 +756,14 @@ post_operation_checklist:
 
 ### Performance Benchmarks
 
-| Operation | Time | Success Rate |
-|-----------|------|--------------|
-| Connection check | 1-2s | 99% |
-| Folder creation | 2-3s | 95% |
-| List creation | 2-3s | 95% |
-| Single task | 2-3s | 95% |
-| Bulk tasks (10) | 5-8s | 95% |
-| Time tracking | 1-2s | 98% |
+| Operation        | Time | Success Rate |
+| ---------------- | ---- | ------------ |
+| Connection check | 1-2s | 99%          |
+| Folder creation  | 2-3s | 95%          |
+| List creation    | 2-3s | 95%          |
+| Single task      | 2-3s | 95%          |
+| Bulk tasks (10)  | 5-8s | 95%          |
+| Time tracking    | 1-2s | 98%          |
 
 ### Quality Indicators
 - Connection stability: >99%

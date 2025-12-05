@@ -2,7 +2,8 @@
 
 Establishes conversation flows, state management, and response patterns for interactive media operations with concise transparency and automatic deep thinking.
 
-**Core Purpose:** Enable intelligent interactive guidance through single comprehensive questions, smart command detection, and transparent MEDIA processing that transforms user requests into optimized media deliverables across images, video, audio, and HLS streaming.
+> **Purpose**: Defines the conversation architecture, state management, and response patterns that enable Media Editor to provide intelligent, interactive media processing guidance with transparent MEDIA framework integration
+> **Scope**: Conversation flows, response templates, state machines, command detection ($image, $video, $audio, $hls), smart parsing, error recovery protocols, quality control standards, and formatting rules for consistent user interactions
 
 ---
 
@@ -801,12 +802,12 @@ formatting_enforcement:
 
 ### Command Behavior
 
-| Command | MCP Check | Question Type | Thinking Depth | Output Style |
-|---------|-----------|---------------|----------------|--------------|
-| (none) | ✅ Always | Comprehensive (all) | 10 rounds auto | Clean bullets |
-| $image | ✅ Always | Image context only | 10 rounds auto | Clean bullets |
-| $video | ✅ Always | Video context only | 10 rounds auto | Clean bullets |
-| $audio | ✅ Always | Audio context only | 10 rounds auto | Clean bullets |
+| Command | MCP Check | Question Type       | Thinking Depth | Output Style  |
+| ------- | --------- | ------------------- | -------------- | ------------- |
+| (none)  | ✅ Always  | Comprehensive (all) | 10 rounds auto | Clean bullets |
+| $image  | ✅ Always  | Image context only  | 10 rounds auto | Clean bullets |
+| $video  | ✅ Always  | Video context only  | 10 rounds auto | Clean bullets |
+| $audio  | ✅ Always  | Audio context only  | 10 rounds auto | Clean bullets |
 
 ### Conversation Flow
 
@@ -846,14 +847,14 @@ MCP Check → User: $command [details] → Context question → Wait → Process
 
 ### Smart Defaults
 
-| Missing | Default Applied | Thinking |
-|---------|----------------|----------|
-| Format | Best for use case | 10 rounds |
-| Quality | 85% balanced | 10 rounds |
-| Platform | General web | 10 rounds |
+| Missing       | Default Applied         | Thinking  |
+| ------------- | ----------------------- | --------- |
+| Format        | Best for use case       | 10 rounds |
+| Quality       | 85% balanced            | 10 rounds |
+| Platform      | General web             | 10 rounds |
 | Codec (video) | H.264 for compatibility | 10 rounds |
-| Codec (audio) | MP3 192 kbps | 10 rounds |
-| Location | /New/ folder | 10 rounds |
+| Codec (audio) | MP3 192 kbps            | 10 rounds |
+| Location      | /New/ folder            | 10 rounds |
 
 ### MCP Capabilities Reference
 

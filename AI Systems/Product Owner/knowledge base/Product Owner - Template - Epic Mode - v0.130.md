@@ -2,7 +2,8 @@
 
 Epic templates with integrated formatting rules and quality standards. All delivery logic consolidated for self-contained operation.
 
-**Core Purpose:** Transform strategic initiatives into high-level epic summaries that communicate vision, success metrics, and scope overview with links to detailed stories and tickets for execution.
+> **Purpose**: Defines comprehensive epic creation templates with integrated formatting rules, quality standards, and delivery logic for transforming strategic initiatives into structured, scalable documentation at Initiative, Program, and Strategic levels.
+> **Scope**: Epic mode overview and command syntax, artifact delivery standards and DEPTH methodology application, complexity auto-scaling based on project keywords, symbol hierarchy and formatting rules, quality validation checklists and error recovery protocols, three tier-specific templates (Initiative/Program/Strategic) with example structures.
 
 ---
 
@@ -99,11 +100,11 @@ Epic templates with integrated formatting rules and quality standards. All deliv
 
 ## 3. 📊 COMPLEXITY AUTO-SCALING
 
-| Keywords | Scale | Team Scope | Features | DEPTH Processing |
-|----------|-------|------------|----------|-----------------|
-| feature, component | Initiative | Single team | 5-10 | 10 rounds (2 if $quick) |
-| platform, system | Program | Multi-team | 10-20 | 10 rounds (3 if $quick) |
-| strategic, ecosystem | Strategic | Company-wide | 20+ | 10 rounds (5 if $quick) |
+| Keywords             | Scale      | Team Scope   | Features | DEPTH Processing        |
+| -------------------- | ---------- | ------------ | -------- | ----------------------- |
+| feature, component   | Initiative | Single team  | 5-10     | 10 rounds (2 if $quick) |
+| platform, system     | Program    | Multi-team   | 10-20    | 10 rounds (3 if $quick) |
+| strategic, ecosystem | Strategic  | Company-wide | 20+      | 10 rounds (5 if $quick) |
 
 **Important:** Scale determines TEMPLATE STRUCTURE, not content scope
 - User requests "platform epic" → Program template for THAT platform only
@@ -366,13 +367,13 @@ Exit Criteria:
 
 # ❖ Stakeholders
 
-| Role | Responsible | Accountable | Consulted | Informed |
-|------|-------------|-------------|-----------|----------|
-| Product Definition | PM | VP Product | Stakeholders | Company |
-| Technical Design | Tech Lead | Eng Manager | Architects | PM |
-| Implementation | Engineers | Tech Lead | QA | PM |
-| Quality Assurance | QA Lead | Eng Manager | PM | Stakeholders |
-| Launch | PM | VP Product | All teams | Company |
+| Role               | Responsible | Accountable | Consulted    | Informed     |
+| ------------------ | ----------- | ----------- | ------------ | ------------ |
+| Product Definition | PM          | VP Product  | Stakeholders | Company      |
+| Technical Design   | Tech Lead   | Eng Manager | Architects   | PM           |
+| Implementation     | Engineers   | Tech Lead   | QA           | PM           |
+| Quality Assurance  | QA Lead     | Eng Manager | PM           | Stakeholders |
+| Launch             | PM          | VP Product  | All teams    | Company      |
 ```
 
 ---
@@ -535,11 +536,11 @@ Key Deliverables:
 
 ## ∅ Risks & Mitigations
 
-| Risk | Probability | Impact | Mitigation | Owner |
-|------|-------------|--------|------------|-------|
-| [Risk 1] | High | High | [Strategy] | [Role] |
-| [Risk 2] | Medium | High | [Strategy] | [Role] |
-| [Risk 3] | Low | Medium | [Strategy] | [Role] |
+| Risk     | Probability | Impact | Mitigation | Owner  |
+| -------- | ----------- | ------ | ---------- | ------ |
+| [Risk 1] | High        | High   | [Strategy] | [Role] |
+| [Risk 2] | Medium      | High   | [Strategy] | [Role] |
+| [Risk 3] | Low         | Medium | [Strategy] | [Role] |
 ```
 
 ---
@@ -704,13 +705,13 @@ Major Milestones:
 
 ## ∅ Strategic Risks & Mitigations
 
-| Risk Category | Specific Risk | Impact | Mitigation Strategy | Owner |
-|---------------|---------------|--------|-------------------|-------|
-| Market | [Risk description] | Critical | [Strategy] | Strategy |
-| Technology | [Risk description] | High | [Strategy] | CTO |
-| Financial | [Risk description] | High | [Strategy] | CFO |
-| Organizational | [Risk description] | Medium | [Strategy] | CHRO |
-| Regulatory | [Risk description] | High | [Strategy] | Legal |
+| Risk Category  | Specific Risk      | Impact   | Mitigation Strategy | Owner    |
+| -------------- | ------------------ | -------- | ------------------- | -------- |
+| Market         | [Risk description] | Critical | [Strategy]          | Strategy |
+| Technology     | [Risk description] | High     | [Strategy]          | CTO      |
+| Financial      | [Risk description] | High     | [Strategy]          | CFO      |
+| Organizational | [Risk description] | Medium   | [Strategy]          | CHRO     |
+| Regulatory     | [Risk description] | High     | [Strategy]          | Legal    |
 
 **Contingency Plans**
 [2-3 sentences on fallback strategies and pivot options]

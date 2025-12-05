@@ -2,7 +2,8 @@
 
 Technical reference for Imagician MCP server capabilities and integration for image processing operations.
 
-**Purpose:** Document Imagician-specific features, supported operations, and technical specifications. Conversation flows and thinking methodology are in Interactive Intelligence and MEDIA Framework respectively.
+> **Purpose**: Define Imagician MCP server capabilities, technical specifications, and operation parameters for image processing integration
+> **Scope**: Server overview, core capabilities, format support, operation specifications, quality optimization, resize/crop strategies, transforms, and quick reference
 
 ---
 
@@ -233,13 +234,13 @@ Quality settings determine the balance between file size and visual fidelity. Hi
 
 **Quality Presets:**
 
-| Preset | Quality Range | Use Case | File Size | Visual Quality |
-|--------|---------------|----------|-----------|----------------|
-| Archive | 100 | Lossless preservation | Largest | Perfect |
-| High Quality | 90-95 | Prints, professional work | Large | Excellent |
-| Standard Web | 80-89 | Web display (default) | Moderate | Very good |
-| Good Compression | 70-79 | Size priority, acceptable quality | Smaller | Good |
-| Heavy Compression | 60-69 | Extreme size limits | Small | Acceptable |
+| Preset            | Quality Range | Use Case                          | File Size | Visual Quality |
+| ----------------- | ------------- | --------------------------------- | --------- | -------------- |
+| Archive           | 100           | Lossless preservation             | Largest   | Perfect        |
+| High Quality      | 90-95         | Prints, professional work         | Large     | Excellent      |
+| Standard Web      | 80-89         | Web display (default)             | Moderate  | Very good      |
+| Good Compression  | 70-79         | Size priority, acceptable quality | Smaller   | Good           |
+| Heavy Compression | 60-69         | Extreme size limits               | Small     | Acceptable     |
 
 ### Format-Specific Quality
 

@@ -2,7 +2,8 @@
 
 Documentation templates with integrated formatting rules and quality standards. All delivery logic consolidated for self-contained operation.
 
-**Core Purpose:** Transform documentation requests into comprehensive product documentation that communicates features, specifications, performance metrics, and strategic context for technical teams and stakeholders.
+> **Purpose**: Define comprehensive documentation templates with auto-scaling complexity, integrated formatting standards, and DEPTH methodology for creating product documentation that transforms feature requests into professional deliverables
+> **Scope**: Command structure, delivery standards, complexity auto-scaling (Simple/Standard/Complex), formatting rules with symbol hierarchy, quality validation checklists, error recovery protocols, and three complete documentation templates with metadata, About sections, References structure, and performance metrics
 
 ---
 
@@ -96,11 +97,11 @@ Documentation templates with integrated formatting rules and quality standards. 
 
 ## 3. 📄 COMPLEXITY AUTO-SCALING
 
-| Keywords | Complexity | Content Depth | Document Type | DEPTH Processing |
-|----------|------------|---------------|---------------|-----------------|
-| overview, summary, brief | Simple | Quick reference | Product brief | 10 rounds (2 if $quick) |
-| feature, metrics, strategy | Standard | Detailed guide | Feature spec | 10 rounds (3 if $quick) |
-| platform, ecosystem, system | Complex | Comprehensive docs | Strategy doc | 10 rounds (5 if $quick) |
+| Keywords                    | Complexity | Content Depth      | Document Type | DEPTH Processing        |
+| --------------------------- | ---------- | ------------------ | ------------- | ----------------------- |
+| overview, summary, brief    | Simple     | Quick reference    | Product brief | 10 rounds (2 if $quick) |
+| feature, metrics, strategy  | Standard   | Detailed guide     | Feature spec  | 10 rounds (3 if $quick) |
+| platform, ecosystem, system | Complex    | Comprehensive docs | Strategy doc  | 10 rounds (5 if $quick) |
 
 **Important:** Complexity determines TEMPLATE SIZE, not content scope
 - User requests "platform overview" → Complex template for THAT platform only
@@ -330,11 +331,11 @@ High-level description of the main capabilities and value proposition
 
 ### Key Metrics
 
-| Metric | Target | Current | Status |
-|--------|--------|---------|--------|
-| Adoption Rate | >70% | 65% | On Track |
-| Daily Usage | >80% | 82% | Achieved |
-| User Satisfaction | >4.5 | 4.3 | At Risk |
+| Metric            | Target | Current | Status   |
+| ----------------- | ------ | ------- | -------- |
+| Adoption Rate     | >70%   | 65%     | On Track |
+| Daily Usage       | >80%   | 82%     | Achieved |
+| User Satisfaction | >4.5   | 4.3     | At Risk  |
 
 ### Response Protocols
 
@@ -412,8 +413,8 @@ the product [limited to requested system only].
 
 ### 2. Key Terminology
 
-| Term | Definition | Context |
-|------|------------|---------|
+| Term         | Definition         | Context           |
+| ------------ | ------------------ | ----------------- |
 | **[Term 1]** | [Clear definition] | [When/where used] |
 | **[Term 2]** | [Clear definition] | [When/where used] |
 | **[Term 3]** | [Clear definition] | [When/where used] |
@@ -473,12 +474,12 @@ the product [limited to requested system only].
 
 #### Key Performance Indicators
 
-| Metric | Target | Threshold | Response |
-|--------|--------|-----------|----------|
-| User Adoption | >70% | <50% | Engagement campaign |
-| Feature Usage | Daily | Weekly | Review positioning |
-| Success Rate | >85% | <60% | UX improvements |
-| Time to Value | <5 min | >15 min | Simplify onboarding |
+| Metric        | Target | Threshold | Response            |
+| ------------- | ------ | --------- | ------------------- |
+| User Adoption | >70%   | <50%      | Engagement campaign |
+| Feature Usage | Daily  | Weekly    | Review positioning  |
+| Success Rate  | >85%   | <60%      | UX improvements     |
+| Time to Value | <5 min | >15 min   | Simplify onboarding |
 
 #### Tracking Strategy
 
@@ -602,12 +603,12 @@ The north star that guides all platform decisions and investments
 
 #### Target Segments
 
-| Segment | TAM | Our Approach | Focus Level |
-|---------|-----|--------------|-------------|
-| **Enterprise** | $2.5B | Direct sales | High |
-| **Mid-Market** | $1.8B | Product-led | High |
-| **SMB** | $3.2B | Self-serve | Medium |
-| **Consumer** | $5.0B | Freemium | Exploratory |
+| Segment        | TAM   | Our Approach | Focus Level |
+| -------------- | ----- | ------------ | ----------- |
+| **Enterprise** | $2.5B | Direct sales | High        |
+| **Mid-Market** | $1.8B | Product-led  | High        |
+| **SMB**        | $3.2B | Self-serve   | Medium      |
+| **Consumer**   | $5.0B | Freemium     | Exploratory |
 
 #### Go-to-Market Strategy
 
@@ -660,13 +661,13 @@ The north star that guides all platform decisions and investments
 
 #### Feature Map
 
-| Category | Features | User Segment | Business Value |
-|----------|----------|--------------|----------------|
-| **Discovery** | Search, Browse, Recommend | All | Engagement |
-| **Creation** | Tools, Templates, AI Assist | Power Users | Supply |
-| **Collaboration** | Share, Comment, Co-create | Teams | Virality |
-| **Analytics** | Insights, Reports, Tracking | Business | Monetization |
-| **Administration** | Controls, Permissions, Billing | Enterprise | Revenue |
+| Category           | Features                       | User Segment | Business Value |
+| ------------------ | ------------------------------ | ------------ | -------------- |
+| **Discovery**      | Search, Browse, Recommend      | All          | Engagement     |
+| **Creation**       | Tools, Templates, AI Assist    | Power Users  | Supply         |
+| **Collaboration**  | Share, Comment, Co-create      | Teams        | Virality       |
+| **Analytics**      | Insights, Reports, Tracking    | Business     | Monetization   |
+| **Administration** | Controls, Permissions, Billing | Enterprise   | Revenue        |
 
 ---
 
@@ -676,12 +677,12 @@ The north star that guides all platform decisions and investments
 
 #### Primary Metrics
 
-| Metric | Current | Target | Owner |
-|--------|---------|--------|-------|
-| MAU | 250K | 500K | Growth |
-| Revenue/User | $25 | $45 | Product |
-| NPS | 42 | 65 | Success |
-| Retention D30 | 45% | 70% | Product |
+| Metric        | Current | Target | Owner   |
+| ------------- | ------- | ------ | ------- |
+| MAU           | 250K    | 500K   | Growth  |
+| Revenue/User  | $25     | $45    | Product |
+| NPS           | 42      | 65     | Success |
+| Retention D30 | 45%     | 70%    | Product |
 
 #### Leading Indicators
 
@@ -712,12 +713,12 @@ The north star that guides all platform decisions and investments
 
 #### Intervention Framework
 
-| Status | Trigger | Response Time | Action | Escalation |
-|--------|---------|---------------|---------|------------|
-| Healthy | On track | Weekly | Monitor | None |
-| Warning | -10% target | Daily | Investigate | Team Lead |
-| Critical | -25% target | Immediate | Intervene | Director |
-| Crisis | -50% target | War Room | All Hands | C-Suite |
+| Status   | Trigger     | Response Time | Action      | Escalation |
+| -------- | ----------- | ------------- | ----------- | ---------- |
+| Healthy  | On track    | Weekly        | Monitor     | None       |
+| Warning  | -10% target | Daily         | Investigate | Team Lead  |
+| Critical | -25% target | Immediate     | Intervene   | Director   |
+| Crisis   | -50% target | War Room      | All Hands   | C-Suite    |
 
 ---
 
@@ -761,12 +762,12 @@ The north star that guides all platform decisions and investments
 
 #### Detailed Personas
 
-| Persona | Primary Need | Solution | Success Metric | Monetization |
-|---------|-------------|----------|----------------|--------------|
-| **Creator** | Audience | Discovery | Followers | Subscription |
-| **Business** | ROI | Analytics | Revenue | Enterprise |
-| **Consumer** | Content | Curation | Time Spent | Ads/Premium |
-| **Team Lead** | Efficiency | Collaboration | Productivity | Seats |
+| Persona       | Primary Need | Solution      | Success Metric | Monetization |
+| ------------- | ------------ | ------------- | -------------- | ------------ |
+| **Creator**   | Audience     | Discovery     | Followers      | Subscription |
+| **Business**  | ROI          | Analytics     | Revenue        | Enterprise   |
+| **Consumer**  | Content      | Curation      | Time Spent     | Ads/Premium  |
+| **Team Lead** | Efficiency   | Collaboration | Productivity   | Seats        |
 
 ---
 
@@ -811,12 +812,12 @@ The north star that guides all platform decisions and investments
 
 #### Infrastructure Scaling
 
-| Component | Current | Target | Investment |
-|-----------|---------|--------|------------|
-| Users | 250K | 2M | $2M |
-| Requests/sec | 1K | 10K | $500K |
-| Data Storage | 10TB | 100TB | $300K |
-| Team Size | 25 | 75 | $8M |
+| Component    | Current | Target | Investment |
+| ------------ | ------- | ------ | ---------- |
+| Users        | 250K    | 2M     | $2M        |
+| Requests/sec | 1K      | 10K    | $500K      |
+| Data Storage | 10TB    | 100TB  | $300K      |
+| Team Size    | 25      | 75     | $8M        |
 
 #### International Expansion
 

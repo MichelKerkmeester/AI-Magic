@@ -2,7 +2,8 @@
 
 A comprehensive methodology combining systematic media analysis with **automatic professional optimization** for superior media processing deliverables.
 
-**Core Purpose:** Define the focused media optimization, quality analysis, and processing systems that operate with **automatic depth and professional excellence** for every media operation.
+> **Purpose**: Defines the MEDIA methodology (Measure, Evaluate, Decide, Implement, Analyze) for intelligent media optimization with automatic professional-grade analysis and quality assurance
+> **Scope**: Framework overview, MEDIA principles, cognitive rigor techniques, RICCE structural validation, transparency model, quality assurance gates, tool integration (MCP/FFmpeg), and quick reference guides
 
 ---
 
@@ -268,13 +269,13 @@ Before processing, validate (show summary to user):
 
 ### Phase Breakdown with Round Distribution
 
-| Phase | Standard (10 rounds) | User Update Format |
-|-------|----------------------|--------------------|
-| **M**easure | Rounds 1-2 | "📊 Analyzing source (4K PNG, 8.5MB)" |
-| **E**valuate | Rounds 3-5 | "⚙️ Evaluating (WebP optimal)" |
-| **D**ecide | Rounds 6-7 | "✅ Deciding (85% quality, 1080p)" |
-| **I**mplement | Round 8 | "🔄 Processing (95% reduction)" |
-| **A**nalyze | Rounds 9-10 | "📈 Complete (quality verified)" |
+| Phase         | Standard (10 rounds) | User Update Format                   |
+| ------------- | -------------------- | ------------------------------------ |
+| **M**easure   | Rounds 1-2           | "📊 Analyzing source (4K PNG, 8.5MB)" |
+| **E**valuate  | Rounds 3-5           | "⚙️ Evaluating (WebP optimal)"        |
+| **D**ecide    | Rounds 6-7           | "✅ Deciding (85% quality, 1080p)"    |
+| **I**mplement | Round 8              | "🔄 Processing (95% reduction)"       |
+| **A**nalyze   | Rounds 9-10          | "📈 Complete (quality verified)"      |
 
 ### State Management (Focused & Efficient)
 
@@ -534,13 +535,13 @@ examples_validation:
 
 **Integration Map:**
 
-| MEDIA Phase | RICCE Element | Validation Point |
-|-------------|---------------|------------------|
-| **Measure (M)** | Role (R) | Media type, use case, platform identified |
-| **Evaluate (E)** | Instructions (I) | Processing steps evaluated and selected |
-| **Decide (D)** | Context (C) | Properties analyzed, constraints defined |
-| **Implement (I)** | Constraints (C) | Quality metrics tracked during processing |
-| **Analyze (A)** | Examples (E) | Results validated, metrics confirmed |
+| MEDIA Phase       | RICCE Element    | Validation Point                          |
+| ----------------- | ---------------- | ----------------------------------------- |
+| **Measure (M)**   | Role (R)         | Media type, use case, platform identified |
+| **Evaluate (E)**  | Instructions (I) | Processing steps evaluated and selected   |
+| **Decide (D)**    | Context (C)      | Properties analyzed, constraints defined  |
+| **Implement (I)** | Constraints (C)  | Quality metrics tracked during processing |
+| **Analyze (A)**   | Examples (E)     | Results validated, metrics confirmed      |
 
 **Final Validation Checkpoint:**
 
@@ -704,13 +705,13 @@ user_communication:
 
 ### Quality Metric Targets
 
-| Metric | Target | Threshold | Action if Below |
-|--------|--------|-----------|-----------------|
-| **SSIM (Quality)** | 0.95+ | 0.90 | Increase quality level, adjust compression |
-| **Size Reduction** | Target% | 80% of target | Re-evaluate format or quality settings |
-| **Processing Time** | < 2 sec | < 5 sec | Optimize operation sequence |
-| **Compatibility** | 95%+ | 90% | Provide fallback format |
-| **Tool Availability** | 100% | 100% | BLOCKING - verify connection, provide setup guidance |
+| Metric                | Target  | Threshold     | Action if Below                                      |
+| --------------------- | ------- | ------------- | ---------------------------------------------------- |
+| **SSIM (Quality)**    | 0.95+   | 0.90          | Increase quality level, adjust compression           |
+| **Size Reduction**    | Target% | 80% of target | Re-evaluate format or quality settings               |
+| **Processing Time**   | < 2 sec | < 5 sec       | Optimize operation sequence                          |
+| **Compatibility**     | 95%+    | 90%           | Provide fallback format                              |
+| **Tool Availability** | 100%    | 100%          | BLOCKING - verify connection, provide setup guidance |
 
 ### Improvement Protocol
 
@@ -731,13 +732,13 @@ improvement_cycle:
 
 ### MEDIA Phase Summary
 
-| Phase | Standard | Key Actions | User Sees |
-|-------|----------|-------------|-----------|
-| **M**easure | Full analysis | Tool verify, media analyzed | "📊 Measuring (4K PNG, 8.5MB, web target)" |
-| **E**valuate | Pattern eval | Optimization patterns selected | "⚙️ Evaluating (WebP optimal for web)" |
-| **D**ecide | Sequential | Processing pipeline sequenced | "🔄 Deciding (Resize → Convert → Optimize)" |
-| **I**mplement | Full validation | Best practices verified | "✅ Implementing (Quality standards met)" |
-| **A**nalyze | Complete | Integration delivered | "📈 Analyzing (95% reduction, quality preserved)" |
+| Phase         | Standard        | Key Actions                    | User Sees                                        |
+| ------------- | --------------- | ------------------------------ | ------------------------------------------------ |
+| **M**easure   | Full analysis   | Tool verify, media analyzed    | "📊 Measuring (4K PNG, 8.5MB, web target)"        |
+| **E**valuate  | Pattern eval    | Optimization patterns selected | "⚙️ Evaluating (WebP optimal for web)"            |
+| **D**ecide    | Sequential      | Processing pipeline sequenced  | "🔄 Deciding (Resize → Convert → Optimize)"       |
+| **I**mplement | Full validation | Best practices verified        | "✅ Implementing (Quality standards met)"         |
+| **A**nalyze   | Complete        | Integration delivered          | "📈 Analyzing (95% reduction, quality preserved)" |
 
 ### Cognitive Rigor Quick Check
 
@@ -773,14 +774,14 @@ improvement_cycle:
 
 ### Performance Benchmarks
 
-| Operation | Time | Success Rate | Tool Type |
-|-----------|------|--------------|----------|
-| Tool verification | 1-2s | 99% | System |
-| Image resize | 1-2s | 98% | MCP |
-| Format conversion | 2-3s | 95% | MCP |
-| Video transcode | 10-30s | 90% | MCP |
-| HLS generation | 2-5x duration | 95% | FFmpeg |
-| Batch processing | 1-2s per file | 98% | MCP |
+| Operation         | Time          | Success Rate | Tool Type |
+| ----------------- | ------------- | ------------ | --------- |
+| Tool verification | 1-2s          | 99%          | System    |
+| Image resize      | 1-2s          | 98%          | MCP       |
+| Format conversion | 2-3s          | 95%          | MCP       |
+| Video transcode   | 10-30s        | 90%          | MCP       |
+| HLS generation    | 2-5x duration | 95%          | FFmpeg    |
+| Batch processing  | 1-2s per file | 98%          | MCP       |
 
 ### Quality Indicators
 - Tool availability: 100% (REQUIRED, blocking)

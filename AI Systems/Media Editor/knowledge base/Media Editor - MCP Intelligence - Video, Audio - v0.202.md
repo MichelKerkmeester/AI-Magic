@@ -2,7 +2,8 @@
 
 Technical reference for Video-Audio MCP server capabilities and integration for video and audio processing operations.
 
-**Purpose:** Document Video-Audio MCP specific features, supported operations, and technical specifications. Conversation flows and thinking methodology are in Interactive Intelligence and MEDIA Framework respectively.
+> **Purpose**: Defines comprehensive technical specifications and operational capabilities for the Video-Audio MCP server powered by FFmpeg, enabling systematic video and audio processing workflows.
+> **Scope**: MCP server integration, video/audio format conversion, editing operations, codec specifications, advanced effects (overlays, transitions, subtitles), performance characteristics, and tool reference.
 
 ---
 
@@ -254,13 +255,13 @@ change_aspect_ratio:
 
 **Common Aspect Ratios:**
 
-| Ratio | Use Case | Common Resolutions |
-|-------|----------|-------------------|
-| 16:9 | Standard video (YouTube, TV) | 1920x1080, 1280x720 |
-| 4:3 | Legacy content | 640x480, 800x600 |
-| 1:1 | Social media square (Instagram) | 1080x1080, 720x720 |
-| 9:16 | Vertical video (Stories, TikTok) | 1080x1920, 720x1280 |
-| 21:9 | Cinematic ultrawide | 2560x1080, 3440x1440 |
+| Ratio | Use Case                         | Common Resolutions   |
+| ----- | -------------------------------- | -------------------- |
+| 16:9  | Standard video (YouTube, TV)     | 1920x1080, 1280x720  |
+| 4:3   | Legacy content                   | 640x480, 800x600     |
+| 1:1   | Social media square (Instagram)  | 1080x1080, 720x720   |
+| 9:16  | Vertical video (Stories, TikTok) | 1080x1920, 720x1280  |
+| 21:9  | Cinematic ultrawide              | 2560x1080, 3440x1440 |
 
 ---
 
@@ -348,13 +349,13 @@ Audio bitrate determines the quality and file size of audio output. Choose the a
 
 **Bitrate Recommendations:**
 
-| Preset | Bitrate | Use Case | File Size | Quality |
-|--------|---------|----------|-----------|---------|
-| Voice Only | 96k | Speech, podcasts | Smallest | Acceptable for voice |
-| Standard | 128k | General audio | Small | Good for most uses |
-| Music Streaming | 192k | Music, good quality | Moderate | High quality audio |
-| High Quality | 256k | High quality music | Large | Very high quality |
-| Maximum | 320k | Archival, production | Largest | Maximum quality |
+| Preset          | Bitrate | Use Case             | File Size | Quality              |
+| --------------- | ------- | -------------------- | --------- | -------------------- |
+| Voice Only      | 96k     | Speech, podcasts     | Smallest  | Acceptable for voice |
+| Standard        | 128k    | General audio        | Small     | Good for most uses   |
+| Music Streaming | 192k    | Music, good quality  | Moderate  | High quality audio   |
+| High Quality    | 256k    | High quality music   | Large     | Very high quality    |
+| Maximum         | 320k    | Archival, production | Largest   | Maximum quality      |
 
 **Sample Rate Options:**
 - **22.05 kHz** - Voice/speech minimal quality

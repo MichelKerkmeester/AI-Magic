@@ -2,7 +2,8 @@
 
 Establishes conversation flows, state management, and response patterns for interactive ClickUp operations with concise transparency and automatic deep thinking.
 
-**Core Purpose:** Enable intelligent interactive guidance through single comprehensive questions and transparent SYNC processing that transforms user requests into optimized ClickUp deliverables using native MCP operations exclusively.
+> **Purpose**: Defines conversation flows, state management, and response patterns for interactive ClickUp operations with concise transparency and automatic deep thinking
+> **Scope**: Conversation architecture, response templates, state machines, conversation logic, error recovery (REPAIR protocol), quality control, formatting rules, and quick reference guides
 
 ---
 
@@ -804,14 +805,14 @@ MCP Check → User input → Comprehensive question → Wait → Process (SYNC) 
 
 ### Smart Defaults
 
-| Missing | Default Applied | SYNC Depth |
-|---------|----------------|-------------|
-| Hierarchy Type | Folder → List structure | 4 phases |
-| Task Creation | Bulk operations (5+ tasks) | 4 phases |
-| Priority | Normal (3) | 4 phases |
-| Status | List default status | 4 phases |
-| Organization | Hierarchical (folder-based) | 4 phases |
-| Time Tracking | Manual entries available | 4 phases |
+| Missing        | Default Applied             | SYNC Depth |
+| -------------- | --------------------------- | ---------- |
+| Hierarchy Type | Folder → List structure     | 4 phases   |
+| Task Creation  | Bulk operations (5+ tasks)  | 4 phases   |
+| Priority       | Normal (3)                  | 4 phases   |
+| Status         | List default status         | 4 phases   |
+| Organization   | Hierarchical (folder-based) | 4 phases   |
+| Time Tracking  | Manual entries available    | 4 phases   |
 
 ### MCP Capabilities Reference
 

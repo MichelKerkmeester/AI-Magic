@@ -2,9 +2,8 @@
 
 Design philosophy, aesthetic decision logic, and quality frameworks for exceptional visual design.
 
-**Core Purpose:** Provide theoretical foundations, decision-making frameworks, and systematic quality assessment for all design decisions through expert visual sensibility.
-
-**Scope:** Pure design theory - visual systems, aesthetic principles, pattern selection, quality frameworks. For conversation patterns, see `UI Designer - Interactive Intelligence`. For thinking methodology, see `UI Designer - CANVAS Thinking Framework`.
+> **Purpose**: Provide theoretical foundations, decision-making frameworks, and systematic quality assessment for all design decisions through expert visual sensibility.
+> **Scope**: Pure design theory - visual systems (typography, color, spacing), aesthetic principles (Gestalt, heuristics, UX laws), pattern selection, quality frameworks, shadcn/ui integration, and animation micro-syntax.
 
 ---
 
@@ -25,11 +24,11 @@ Design philosophy, aesthetic decision logic, and quality frameworks for exceptio
 
 **Three Pillars of Visual Excellence:**
 
-| Pillar | Definition | Validation | Techniques |
-|--------|------------|------------|------------|
-| **Hierarchy** | Guide eye through visual weight | Most important element clear <1 sec | Size/color contrast, spacing emphasis, typography weight |
-| **Harmony** | Cohesion through consistent language | Feels cohesive, not Frankenstein | Color unity, typography consistency, spacing system, shape language |
-| **Refinement** | Obsessive micro-details | Professional craft vs amateur | Pixel-perfect alignment, subtle shadows, transition polish, color subtlety |
+| Pillar         | Definition                           | Validation                          | Techniques                                                                 |
+| -------------- | ------------------------------------ | ----------------------------------- | -------------------------------------------------------------------------- |
+| **Hierarchy**  | Guide eye through visual weight      | Most important element clear <1 sec | Size/color contrast, spacing emphasis, typography weight                   |
+| **Harmony**    | Cohesion through consistent language | Feels cohesive, not Frankenstein    | Color unity, typography consistency, spacing system, shape language        |
+| **Refinement** | Obsessive micro-details              | Professional craft vs amateur       | Pixel-perfect alignment, subtle shadows, transition polish, color subtlety |
 
 **Core Principles:**
 - "Why before What" - Understand purpose (shadows = depth hierarchy, not decoration)
@@ -42,12 +41,12 @@ Design philosophy, aesthetic decision logic, and quality frameworks for exceptio
 
 **When to Generate Variants:**
 
-| Trigger | Action | Count |
-|---------|--------|-------|
-| Explicit request ("show options", "variations") | Generate immediately | User-specified or 3-5 |
-| High complexity + uncertainty (complexity 7+, "not sure") | Offer variant generation | 5-10 |
-| Creative/subjective ("design landing page", "make modern") | Generate by default | 3-5 |
-| Clear direction (detailed mockup, specific reference) | Single high-fidelity | 1 (no variants) |
+| Trigger                                                    | Action                   | Count                 |
+| ---------------------------------------------------------- | ------------------------ | --------------------- |
+| Explicit request ("show options", "variations")            | Generate immediately     | User-specified or 3-5 |
+| High complexity + uncertainty (complexity 7+, "not sure")  | Offer variant generation | 5-10                  |
+| Creative/subjective ("design landing page", "make modern") | Generate by default      | 3-5                   |
+| Clear direction (detailed mockup, specific reference)      | Single high-fidelity     | 1 (no variants)       |
 
 **Strategy Selection:** Analyze audience + industry + content density + brand personality → Select 3-7 diverse strategies spanning solution space → Document rationale for each
 
@@ -71,43 +70,43 @@ Design philosophy, aesthetic decision logic, and quality frameworks for exceptio
 - Font size: 16px min | 16-18px mobile | 16-21px desktop | Never <12px
 
 **Modular Scale:**
-| Ratio | Feel | Scale (16px base) | Use |
-|-------|------|-------------------|-----|
-| 1.2 Minor Third | Subtle | 16→19→23→28 | Conservative corporate |
-| 1.25 Major Third | Balanced | 16→20→25→31 | Business apps |
-| 1.333 Perfect Fourth | Strong | 16→21→28→38 | Modern interfaces |
-| 1.618 Golden Ratio | Dramatic | 16→26→42→68 | Bold marketing |
+| Ratio                | Feel     | Scale (16px base) | Use                    |
+| -------------------- | -------- | ----------------- | ---------------------- |
+| 1.2 Minor Third      | Subtle   | 16→19→23→28       | Conservative corporate |
+| 1.25 Major Third     | Balanced | 16→20→25→31       | Business apps          |
+| 1.333 Perfect Fourth | Strong   | 16→21→28→38       | Modern interfaces      |
+| 1.618 Golden Ratio   | Dramatic | 16→26→42→68       | Bold marketing         |
 
 **Font Psychology:**
-| Type | Signals | Best For |
-|------|---------|----------|
-| Serif | Trust, tradition, sophistication | Long-form, luxury, finance, law |
-| Sans-Serif | Modern, friendly, efficient | Interfaces, tech, versatile |
-| Display | Bold, creative, attention | Headlines only, large sizes |
-| Monospace | Technical, precise | Code blocks, technical docs |
+| Type       | Signals                          | Best For                        |
+| ---------- | -------------------------------- | ------------------------------- |
+| Serif      | Trust, tradition, sophistication | Long-form, luxury, finance, law |
+| Sans-Serif | Modern, friendly, efficient      | Interfaces, tech, versatile     |
+| Display    | Bold, creative, attention        | Headlines only, large sizes     |
+| Monospace  | Technical, precise               | Code blocks, technical docs     |
 
 ### Color Theory
 
 **Harmony Systems:**
-| System | Use | Rule |
-|--------|-----|------|
-| Monochromatic | Minimalist, content-focused | 50-900 shades + tinted grays |
-| Analogous | Cohesive with variety | 60% dominant, 30% support, 10% accent |
-| Complementary | High energy, attention | 90/10 or 80/20 split (NEVER 50/50) |
-| Split-Complementary | Contrast without aggression | Softer than pure complementary |
-| Triadic | Playful, creative | 65% dominant, 25% secondary, 10% accent |
-| Tetradic | Complex interfaces | One dominant (60%+), advanced |
+| System              | Use                         | Rule                                    |
+| ------------------- | --------------------------- | --------------------------------------- |
+| Monochromatic       | Minimalist, content-focused | 50-900 shades + tinted grays            |
+| Analogous           | Cohesive with variety       | 60% dominant, 30% support, 10% accent   |
+| Complementary       | High energy, attention      | 90/10 or 80/20 split (NEVER 50/50)      |
+| Split-Complementary | Contrast without aggression | Softer than pure complementary          |
+| Triadic             | Playful, creative           | 65% dominant, 25% secondary, 10% accent |
+| Tetradic            | Complex interfaces          | One dominant (60%+), advanced           |
 
 **Psychology:**
-| Color | Effect | Signals | Use | Caution |
-|-------|--------|---------|-----|---------|
-| Blue | Calming | Trust, professionalism | Finance, tech, healthcare | Cold/distant |
-| Red | Urgency | Passion, danger | Food, sales, alerts | Stress - use sparingly |
-| Green | Restful | Health, growth | Nature, wellness | — |
-| Yellow | Stimulates | Optimism, energy | Small accents | Eye strain |
-| Purple | Imagination | Luxury, creativity | Premium, creative | Overly decorative |
-| Orange | Energetic | Enthusiasm, friendly | Social, CTAs | — |
-| Black/Gray | — | Sophistication, power | Luxury, interfaces | Pure black harsh |
+| Color      | Effect      | Signals                | Use                       | Caution                |
+| ---------- | ----------- | ---------------------- | ------------------------- | ---------------------- |
+| Blue       | Calming     | Trust, professionalism | Finance, tech, healthcare | Cold/distant           |
+| Red        | Urgency     | Passion, danger        | Food, sales, alerts       | Stress - use sparingly |
+| Green      | Restful     | Health, growth         | Nature, wellness          | —                      |
+| Yellow     | Stimulates  | Optimism, energy       | Small accents             | Eye strain             |
+| Purple     | Imagination | Luxury, creativity     | Premium, creative         | Overly decorative      |
+| Orange     | Energetic   | Enthusiasm, friendly   | Social, CTAs              | —                      |
+| Black/Gray | —           | Sophistication, power  | Luxury, interfaces        | Pure black harsh       |
 
 **Accessibility:**
 - WCAG AA: 4.5:1 text <18px | 3:1 text 18px+ or 14px+ bold | AAA: 7:1
@@ -126,12 +125,12 @@ Design philosophy, aesthetic decision logic, and quality frameworks for exceptio
 **8-Point Grid Benefits:** Divides evenly (8, 16, 24, 32, 48, 64) | Device-compatible | 44px touch targets = 5.5×8 | Subconscious rhythm | Faster decisions | Feels polished
 
 **Progressive Spacing:** (Tighter within, wider between)
-| Scope | Spacing | Example |
-|-------|---------|---------|
-| Within component | 8px | Button elements, card padding |
-| Between components | 16px | Cards in section, form fields |
-| Between sections | 32px | Major content areas |
-| Between page sections | 64px+ | Hero → features → testimonials |
+| Scope                 | Spacing | Example                        |
+| --------------------- | ------- | ------------------------------ |
+| Within component      | 8px     | Button elements, card padding  |
+| Between components    | 16px    | Cards in section, form fields  |
+| Between sections      | 32px    | Major content areas            |
+| Between page sections | 64px+   | Hero → features → testimonials |
 
 ### CSS Variables & Design System
 
@@ -161,49 +160,49 @@ html { font-size: calc(var(--base-0) * 1rem + var(--coefficient-0) * 1vw); }
 
 ### Gestalt Principles (Perception Psychology)
 
-| Principle | Application |
-|-----------|-------------|
-| Proximity | Related elements closer (4-8px), unrelated wider (24px+) |
-| Similarity | Same-level items look identical, different levels distinct |
-| Closure | Simplified logos, outline icons, minimal strokes |
-| Continuity | Left-aligned text, single-column forms create clear paths |
-| Figure/Ground | Dark overlays for modals, white cards on gray, depth hierarchy |
-| Symmetry | Centered (formal) or intentional asymmetry (modern) |
-| Common Region | Cards with borders/backgrounds, distinct section colors |
-| Common Fate | Related elements animate together as unit |
-| Prägnanz | Simplest icon forms, basic shapes, clear categories |
-| Multistability | Clever logos only - never for functional UI |
-| Invariance | Icons recognizable at all sizes, across themes |
-| Emergence | Simple components (cards + grid) create sophistication |
+| Principle      | Application                                                    |
+| -------------- | -------------------------------------------------------------- |
+| Proximity      | Related elements closer (4-8px), unrelated wider (24px+)       |
+| Similarity     | Same-level items look identical, different levels distinct     |
+| Closure        | Simplified logos, outline icons, minimal strokes               |
+| Continuity     | Left-aligned text, single-column forms create clear paths      |
+| Figure/Ground  | Dark overlays for modals, white cards on gray, depth hierarchy |
+| Symmetry       | Centered (formal) or intentional asymmetry (modern)            |
+| Common Region  | Cards with borders/backgrounds, distinct section colors        |
+| Common Fate    | Related elements animate together as unit                      |
+| Prägnanz       | Simplest icon forms, basic shapes, clear categories            |
+| Multistability | Clever logos only - never for functional UI                    |
+| Invariance     | Icons recognizable at all sizes, across themes                 |
+| Emergence      | Simple components (cards + grid) create sophistication         |
 
 ### Usability Heuristics (Nielsen's 10)
 
-| Heuristic | Application |
-|-----------|-------------|
-| System Status | Loading states, progress bars, validation feedback |
-| Real World Match | Universal icons (🔍 🏠), color conventions |
-| User Control | Prominent X, cancel visible, undo notifications |
-| Consistency | All primary CTAs identical, same spacing everywhere |
-| Error Prevention | Date pickers vs text, disabled submit, confirmations |
-| Recognition > Recall | Visible nav, autocomplete, recent items, tooltips |
-| Flexibility | Keyboard shortcuts, bulk actions, customization |
-| Minimalist Design | Clear hierarchy, progressive disclosure, no clutter |
-| Error Recovery | Red + icon + prominent, tell how to fix |
-| Help Documentation | Tooltips, inline hints, helpful empty states |
+| Heuristic            | Application                                          |
+| -------------------- | ---------------------------------------------------- |
+| System Status        | Loading states, progress bars, validation feedback   |
+| Real World Match     | Universal icons (🔍 🏠), color conventions             |
+| User Control         | Prominent X, cancel visible, undo notifications      |
+| Consistency          | All primary CTAs identical, same spacing everywhere  |
+| Error Prevention     | Date pickers vs text, disabled submit, confirmations |
+| Recognition > Recall | Visible nav, autocomplete, recent items, tooltips    |
+| Flexibility          | Keyboard shortcuts, bulk actions, customization      |
+| Minimalist Design    | Clear hierarchy, progressive disclosure, no clutter  |
+| Error Recovery       | Red + icon + prominent, tell how to fix              |
+| Help Documentation   | Tooltips, inline hints, helpful empty states         |
 
 **Priority:** Works → Usable → Beautiful (aesthetics enhance, never replace function)
 
 ### Laws of UX (Cognitive Psychology)
 
-| Law | Application |
-|-----|-------------|
-| Fitts's Law | 44x44px min touch, related actions near, corners = infinite targets |
-| Hick's Law | 5-7 nav items, one primary action/section, progressive disclosure |
-| Miller's Law | Chunk info (123-456-7890), 5-7 nav, break long forms into steps |
-| Jakob's Law | Logo top-left → home, search top-right, links look like links |
-| Serial Position | Important items at start and end of lists/menus/forms |
-| Doherty Threshold | <400ms response, optimistic UI, 100ms instant / 400ms acceptable |
-| Tesler's Law | Complexity can't vanish - progressive disclosure, don't oversimplify |
+| Law               | Application                                                          |
+| ----------------- | -------------------------------------------------------------------- |
+| Fitts's Law       | 44x44px min touch, related actions near, corners = infinite targets  |
+| Hick's Law        | 5-7 nav items, one primary action/section, progressive disclosure    |
+| Miller's Law      | Chunk info (123-456-7890), 5-7 nav, break long forms into steps      |
+| Jakob's Law       | Logo top-left → home, search top-right, links look like links        |
+| Serial Position   | Important items at start and end of lists/menus/forms                |
+| Doherty Threshold | <400ms response, optimistic UI, 100ms instant / 400ms acceptable     |
+| Tesler's Law      | Complexity can't vanish - progressive disclosure, don't oversimplify |
 
 ---
 
@@ -218,39 +217,39 @@ html { font-size: calc(var(--base-0) * 1rem + var(--coefficient-0) * 1vw); }
 **Navigation:** Horizontal (5-7 items, familiar) | Sidebar (10+ items, scalable) | Tabs (related views, same context)
 
 **Layout Patterns:**
-| Pattern | Use | Avoid |
-|---------|-----|-------|
-| Centered Hero | Landing, marketing, launches | Complex messaging, multiple CTAs |
-| Split Hero | SaaS, app showcases | Weak/non-essential imagery |
-| Full Bleed Hero | Portfolio, photography | Slow images, readability issues |
-| 3-Column Grid | Features, services | Content varies greatly in size |
-| Asymmetric Grid | Blogs, dashboards | All content equal importance |
-| Masonry Grid | Image galleries | Need predictable vertical scanning |
+| Pattern         | Use                          | Avoid                              |
+| --------------- | ---------------------------- | ---------------------------------- |
+| Centered Hero   | Landing, marketing, launches | Complex messaging, multiple CTAs   |
+| Split Hero      | SaaS, app showcases          | Weak/non-essential imagery         |
+| Full Bleed Hero | Portfolio, photography       | Slow images, readability issues    |
+| 3-Column Grid   | Features, services           | Content varies greatly in size     |
+| Asymmetric Grid | Blogs, dashboards            | All content equal importance       |
+| Masonry Grid    | Image galleries              | Need predictable vertical scanning |
 
 ---
 
 ## 5. ✨ POLISH & TRENDS
 
 **Polish Levels:**
-| Level | Characteristics | Perception |
-|-------|-----------------|------------|
-| 1. Functional | Basic styling, no transitions, inconsistent spacing | Prototype/MVP |
-| 2. Refined | 8px grid, 200ms transitions, typography hierarchy, palette | Real product |
+| Level            | Characteristics                                                         | Perception           |
+| ---------------- | ----------------------------------------------------------------------- | -------------------- |
+| 1. Functional    | Basic styling, no transitions, inconsistent spacing                     | Prototype/MVP        |
+| 2. Refined       | 8px grid, 200ms transitions, typography hierarchy, palette              | Real product         |
 | 3. Sophisticated | Pixel-perfect, 60fps, subtle shadows, no pure black, micro-interactions | Professional/premium |
-| 4. Exceptional | Optical balance, spring easing, texture/depth, all states polished | Top tech company |
+| 4. Exceptional   | Optical balance, spring easing, texture/depth, all states polished      | Top tech company     |
 
 **Target:** Level 3 production | Level 4 showcase
 
 **Contemporary Trends:**
-| Trend | Use | Vanilla CSS | Caution |
-|-------|-----|-------------|---------|
-| Glassmorphism | Modern apps, overlays, nav | `backdrop-filter: blur(10px)` + semi-transparent | Performance, contrast risk |
-| Gradient Meshes | Hero backgrounds, brand | `linear-gradient()` / `radial-gradient()` | Can overwhelm, readability |
-| Neumorphism | Minimalist, tactile | Inset shadows + matching bg | Low contrast, decorative only |
-| Bold Typography | Landing, marketing, headers | `clamp()` responsive scaling | Overwhelming if overused |
-| Dark Mode | Low-light, creative tools | `@media (prefers-color-scheme: dark)` + CSS vars | Desaturate, maintain contrast |
-| Micro Animations | All interactions | `transform`/`opacity` only (GPU), 150-300ms | Must be 60fps |
-| Asymmetric Layouts | Modern, creative | CSS Grid varied columns | Harder responsive |
+| Trend              | Use                         | Vanilla CSS                                      | Caution                       |
+| ------------------ | --------------------------- | ------------------------------------------------ | ----------------------------- |
+| Glassmorphism      | Modern apps, overlays, nav  | `backdrop-filter: blur(10px)` + semi-transparent | Performance, contrast risk    |
+| Gradient Meshes    | Hero backgrounds, brand     | `linear-gradient()` / `radial-gradient()`        | Can overwhelm, readability    |
+| Neumorphism        | Minimalist, tactile         | Inset shadows + matching bg                      | Low contrast, decorative only |
+| Bold Typography    | Landing, marketing, headers | `clamp()` responsive scaling                     | Overwhelming if overused      |
+| Dark Mode          | Low-light, creative tools   | `@media (prefers-color-scheme: dark)` + CSS vars | Desaturate, maintain contrast |
+| Micro Animations   | All interactions            | `transform`/`opacity` only (GPU), 150-300ms      | Must be 60fps                 |
+| Asymmetric Layouts | Modern, creative            | CSS Grid varied columns                          | Harder responsive             |
 
 **Performance:** Use `transform`, `opacity`, `filter` (GPU) | Avoid `width`, `height`, `top`, `left`, `margin`, `padding` (CPU, causes jank) | Add `will-change` for animated elements
 
@@ -523,11 +522,11 @@ bounce: "Spring effect (success, playful)" # Custom cubic-bezier
 ## 6. 🎯 DECISION TREES
 
 **Style Selection:**
-| By | Direction |
-|----|-----------|
-| Audience | Enterprise → Professional Classic/Minimalist | Young consumers → Bold/Playful | General → Modern/Minimalist | Creative → Bold/Playful | Technical → Data-Dense/Minimalist |
-| Industry | Finance/Legal/Healthcare → Professional Classic | Tech startups → Modern Trendy | Creative agencies → Bold Expressive | Ecommerce → Modern/Minimalist | Enterprise software → Minimalist/Data-Dense |
-| Density | High → Data-Dense Professional | Medium → Modern/Professional Classic | Low → Minimalist/Playful Creative |
+| By       | Direction                                       |
+| -------- | ----------------------------------------------- |
+| Audience | Enterprise → Professional Classic/Minimalist    | Young consumers → Bold/Playful       | General → Modern/Minimalist         | Creative → Bold/Playful       | Technical → Data-Dense/Minimalist           |
+| Industry | Finance/Legal/Healthcare → Professional Classic | Tech startups → Modern Trendy        | Creative agencies → Bold Expressive | Ecommerce → Modern/Minimalist | Enterprise software → Minimalist/Data-Dense |
+| Density  | High → Data-Dense Professional                  | Medium → Modern/Professional Classic | Low → Minimalist/Playful Creative   |
 
 **Color Selection:**
 1. Brand colors? → Use as primary, extend with complementary
@@ -546,24 +545,24 @@ bounce: "Spring effect (success, playful)" # Custom cubic-bezier
 ## 7. 📊 QUALITY ASSESSMENT
 
 **Visual Hierarchy Scoring (50 pts):**
-| Criterion | Excellent (10) | Good (7-9) | Poor (1-6) |
-|-----------|----------------|------------|------------|
-| Focal Point | <1 sec identify | Clear within 2 sec | Unclear/competing |
-| Size Contrast | Primary 2x+ larger | Primary 1.5x larger | Similar sizes |
+| Criterion      | Excellent (10)                          | Good (7-9)            | Poor (1-6)         |
+| -------------- | --------------------------------------- | --------------------- | ------------------ |
+| Focal Point    | <1 sec identify                         | Clear within 2 sec    | Unclear/competing  |
+| Size Contrast  | Primary 2x+ larger                      | Primary 1.5x larger   | Similar sizes      |
 | Color Contrast | High primary (4.5:1+), subtle secondary | Noticeable difference | Similar everywhere |
-| Whitespace | More around important | Some differentiation | Cramped, equal |
-| Visual Flow | Clear: entry → primary → action | Mostly clear | Jumps around |
+| Whitespace     | More around important                   | Some differentiation  | Cramped, equal     |
+| Visual Flow    | Clear: entry → primary → action         | Mostly clear          | Jumps around       |
 
 **Scoring:** 80%+ excellent | 60-79% good | <60% needs improvement
 
 **Aesthetic Sophistication (40 pts):**
-| Category | Novice (1-2) | Intermediate (3-4) | Advanced (5-6) | Expert (7-8) |
-|----------|--------------|-------------------|----------------|--------------|
-| Color | Primary colors, pure black | Extended palette, some tints | Rich darks, subtle tints | Perfect harmony, cultural awareness |
-| Typography | System fonts, no scale | 2 fonts, basic scale | Intentional pairing, math scale | Perfect pairing, golden ratio details |
-| Spacing | Random, no system | Some consistency | 8px grid, clear rhythm | Perfect rhythm, optical balance |
-| Balance | Unbalanced, random | Mostly balanced | Intentional, purposeful asymmetry | Perfect, sophisticated asymmetry |
-| Micro-Details | No polish, instant | Basic 200ms transitions | Subtle shadows, all states | Obsessive, 60fps, pixel-perfect |
+| Category      | Novice (1-2)               | Intermediate (3-4)           | Advanced (5-6)                    | Expert (7-8)                          |
+| ------------- | -------------------------- | ---------------------------- | --------------------------------- | ------------------------------------- |
+| Color         | Primary colors, pure black | Extended palette, some tints | Rich darks, subtle tints          | Perfect harmony, cultural awareness   |
+| Typography    | System fonts, no scale     | 2 fonts, basic scale         | Intentional pairing, math scale   | Perfect pairing, golden ratio details |
+| Spacing       | Random, no system          | Some consistency             | 8px grid, clear rhythm            | Perfect rhythm, optical balance       |
+| Balance       | Unbalanced, random         | Mostly balanced              | Intentional, purposeful asymmetry | Perfect, sophisticated asymmetry      |
+| Micro-Details | No polish, instant         | Basic 200ms transitions      | Subtle shadows, all states        | Obsessive, 60fps, pixel-perfect       |
 
 **Scoring:** 30+ expert | 25-29 advanced | 20-24 intermediate | <20 needs work
 
@@ -601,16 +600,16 @@ bounce: "Spring effect (success, playful)" # Custom cubic-bezier
 
 **Component Mapping Strategy:**
 
-| Design Need | shadcn/ui Component | Customization Approach |
-|-------------|---------------------|------------------------|
-| Buttons | Button, ToggleGroup | Variant prop + Tailwind classes for brand colors |
-| Forms | Input, Select, Checkbox, RadioGroup, Textarea, Form | Tailwind for spacing, colors, focus states |
-| Cards/Containers | Card, Separator | Tailwind for shadows, borders, backgrounds |
-| Modals/Overlays | Dialog, Sheet, AlertDialog, Popover | Tailwind for backdrop, positioning |
-| Navigation | NavigationMenu, Tabs, Breadcrumb | Tailwind for active states, spacing |
-| Feedback | Alert, Toast, Badge, Progress | Tailwind for semantic colors (success/error/warning) |
-| Data Display | Table, DataTable, Accordion, Collapsible | Tailwind for row styling, zebra stripes |
-| Typography | Text primitives with Tailwind | Use Tailwind's typography scale classes |
+| Design Need      | shadcn/ui Component                                 | Customization Approach                               |
+| ---------------- | --------------------------------------------------- | ---------------------------------------------------- |
+| Buttons          | Button, ToggleGroup                                 | Variant prop + Tailwind classes for brand colors     |
+| Forms            | Input, Select, Checkbox, RadioGroup, Textarea, Form | Tailwind for spacing, colors, focus states           |
+| Cards/Containers | Card, Separator                                     | Tailwind for shadows, borders, backgrounds           |
+| Modals/Overlays  | Dialog, Sheet, AlertDialog, Popover                 | Tailwind for backdrop, positioning                   |
+| Navigation       | NavigationMenu, Tabs, Breadcrumb                    | Tailwind for active states, spacing                  |
+| Feedback         | Alert, Toast, Badge, Progress                       | Tailwind for semantic colors (success/error/warning) |
+| Data Display     | Table, DataTable, Accordion, Collapsible            | Tailwind for row styling, zebra stripes              |
+| Typography       | Text primitives with Tailwind                       | Use Tailwind's typography scale classes              |
 
 **shadcn/ui Design System Alignment:**
 

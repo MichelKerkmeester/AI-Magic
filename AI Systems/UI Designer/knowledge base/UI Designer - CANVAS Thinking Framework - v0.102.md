@@ -2,9 +2,8 @@
 
 A comprehensive methodology for exceptional **high-fidelity UI/UX prototypes** combining expert visual design sensibility with systematic analysis for rapid, pixel-perfect, interactive deliverables.
 
-**Core Purpose:** Define the multi-perspective analysis, visual excellence systems, and rapid prototyping methodology that create stunning, production-ready prototypes through systematic cognitive rigor.
-
-**Scope:** Pure thinking methodology - CANVAS phases, cognitive rigor techniques, quality validation frameworks. For conversation patterns and user interaction templates, see `UI Designer - Interactive Intelligence`.
+> **Purpose**: Defines the multi-perspective analysis, visual excellence systems, and rapid prototyping methodology that create stunning, production-ready prototypes through systematic cognitive rigor
+> **Scope**: CANVAS methodology (6 phases), cognitive rigor framework (4 techniques), DESIGN quality validation (5 dimensions), React + TypeScript + shadcn/ui + Tailwind CSS implementation patterns, quality assurance gates
 
 ---
 
@@ -207,12 +206,12 @@ validation:
 
 ### Phase Integration Summary
 
-| Phase | Techniques Applied | Validation |
-|-------|-------------------|------------|
-| **C** | Multi-perspective (3-7) • Perspective Inversion • Assumption Audit | BLOCKING: 3+ perspectives |
-| **A-N** | Constraint Reversal • Assumption Audit | Validate insights integrated |
-| **V-A** | Mechanism First • Assumption flagging | Confirm Why→How→What |
-| **S** | Final verification all techniques | BLOCKING: Perspective count ≥3 |
+| Phase   | Techniques Applied                                                 | Validation                     |
+| ------- | ------------------------------------------------------------------ | ------------------------------ |
+| **C**   | Multi-perspective (3-7) • Perspective Inversion • Assumption Audit | BLOCKING: 3+ perspectives      |
+| **A-N** | Constraint Reversal • Assumption Audit                             | Validate insights integrated   |
+| **V-A** | Mechanism First • Assumption flagging                              | Confirm Why→How→What           |
+| **S**   | Final verification all techniques                                  | BLOCKING: Perspective count ≥3 |
 
 ### Quality Gates Checklist
 
@@ -235,14 +234,14 @@ Before delivery, validate:
 
 ### Phase Overview
 
-| Phase | Process | User Update |
-|-------|---------|-------------|
-| **C**oncept | Full analysis (7 perspectives) | "🔍 Analyzing (7 perspectives)" |
-| **A**rchitecture | Generate structure → **Wait for confirmation** | "📐 Structuring" → Show wireframes → ✓ Confirm |
-| **N**avigation | Map interactions & flow | "🧭 Mapping (7 states)" |
-| **V**isual | Apply design system → **Wait for confirmation** | "🎨 Applying design" → Show visual → ✓ Confirm |
-| **A**nimate | Add micro-interactions → **Wait for confirmation** | "✨ Adding animations" → Show animations → ✓ Confirm |
-| **S**hip | Generate final code | "🚀 Generating" |
+| Phase            | Process                                            | User Update                                         |
+| ---------------- | -------------------------------------------------- | --------------------------------------------------- |
+| **C**oncept      | Full analysis (7 perspectives)                     | "🔍 Analyzing (7 perspectives)"                      |
+| **A**rchitecture | Generate structure → **Wait for confirmation**     | "📐 Structuring" → Show wireframes → ✓ Confirm       |
+| **N**avigation   | Map interactions & flow                            | "🧭 Mapping (7 states)"                              |
+| **V**isual       | Apply design system → **Wait for confirmation**    | "🎨 Applying design" → Show visual → ✓ Confirm       |
+| **A**nimate      | Add micro-interactions → **Wait for confirmation** | "✨ Adding animations" → Show animations → ✓ Confirm |
+| **S**hip         | Generate final code                                | "🚀 Generating"                                      |
 
 **Workflow:**
 ```
@@ -594,14 +593,14 @@ bounce: 600ms [S0→1.2→1, R360°]
 
 ### Scoring System
 
-| Dimension | Max | Target | Threshold | Criteria |
-|-----------|-----|--------|-----------|----------|
-| Design Quality (D) | 15 | 13 | 12 | Visual hierarchy, typography, spacing, polish |
-| Experience (E) | 15 | 14 | 12 | Interaction states, user flow, accessibility |
-| Structure (S) | 10 | 8 | 8 | Component organization, code quality |
-| Implementation (I) | 5 | 4 | 4 | Technical execution, performance |
-| Growth (G) | 5 | 3 | 3 | Documentation, scalability |
-| **TOTAL** | **50** | **45** | **40** | **Minimum 40/50 required** |
+| Dimension          | Max    | Target | Threshold | Criteria                                      |
+| ------------------ | ------ | ------ | --------- | --------------------------------------------- |
+| Design Quality (D) | 15     | 13     | 12        | Visual hierarchy, typography, spacing, polish |
+| Experience (E)     | 15     | 14     | 12        | Interaction states, user flow, accessibility  |
+| Structure (S)      | 10     | 8      | 8         | Component organization, code quality          |
+| Implementation (I) | 5      | 4      | 4         | Technical execution, performance              |
+| Growth (G)         | 5      | 3      | 3         | Documentation, scalability                    |
+| **TOTAL**          | **50** | **45** | **40**    | **Minimum 40/50 required**                    |
 
 **Total Score Actions:**
 - **45-50:** Ship immediately - Excellent quality
@@ -729,14 +728,14 @@ S (Ship)        → I+G (Impl + Growth)   [Vanilla code, docs, score ≥40]
 
 ### Phase Integration Matrix
 
-| CANVAS Phase | DESIGN Elements | Key Activities | Validation Gate |
-|--------------|----------------|----------------|-----------------|
-| **C** | D (initial), E (initial) | 7 perspectives, design strategy, assumption audit | Multi-perspective complete (BLOCKING) |
-| **A** | S (complete), D (enhanced) | Wireframes, hierarchy, constraint reversal | 3+ reusable patterns |
-| **N** | E (major), D (enhanced) | 8 states, user flow, keyboard nav | Flow optimized 2-3 clicks |
-| **V** | D (complete), I (initial) | 32 tokens, hierarchy, typography | Mechanism-first validated |
-| **A** | E (complete), I (enhanced) | 18+ animations, 60fps validation | Performance confirmed |
-| **S** | I (complete), G (complete) | Vanilla code, self-rating, delivery | DESIGN ≥40/50 (BLOCKING) |
+| CANVAS Phase | DESIGN Elements            | Key Activities                                    | Validation Gate                       |
+| ------------ | -------------------------- | ------------------------------------------------- | ------------------------------------- |
+| **C**        | D (initial), E (initial)   | 7 perspectives, design strategy, assumption audit | Multi-perspective complete (BLOCKING) |
+| **A**        | S (complete), D (enhanced) | Wireframes, hierarchy, constraint reversal        | 3+ reusable patterns                  |
+| **N**        | E (major), D (enhanced)    | 8 states, user flow, keyboard nav                 | Flow optimized 2-3 clicks             |
+| **V**        | D (complete), I (initial)  | 32 tokens, hierarchy, typography                  | Mechanism-first validated             |
+| **A**        | E (complete), I (enhanced) | 18+ animations, 60fps validation                  | Performance confirmed                 |
+| **S**        | I (complete), G (complete) | Vanilla code, self-rating, delivery               | DESIGN ≥40/50 (BLOCKING)              |
 
 ### Final Integration Validation
 
@@ -756,34 +755,34 @@ S (Ship)        → I+G (Impl + Growth)   [Vanilla code, docs, score ≥40]
 
 ### Unified Validation Matrix
 
-| Validation Item | Pre-Creation | During Creation | Post-Creation | Blocking | Action if Failed |
-|----------------|--------------|-----------------|---------------|----------|------------------|
-| **Cognitive Rigor** |
-| 3+ Perspectives | ✅ Ready | ✅ Phase C | ✅ Final check | YES | STOP - Complete analysis |
-| Perspective count logged | - | ✅ Phase C | ✅ Phase S | YES | Log count with list |
-| Perspective inversion | - | ✅ Phase C-A | ✅ Phase S | NO | Apply technique |
-| Constraint reversal | - | ✅ Phase A-N | ✅ Phase S | NO | Apply technique |
-| Assumption audit | - | ✅ Continuous | ✅ Phase S | NO | Surface and flag |
-| Mechanism first | - | ✅ Phase V-A | ✅ Phase S | NO | Add WHY before WHAT |
-| **DESIGN Framework** |
-| Design Quality (D) | - | ✅ Phase C,V | ✅ Phase S | YES (≥12) | Enhance hierarchy/tokens |
-| Experience (E) | - | ✅ Phase N,A | ✅ Phase S | YES (≥12) | Add states/improve interactions |
-| Structure (S) | - | ✅ Phase A | ✅ Phase S | YES (≥8) | Clean code/improve org |
-| Implementation (I) | - | ✅ Phase V,A | ✅ Phase S | YES (≥4) | Optimize performance |
-| Growth (G) | - | ✅ Phase S | ✅ Phase S | YES (≥3) | Add documentation |
-| Total DESIGN Score | - | - | ✅ Phase S | YES (≥40) | Improvement cycle (max 3) |
-| **Technical** |
-| React + TypeScript + shadcn/ui | ✅ Confirmed | ✅ All phases | ✅ Phase S | YES | Ensure correct stack |
-| Component structure | - | - | ✅ Phase S | YES | Proper .tsx files |
-| Responsive (3 breakpoints) | - | ✅ Phase A,V | ✅ Phase S | YES | Tailwind responsive classes |
-| 60fps performance | - | ✅ Phase A | ✅ Phase S | YES | Optimize animations |
-| Keyboard navigation | - | ✅ Phase N | ✅ Phase S | YES | Add keyboard support |
-| **Delivery** |
-| Location: /Export | - | - | ✅ Phase S | YES | Move to Export folder |
-| Naming: [###]-[name] | - | - | ✅ Phase S | YES | Rename correctly |
-| Sequential numbering | - | - | ✅ Phase S | YES | Update number |
-| Documentation complete | - | - | ✅ Phase S | NO | Add usage instructions |
-| Browser-ready | - | - | ✅ Phase S | YES | Test in browser |
+| Validation Item                | Pre-Creation | During Creation | Post-Creation | Blocking  | Action if Failed                |
+| ------------------------------ | ------------ | --------------- | ------------- | --------- | ------------------------------- |
+| **Cognitive Rigor**            |
+| 3+ Perspectives                | ✅ Ready      | ✅ Phase C       | ✅ Final check | YES       | STOP - Complete analysis        |
+| Perspective count logged       | -            | ✅ Phase C       | ✅ Phase S     | YES       | Log count with list             |
+| Perspective inversion          | -            | ✅ Phase C-A     | ✅ Phase S     | NO        | Apply technique                 |
+| Constraint reversal            | -            | ✅ Phase A-N     | ✅ Phase S     | NO        | Apply technique                 |
+| Assumption audit               | -            | ✅ Continuous    | ✅ Phase S     | NO        | Surface and flag                |
+| Mechanism first                | -            | ✅ Phase V-A     | ✅ Phase S     | NO        | Add WHY before WHAT             |
+| **DESIGN Framework**           |
+| Design Quality (D)             | -            | ✅ Phase C,V     | ✅ Phase S     | YES (≥12) | Enhance hierarchy/tokens        |
+| Experience (E)                 | -            | ✅ Phase N,A     | ✅ Phase S     | YES (≥12) | Add states/improve interactions |
+| Structure (S)                  | -            | ✅ Phase A       | ✅ Phase S     | YES (≥8)  | Clean code/improve org          |
+| Implementation (I)             | -            | ✅ Phase V,A     | ✅ Phase S     | YES (≥4)  | Optimize performance            |
+| Growth (G)                     | -            | ✅ Phase S       | ✅ Phase S     | YES (≥3)  | Add documentation               |
+| Total DESIGN Score             | -            | -               | ✅ Phase S     | YES (≥40) | Improvement cycle (max 3)       |
+| **Technical**                  |
+| React + TypeScript + shadcn/ui | ✅ Confirmed  | ✅ All phases    | ✅ Phase S     | YES       | Ensure correct stack            |
+| Component structure            | -            | -               | ✅ Phase S     | YES       | Proper .tsx files               |
+| Responsive (3 breakpoints)     | -            | ✅ Phase A,V     | ✅ Phase S     | YES       | Tailwind responsive classes     |
+| 60fps performance              | -            | ✅ Phase A       | ✅ Phase S     | YES       | Optimize animations             |
+| Keyboard navigation            | -            | ✅ Phase N       | ✅ Phase S     | YES       | Add keyboard support            |
+| **Delivery**                   |
+| Location: /Export              | -            | -               | ✅ Phase S     | YES       | Move to Export folder           |
+| Naming: [###]-[name]           | -            | -               | ✅ Phase S     | YES       | Rename correctly                |
+| Sequential numbering           | -            | -               | ✅ Phase S     | YES       | Update number                   |
+| Documentation complete         | -            | -               | ✅ Phase S     | NO        | Add usage instructions          |
+| Browser-ready                  | -            | -               | ✅ Phase S     | YES       | Test in browser                 |
 
 ---
 
@@ -808,25 +807,25 @@ multi_perspective_analysis:
 
 ### DESIGN Quick Validation
 
-| Dimension | Target | Threshold | Quick Check |
-|-----------|--------|-----------|-------------|
-| **D** Design Quality | 13/15 | 12/15 | 7 perspectives? Hierarchy? Tokens? Polish? |
-| **E** Experience | 14/15 | 12/15 | User flow clear? 7 states? Keyboard nav? Smooth? |
-| **S** Structure | 8/10 | 8/10 | Component hierarchy? Semantic HTML? Maintainable? Reusable? |
-| **I** Implementation | 4/5 | 4/5 | Vanilla stack? 60fps? Responsive? Compatible? |
-| **G** Growth | 3/5 | 3/5 | Scalable? Reusable? Documented? System contribution? |
-| **TOTAL** | 45/50 | 40/50 | **Any dimension below threshold → Return to phase → Complete → Re-validate** |
+| Dimension            | Target | Threshold | Quick Check                                                                  |
+| -------------------- | ------ | --------- | ---------------------------------------------------------------------------- |
+| **D** Design Quality | 13/15  | 12/15     | 7 perspectives? Hierarchy? Tokens? Polish?                                   |
+| **E** Experience     | 14/15  | 12/15     | User flow clear? 7 states? Keyboard nav? Smooth?                             |
+| **S** Structure      | 8/10   | 8/10      | Component hierarchy? Semantic HTML? Maintainable? Reusable?                  |
+| **I** Implementation | 4/5    | 4/5       | Vanilla stack? 60fps? Responsive? Compatible?                                |
+| **G** Growth         | 3/5    | 3/5       | Scalable? Reusable? Documented? System contribution?                         |
+| **TOTAL**            | 45/50  | 40/50     | **Any dimension below threshold → Return to phase → Complete → Re-validate** |
 
 ### Phase Summary
 
-| Phase | Std | Quick | Key Actions | User Sees | Internal Rigor |
-|-------|-----|-------|-------------|-----------|----------------|
-| **C** | ✅ | ✅ | 7 perspectives, inversion, assumptions | "🔍 Analyzing (7)" | Full analysis per perspective |
-| **A** | ✅ | ⏭️ | Wireframes, hierarchy, responsive | "📐 Structuring" | Complete constraint reversal |
-| **N** | ✅ | ⏭️ | 8 states, keyboard, accessibility | "🧭 Mapping (7)" | Full flow + state mapping |
-| **V** | ✅ | ✅ | Tokens, typography, hierarchy | "🎨 Applying" | Complete token system |
-| **A** | ✅ | ⏭️ | Micro-interactions, animations | "✨ Adding" | 60fps validation |
-| **S** | ✅ | ✅ | HTML, DESIGN validation, delivery | "🚀 Generating" | Complete self-rating |
+| Phase | Std | Quick | Key Actions                            | User Sees         | Internal Rigor                |
+| ----- | --- | ----- | -------------------------------------- | ----------------- | ----------------------------- |
+| **C** | ✅   | ✅     | 7 perspectives, inversion, assumptions | "🔍 Analyzing (7)" | Full analysis per perspective |
+| **A** | ✅   | ⏭️     | Wireframes, hierarchy, responsive      | "📐 Structuring"   | Complete constraint reversal  |
+| **N** | ✅   | ⏭️     | 8 states, keyboard, accessibility      | "🧭 Mapping (7)"   | Full flow + state mapping     |
+| **V** | ✅   | ✅     | Tokens, typography, hierarchy          | "🎨 Applying"      | Complete token system         |
+| **A** | ✅   | ⏭️     | Micro-interactions, animations         | "✨ Adding"        | 60fps validation              |
+| **S** | ✅   | ✅     | HTML, DESIGN validation, delivery      | "🚀 Generating"    | Complete self-rating          |
 
 ### Critical Workflow Checklist
 
@@ -857,22 +856,22 @@ multi_perspective_analysis:
 
 ### Design Mode Recognition
 
-| Input | Mode | Action |
-|-------|------|--------|
-| $quick | Quick | 3-phase (C→V→S) |
-| $element | Element | Single UI element focus |
-| [provides code] | Update | Modify existing component |
-| Standard | Interactive | Full 6-phase CANVAS |
+| Input           | Mode        | Action                    |
+| --------------- | ----------- | ------------------------- |
+| $quick          | Quick       | 3-phase (C→V→S)           |
+| $element        | Element     | Single UI element focus   |
+| [provides code] | Update      | Modify existing component |
+| Standard        | Interactive | Full 6-phase CANVAS       |
 
 ### Technical Stack
 
-| Tech | Features | Purpose |
-|------|----------|---------|
-| React | Components, hooks, state management | Modern component architecture |
-| TypeScript | Type safety, interfaces, prop types | Type checking and developer experience |
-| shadcn/ui | Pre-built accessible components | Base component library via MCP |
-| Tailwind CSS | Utility classes, responsive design, theming | Styling and responsive layouts |
-| Output | .tsx component files + preview files | Production-ready React components |
+| Tech         | Features                                    | Purpose                                |
+| ------------ | ------------------------------------------- | -------------------------------------- |
+| React        | Components, hooks, state management         | Modern component architecture          |
+| TypeScript   | Type safety, interfaces, prop types         | Type checking and developer experience |
+| shadcn/ui    | Pre-built accessible components             | Base component library via MCP         |
+| Tailwind CSS | Utility classes, responsive design, theming | Styling and responsive layouts         |
+| Output       | .tsx component files + preview files        | Production-ready React components      |
 
 ---
 

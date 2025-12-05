@@ -2,7 +2,8 @@
 
 A comprehensive methodology combining systematic SYNC analysis with the RICCE completeness framework for superior Webflow operations deliverables.
 
-**Core Purpose:** Define focused Webflow site building, component design, and content management systems that operate with **native API operations only** for every Webflow operation.
+> **Purpose**: Defines the SYNC methodology (Survey, Yield, Navigate, Create) for intelligent Webflow operations using 100% native API capabilities without custom code
+> **Scope**: MCP server integration, Data API and Designer API coordination, RICCE completeness framework, cognitive rigor techniques, two-layer transparency model, quality assurance gates, and native-only pattern validation
 
 ---
 
@@ -261,12 +262,12 @@ Before operations, validate:
 
 ### Phase Breakdown with Execution Flow
 
-| Phase | Standard Mode | User Update Format |
-|-------|---------------|-------------------|
-| **S**urvey | Connection + Analysis | "📊 Surveying (Blog system, APIs identified)" |
-| **Y**ield | Native pattern selection | "⚙️ Yielding (Collections + components optimal)" |
-| **N**avigate | Sequential building | "🔄 Navigating (Data API → Designer API)" |
-| **C**reate | Quality + Integration delivery | "✅ Creating (Best practices + integration complete)" |
+| Phase        | Standard Mode                  | User Update Format                                   |
+| ------------ | ------------------------------ | ---------------------------------------------------- |
+| **S**urvey   | Connection + Analysis          | "📊 Surveying (Blog system, APIs identified)"         |
+| **Y**ield    | Native pattern selection       | "⚙️ Yielding (Collections + components optimal)"      |
+| **N**avigate | Sequential building            | "🔄 Navigating (Data API → Designer API)"             |
+| **C**reate   | Quality + Integration delivery | "✅ Creating (Best practices + integration complete)" |
 
 ### State Management
 
@@ -488,12 +489,12 @@ All operations: Native Webflow APIs only"
 
 ### RICCE-SYNC Integration
 
-| SYNC Phase | RICCE Elements | Validation Point |
-|------------|----------------|------------------|
-| **Survey (S)** | Role + Context | Operation type, APIs required, native scope |
-| **Yield (Y)** | Instructions + Constraints | Native steps selected, quality metrics |
-| **Navigate (N)** | Context + Instructions | Properties integrated, coordination executed |
-| **Create (C)** | Constraints + Examples | Quality metrics tracked, results validated |
+| SYNC Phase       | RICCE Elements             | Validation Point                             |
+| ---------------- | -------------------------- | -------------------------------------------- |
+| **Survey (S)**   | Role + Context             | Operation type, APIs required, native scope  |
+| **Yield (Y)**    | Instructions + Constraints | Native steps selected, quality metrics       |
+| **Navigate (N)** | Context + Instructions     | Properties integrated, coordination executed |
+| **Create (C)**   | Constraints + Examples     | Quality metrics tracked, results validated   |
 
 ---
 
@@ -652,14 +653,14 @@ post_operation_checklist:
 
 ### Quality Metric Targets
 
-| Metric | Target | Action if Below |
-|--------|--------|-----------------|
-| **Native Operations** | 100% | BLOCKING - remove custom code |
-| **Custom Code** | 0% | BLOCKING - eliminate all |
-| **API Efficiency** | <60 calls/min | Optimize sequencing |
-| **Component Reusability** | >70% | Refactor to components |
-| **Connection Stability** | >99% | Check MCP server |
-| **Integration Success** | 100% | BLOCKING - resolve coordination |
+| Metric                    | Target        | Action if Below                 |
+| ------------------------- | ------------- | ------------------------------- |
+| **Native Operations**     | 100%          | BLOCKING - remove custom code   |
+| **Custom Code**           | 0%            | BLOCKING - eliminate all        |
+| **API Efficiency**        | <60 calls/min | Optimize sequencing             |
+| **Component Reusability** | >70%          | Refactor to components          |
+| **Connection Stability**  | >99%          | Check MCP server                |
+| **Integration Success**   | 100%          | BLOCKING - resolve coordination |
 
 ---
 
@@ -669,12 +670,12 @@ post_operation_checklist:
 
 ### SYNC Phase Summary
 
-| Phase | Key Actions | User Sees |
-|-------|-------------|-----------|
-| **S**urvey | MCP verify, APIs identified | "📊 Surveying (APIs: Data + Designer)" |
-| **Y**ield | Native patterns selected | "⚙️ Yielding (Collections + Components)" |
-| **N**avigate | Native operations executing | "🔄 Navigating (Data → Designer)" |
-| **C**reate | Best practices + integration verified | "✅ Creating (100% native ✅)" |
+| Phase        | Key Actions                           | User Sees                               |
+| ------------ | ------------------------------------- | --------------------------------------- |
+| **S**urvey   | MCP verify, APIs identified           | "📊 Surveying (APIs: Data + Designer)"   |
+| **Y**ield    | Native patterns selected              | "⚙️ Yielding (Collections + Components)" |
+| **N**avigate | Native operations executing           | "🔄 Navigating (Data → Designer)"        |
+| **C**reate   | Best practices + integration verified | "✅ Creating (100% native ✅)"            |
 
 ### Cognitive Rigor Quick Check
 
@@ -732,14 +733,14 @@ post_operation_checklist:
 
 ### Performance Benchmarks
 
-| Operation | Time | Success Rate |
-|-----------|------|--------------|
-| Connection check | 1-2s | 99% |
-| Collection creation | 3-5s | 95% |
-| Field addition | 1-2s | 98% |
-| Component building | 5-10s | 90% |
-| Style application | 1-2s | 98% |
-| Content operations | 2-5s | 95% |
+| Operation           | Time  | Success Rate |
+| ------------------- | ----- | ------------ |
+| Connection check    | 1-2s  | 99%          |
+| Collection creation | 3-5s  | 95%          |
+| Field addition      | 1-2s  | 98%          |
+| Component building  | 5-10s | 90%          |
+| Style application   | 1-2s  | 98%          |
+| Content operations  | 2-5s  | 95%          |
 
 ### Quality Indicators
 - Connection stability: >99%

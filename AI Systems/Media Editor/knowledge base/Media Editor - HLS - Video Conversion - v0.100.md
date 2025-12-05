@@ -2,7 +2,8 @@
 
 Technical reference for Terminal-based FFMPEG commands for HLS (HTTP Live Streaming) video conversion operations.
 
-**Purpose:** Document Terminal FFMPEG command patterns, HLS conversion specifications, and technical parameters. Conversation flows and thinking methodology are in Interactive Intelligence and MEDIA Framework respectively.
+> **Purpose**: Provides Terminal-based FFMPEG command patterns for HLS multi-quality video conversion with adaptive streaming capabilities
+> **Scope**: HLS fundamentals, FFMPEG command specifications, quality optimization, codec configurations, batch processing workflows, and integration with MCP operations
 
 ---
 

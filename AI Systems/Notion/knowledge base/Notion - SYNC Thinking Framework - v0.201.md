@@ -2,7 +2,8 @@
 
 A comprehensive methodology combining systematic SYNC analysis with the RICCE completeness framework for superior Notion workspace deliverables.
 
-**Core Purpose:** Define focused Notion workspace building, database design, and knowledge management systems that operate with **native API operations only** for every Notion operation.
+> **Purpose**: Define a systematic methodology for building Notion workspaces using native API operations only, combining SYNC analysis (Survey, Yield, Navigate, Create) with RICCE completeness framework for professional database design and knowledge management.
+> **Scope**: SYNC four-phase methodology, cognitive rigor framework, RICCE validation (Role, Instructions, Context, Constraints, Examples), two-layer transparency model, native API limitations and capabilities, quality assurance gates, Database vs Page analysis, operation sequencing, and zero custom code enforcement.
 
 ---
 
@@ -270,12 +271,12 @@ Before operations, validate:
 
 ### Phase Breakdown with Execution Flow
 
-| Phase | Standard Mode | User Update Format |
-|-------|---------------|-------------------|
-| **S**urvey | Connection + Analysis | "📊 Surveying (Knowledge base, APIs identified)" |
-| **Y**ield | Native pattern selection | "⚙️ Yielding (Database + pages optimal)" |
-| **N**avigate | Sequential building | "🔄 Navigating (Database API → Page API)" |
-| **C**reate | Quality + Integration delivery | "✅ Creating (Best practices + integration complete)" |
+| Phase        | Standard Mode                  | User Update Format                                   |
+| ------------ | ------------------------------ | ---------------------------------------------------- |
+| **S**urvey   | Connection + Analysis          | "📊 Surveying (Knowledge base, APIs identified)"      |
+| **Y**ield    | Native pattern selection       | "⚙️ Yielding (Database + pages optimal)"              |
+| **N**avigate | Sequential building            | "🔄 Navigating (Database API → Page API)"             |
+| **C**reate   | Quality + Integration delivery | "✅ Creating (Best practices + integration complete)" |
 
 ### State Management
 
@@ -499,12 +500,12 @@ All operations: Native Notion APIs only"
 
 ### RICCE-SYNC Integration
 
-| SYNC Phase | RICCE Elements | Validation Point |
-|------------|----------------|------------------|
-| **Survey (S)** | Role + Context | Operation type, APIs required, native scope |
-| **Yield (Y)** | Instructions + Constraints | Native steps selected, quality metrics |
-| **Navigate (N)** | Context + Instructions | Properties integrated, coordination executed |
-| **Create (C)** | Constraints + Examples | Quality metrics tracked, results validated |
+| SYNC Phase       | RICCE Elements             | Validation Point                             |
+| ---------------- | -------------------------- | -------------------------------------------- |
+| **Survey (S)**   | Role + Context             | Operation type, APIs required, native scope  |
+| **Yield (Y)**    | Instructions + Constraints | Native steps selected, quality metrics       |
+| **Navigate (N)** | Context + Instructions     | Properties integrated, coordination executed |
+| **Create (C)**   | Constraints + Examples     | Quality metrics tracked, results validated   |
 
 ---
 
@@ -663,14 +664,14 @@ post_operation_checklist:
 
 ### Quality Metric Targets
 
-| Metric | Target | Action if Below |
-|--------|--------|-----------------|
-| **Native Operations** | 100% | BLOCKING - remove custom code |
-| **Custom Code** | 0% | BLOCKING - eliminate all |
-| **API Efficiency** | <3 req/sec | Optimize sequencing |
-| **Property Consistency** | >90% | Standardize naming |
-| **Connection Stability** | >99% | Check MCP server |
-| **Integration Success** | 100% | BLOCKING - resolve coordination |
+| Metric                   | Target     | Action if Below                 |
+| ------------------------ | ---------- | ------------------------------- |
+| **Native Operations**    | 100%       | BLOCKING - remove custom code   |
+| **Custom Code**          | 0%         | BLOCKING - eliminate all        |
+| **API Efficiency**       | <3 req/sec | Optimize sequencing             |
+| **Property Consistency** | >90%       | Standardize naming              |
+| **Connection Stability** | >99%       | Check MCP server                |
+| **Integration Success**  | 100%       | BLOCKING - resolve coordination |
 
 ---
 
@@ -680,12 +681,12 @@ post_operation_checklist:
 
 ### SYNC Phase Summary
 
-| Phase | Key Actions | User Sees |
-|-------|-------------|-----------|
-| **S**urvey | MCP verify, APIs identified | "📊 Surveying (APIs: Database + Page)" |
-| **Y**ield | Native patterns selected | "⚙️ Yielding (Database + Pages)" |
-| **N**avigate | Native operations executing | "🔄 Navigating (Database → Page)" |
-| **C**reate | Best practices + integration verified | "✅ Creating (100% native ✅)" |
+| Phase        | Key Actions                           | User Sees                             |
+| ------------ | ------------------------------------- | ------------------------------------- |
+| **S**urvey   | MCP verify, APIs identified           | "📊 Surveying (APIs: Database + Page)" |
+| **Y**ield    | Native patterns selected              | "⚙️ Yielding (Database + Pages)"       |
+| **N**avigate | Native operations executing           | "🔄 Navigating (Database → Page)"      |
+| **C**reate   | Best practices + integration verified | "✅ Creating (100% native ✅)"          |
 
 ### Cognitive Rigor Quick Check
 
@@ -752,14 +753,14 @@ post_operation_checklist:
 
 ### Performance Benchmarks
 
-| Operation | Time | Success Rate |
-|-----------|------|--------------|
-| Connection check | 1-2s | 99% |
-| Database creation | 3-5s | 95% |
-| Property addition | 1-2s | 98% |
-| Page creation | 2-4s | 95% |
-| Block addition | 1-3s | 98% |
-| Search query | 2-5s | 95% |
+| Operation         | Time | Success Rate |
+| ----------------- | ---- | ------------ |
+| Connection check  | 1-2s | 99%          |
+| Database creation | 3-5s | 95%          |
+| Property addition | 1-2s | 98%          |
+| Page creation     | 2-4s | 95%          |
+| Block addition    | 1-3s | 98%          |
+| Search query      | 2-5s | 95%          |
 
 ### Quality Indicators
 - Connection stability: >99%

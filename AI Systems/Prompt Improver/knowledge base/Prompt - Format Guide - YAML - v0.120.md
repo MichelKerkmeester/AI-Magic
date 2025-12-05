@@ -2,7 +2,8 @@
 
 Formatting guide for YAML output structure in prompt engineering with RCAF/CRAFT frameworks, file delivery standards, syntax validation, and format-specific best practices.
 
-**Core Purpose:** Define YAML syntax specifications, structure patterns, validation rules, and file delivery standards. This guide focuses exclusively on HOW to format YAML output—processing logic, cognitive frameworks, and interaction patterns are handled by other guides (DEPTH, Interactive Mode, Patterns).
+> **Purpose**: Defines YAML syntax specifications, structure patterns, validation rules, and file delivery standards for prompt engineering output formatting
+> **Scope**: YAML fundamentals, RCAF/CRAFT structures, file delivery protocols, format conversions, syntax validation, advanced patterns, performance optimization, and best practices
 
 ---
 
@@ -49,12 +50,12 @@ YAML (YAML Ain't Markup Language) provides human-readable structured data with m
 
 ### YAML vs Other Formats Summary
 
-| Aspect | Markdown (Standard) | JSON | YAML |
-|--------|-------------------|------|------|
-| **Readability** | Natural language | Structured data | Human-friendly structure |
-| **Token Usage** | Baseline | +5-10% | +3-7% |
-| **Best For** | Human interaction | API integration | Configuration, templates |
-| **Framework Fit** | RCAF/CRAFT | RCAF preferred | RCAF optimal |
+| Aspect            | Markdown (Standard) | JSON            | YAML                     |
+| ----------------- | ------------------- | --------------- | ------------------------ |
+| **Readability**   | Natural language    | Structured data | Human-friendly structure |
+| **Token Usage**   | Baseline            | +5-10%          | +3-7%                    |
+| **Best For**      | Human interaction   | API integration | Configuration, templates |
+| **Framework Fit** | RCAF/CRAFT          | RCAF preferred  | RCAF optimal             |
 
 **Note:** Quality evaluation (CLEAR scoring) and enhancement processing are handled by separate guides (Patterns guide, DEPTH guide).
 
@@ -94,14 +95,14 @@ output:
 
 ### YAML Data Types for Prompts
 
-| Type | Syntax | Example |
-|------|--------|---------|
-| **String** | No quotes needed | `role: Data Analyst` |
-| **Number** | Direct value | `limit: 100` |
-| **Boolean** | true/false | `detailed: true` |
-| **List** | Dash prefix | `- Python`<br>`- SQL` |
-| **Object** | Indented keys | `format:`<br>`  type: report` |
-| **Multi-line** | Pipe or > | `description: |`<br>`  Multiple lines` |
+| Type           | Syntax           | Example                       |
+| -------------- | ---------------- | ----------------------------- |
+| **String**     | No quotes needed | `role: Data Analyst`          |
+| **Number**     | Direct value     | `limit: 100`                  |
+| **Boolean**    | true/false       | `detailed: true`              |
+| **List**       | Dash prefix      | `- Python`<br>`- SQL`         |
+| **Object**     | Indented keys    | `format:`<br>`  type: report` |
+| **Multi-line** | Pipe or >        | `description:                 | `<br>`  Multiple lines` |
 
 ---
 
@@ -389,12 +390,12 @@ format:
 
 ### RCAF Field Guidelines
 
-| Field | Required | Description | Best Practices |
-|-------|----------|-------------|----------------|
-| **role** | Yes | Expertise needed | Be specific about domain |
-| **context** | Yes | Essential info | Include constraints |
-| **action** | Yes | Specific task | Make measurable |
-| **format** | Yes | Output structure | Define sections |
+| Field       | Required | Description      | Best Practices           |
+| ----------- | -------- | ---------------- | ------------------------ |
+| **role**    | Yes      | Expertise needed | Be specific about domain |
+| **context** | Yes      | Essential info   | Include constraints      |
+| **action**  | Yes      | Specific task    | Make measurable          |
+| **format**  | Yes      | Output structure | Define sections          |
 
 ---
 
@@ -728,21 +729,21 @@ yaml_to_standard_conversion:
 
 ### When to Use Each Format
 
-| Use YAML When | Use JSON When | Use Standard When |
-|---------------|---------------|-------------------|
-| Configuration templates | API integration | Natural conversation |
-| Human editing needed | Machine parsing only | Creative tasks |
-| Complex hierarchies | Simple structures | Quick prompts |
-| Comments helpful | Validation required | Flexibility needed |
-| Multi-line text common | Data exchange | Single use |
+| Use YAML When           | Use JSON When        | Use Standard When    |
+| ----------------------- | -------------------- | -------------------- |
+| Configuration templates | API integration      | Natural conversation |
+| Human editing needed    | Machine parsing only | Creative tasks       |
+| Complex hierarchies     | Simple structures    | Quick prompts        |
+| Comments helpful        | Validation required  | Flexibility needed   |
+| Multi-line text common  | Data exchange        | Single use           |
 
 ### CLEAR Score Comparison
 
-| Format | Base CLEAR | With DEPTH | Strengths | Weaknesses |
-|--------|-----------|------------|-----------|------------|
-| **Standard** | 43/50 avg | 48/50 avg | Expression (9/10) | Structure consistency |
-| **JSON** | 41/50 avg | 46/50 avg | Arrangement (9/10) | Expression (7/10) |
-| **YAML** | 42/50 avg | 47/50 avg | Balance (8/10 avg) | Learning curve |
+| Format       | Base CLEAR | With DEPTH | Strengths          | Weaknesses            |
+| ------------ | ---------- | ---------- | ------------------ | --------------------- |
+| **Standard** | 43/50 avg  | 48/50 avg  | Expression (9/10)  | Structure consistency |
+| **JSON**     | 41/50 avg  | 46/50 avg  | Arrangement (9/10) | Expression (7/10)     |
+| **YAML**     | 42/50 avg  | 47/50 avg  | Balance (8/10 avg) | Learning curve        |
 
 ---
 
@@ -920,16 +921,16 @@ Before delivering $yaml file:
 
 ### Common YAML Syntax Issues
 
-| Issue | Recognition | Solution |
-|-------|------------|----------|
-| **Indentation error** | Parse fails | Use exactly 2 spaces per level |
-| **Tab characters** | Parse fails | Replace tabs with spaces |
-| **Missing colon-space** | Key without value | Ensure `key: value` format |
-| **List syntax** | Structure errors | Use dash-space prefix: `- item` |
-| **Quote confusion** | String parsing issues | Remove unnecessary quotes for simple strings |
-| **Duplicate keys** | Parser warning | Ensure unique keys at each level |
-| **Trailing spaces** | Formatting inconsistency | Remove trailing whitespace |
-| **Wrong indentation** | Hierarchy issues | Maintain consistent 2-space indent |
+| Issue                   | Recognition              | Solution                                     |
+| ----------------------- | ------------------------ | -------------------------------------------- |
+| **Indentation error**   | Parse fails              | Use exactly 2 spaces per level               |
+| **Tab characters**      | Parse fails              | Replace tabs with spaces                     |
+| **Missing colon-space** | Key without value        | Ensure `key: value` format                   |
+| **List syntax**         | Structure errors         | Use dash-space prefix: `- item`              |
+| **Quote confusion**     | String parsing issues    | Remove unnecessary quotes for simple strings |
+| **Duplicate keys**      | Parser warning           | Ensure unique keys at each level             |
+| **Trailing spaces**     | Formatting inconsistency | Remove trailing whitespace                   |
+| **Wrong indentation**   | Hierarchy issues         | Maintain consistent 2-space indent           |
 
 ### YAML Parser Validation
 
@@ -980,27 +981,27 @@ validate_yaml_syntax:
 
 ### YAML Format Performance
 
-| Metric | Target | Current Average |
-|--------|--------|-----------------|
-| **Parse Success Rate** | >99% | 99.5% |
-| **Token Overhead** | <7% | 5.2% |
-| **Base CLEAR Score** | >40/50 | 42/50 |
-| **CLEAR with DEPTH** | >45/50 | 47/50 |
-| **Human Readability** | High | 9/10 |
-| **Edit Efficiency** | >JSON | 1.4x faster |
-| **Artifact Delivery** | 100% | 100% |
-| **Header Compliance** | 100% | 100% |
+| Metric                 | Target | Current Average |
+| ---------------------- | ------ | --------------- |
+| **Parse Success Rate** | >99%   | 99.5%           |
+| **Token Overhead**     | <7%    | 5.2%            |
+| **Base CLEAR Score**   | >40/50 | 42/50           |
+| **CLEAR with DEPTH**   | >45/50 | 47/50           |
+| **Human Readability**  | High   | 9/10            |
+| **Edit Efficiency**    | >JSON  | 1.4x faster     |
+| **Artifact Delivery**  | 100%   | 100%            |
+| **Header Compliance**  | 100%   | 100%            |
 
 ### Cognitive Rigor Metrics *(per DEPTH guide)*
 
-| Metric | Target | Current Average |
-|--------|--------|-----------------|
-| **Perspectives Analyzed** | ≥3 (target 5) | 4.2 perspectives |
-| **Multi-angle Assessment** | Every enhancement | 100% coverage |
-| **RICCE Completeness** | 100% | 100% validation |
-| **DEPTH Phase Coverage** | All 5 phases | 100% application |
-| **Cognitive Depth Score** | ≥8/10 | 8.4/10 |
-| **🔴 BLOCKING Failures** | 0% | <0.1% rate |
+| Metric                     | Target            | Current Average  |
+| -------------------------- | ----------------- | ---------------- |
+| **Perspectives Analyzed**  | ≥3 (target 5)     | 4.2 perspectives |
+| **Multi-angle Assessment** | Every enhancement | 100% coverage    |
+| **RICCE Completeness**     | 100%              | 100% validation  |
+| **DEPTH Phase Coverage**   | All 5 phases      | 100% application |
+| **Cognitive Depth Score**  | ≥8/10             | 8.4/10           |
+| **🔴 BLOCKING Failures**    | 0%                | <0.1% rate       |
 
 ### Optimization Strategies
 
@@ -1040,15 +1041,15 @@ def optimize_yaml_prompt(yaml_prompt):
 
 ### Common YAML Issues & Fixes
 
-| Issue | Recognition | Solution | Report in Chat |
-|-------|------------|----------|----------------|
-| **Not artifact** | Chat delivery | Force artifact | "Retrying artifact creation..." |
-| **Wrong type** | text/plain | Change to text/markdown | "Fixing artifact type..." |
-| **Indentation errors** | Parse fails | Use exactly 2 spaces | "Correcting indentation..." |
-| **Quote confusion** | String parsing issues | Remove unnecessary quotes | "Simplifying syntax..." |
-| **List syntax** | Structure errors | Ensure dash-space prefix | "Fixing list format..." |
-| **Extra sections** | Explanations in artifact | Move to chat | "Cleaning artifact..." |
-| **No transparency** | Missing report | Add after delivery | "Adding enhancement details..." |
+| Issue                  | Recognition              | Solution                  | Report in Chat                  |
+| ---------------------- | ------------------------ | ------------------------- | ------------------------------- |
+| **Not artifact**       | Chat delivery            | Force artifact            | "Retrying artifact creation..." |
+| **Wrong type**         | text/plain               | Change to text/markdown   | "Fixing artifact type..."       |
+| **Indentation errors** | Parse fails              | Use exactly 2 spaces      | "Correcting indentation..."     |
+| **Quote confusion**    | String parsing issues    | Remove unnecessary quotes | "Simplifying syntax..."         |
+| **List syntax**        | Structure errors         | Ensure dash-space prefix  | "Fixing list format..."         |
+| **Extra sections**     | Explanations in artifact | Move to chat              | "Cleaning artifact..."          |
+| **No transparency**    | Missing report           | Add after delivery        | "Adding enhancement details..." |
 
 ### Validation Checklist
 
@@ -1137,11 +1138,11 @@ def optimize_yaml_prompt(yaml_prompt):
 
 ### Framework Selection for YAML
 
-| Complexity | Framework | YAML Structure |
-|------------|-----------|----------------|
-| Simple (1-3) | RCAF | Flat, 4 keys |
-| Medium (4-6) | RCAF | Nested format |
-| Complex (7-10) | CRAFT | Multi-level hierarchy |
+| Complexity     | Framework | YAML Structure        |
+| -------------- | --------- | --------------------- |
+| Simple (1-3)   | RCAF      | Flat, 4 keys          |
+| Medium (4-6)   | RCAF      | Nested format         |
+| Complex (7-10) | CRAFT     | Multi-level hierarchy |
 
 ### YAML Quality Metrics
 

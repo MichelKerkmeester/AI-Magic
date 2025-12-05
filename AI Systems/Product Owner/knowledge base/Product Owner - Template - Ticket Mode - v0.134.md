@@ -2,7 +2,8 @@
 
 Streamlined ticket templates aligned with real-world usage patterns. Concise, practical format with integrated formatting rules and quality standards.
 
-**Core Purpose:** Transform development requests into actionable tickets with QA resolution checklists that communicate technical requirements, acceptance criteria, and verification steps for implementation teams.
+> **Purpose**: Defines streamlined ticket templates with QA resolution checklists that auto-scale complexity and transform development requests into actionable, implementation-ready specifications
+> **Scope**: Ticket mode overview, delivery standards, complexity auto-scaling (Simple/Standard/Complex), quality checklists, error recovery, complete ticket templates, quick mode variants, DEPTH methodology integration
 
 ---
 

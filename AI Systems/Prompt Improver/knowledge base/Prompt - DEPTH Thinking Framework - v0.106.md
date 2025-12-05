@@ -2,7 +2,8 @@
 
 A comprehensive methodology combining systematic analysis with **transparent professional excellence** for superior prompt engineering deliverables.
 
-**Core Purpose:** Define the multi-perspective analysis, quality optimization, cognitive rigor techniques, and transparent reporting systems that operate behind Prompt Improver's interactions.
+> **Purpose**: Establishes the comprehensive DEPTH methodology (Discover, Engineer, Prototype, Test, Harmonize) combined with RICCE structural validation and cognitive rigor techniques for superior prompt engineering deliverables through transparent professional excellence.
+> **Scope**: Multi-perspective analysis framework (minimum 3, target 5 perspectives), cognitive rigor techniques (perspective inversion, constraint reversal, assumption audit, mechanism-first), RICCE completeness validation (Role, Instructions, Context, Constraints, Examples), two-layer transparency model, CLEAR quality scoring (40+/50 target), framework integration patterns, and quality assurance protocols.
 
 ---
 
@@ -343,13 +344,13 @@ Before delivery, validate (show summary to user):
 
 ### Phase Breakdown with Round Distribution
 
-| Phase | Standard (10 rounds) | Quick (1-5 rounds) | User Update Format |
-|-------|----------------------|--------------------|-------------------|
-| **D**iscover | Rounds 1-2 | 0.5-1 round | "🔍 Analyzing (5 perspectives)" |
-| **E**ngineer | Rounds 3-5 | 1-2 rounds | "⚙️ Engineering (8 approaches evaluated)" |
-| **P**rototype | Rounds 6-7 | 0.5-1 round | "🔨 Building (framework selected)" |
-| **T**est | Rounds 8-9 | 0.5-1 round | "✅ Validating (CLEAR 40+)" |
-| **H**armonize | Round 10 | 0.5 round | "✨ Finalizing (excellence confirmed)" |
+| Phase         | Standard (10 rounds) | Quick (1-5 rounds) | User Update Format                       |
+| ------------- | -------------------- | ------------------ | ---------------------------------------- |
+| **D**iscover  | Rounds 1-2           | 0.5-1 round        | "🔍 Analyzing (5 perspectives)"           |
+| **E**ngineer  | Rounds 3-5           | 1-2 rounds         | "⚙️ Engineering (8 approaches evaluated)" |
+| **P**rototype | Rounds 6-7           | 0.5-1 round        | "🔨 Building (framework selected)"        |
+| **T**est      | Rounds 8-9           | 0.5-1 round        | "✅ Validating (CLEAR 40+)"               |
+| **H**armonize | Round 10             | 0.5 round          | "✨ Finalizing (excellence confirmed)"    |
 
 ### State Management (Transparent & Intelligent)
 
@@ -927,13 +928,13 @@ COMPLETE ENHANCED PROMPT
 
 ### How RICCE Maps to DEPTH Phases
 
-| DEPTH Phase | RICCE Element | Validation Point |
-|-------------|---------------|------------------|
-| **Discover (D)** | Role (R) | Perspectives identified (3-5), target role defined |
-| **Engineer (E)** | Instructions (I) | Requirements structured, framework selected |
-| **Prototype (P)** | Context (C) | All layers integrated, format applied |
-| **Test (T)** | Constraints (C) | CLEAR scored, standards validated |
-| **Harmonize (H)** | Examples (E) | Validation complete, quality confirmed |
+| DEPTH Phase       | RICCE Element    | Validation Point                                   |
+| ----------------- | ---------------- | -------------------------------------------------- |
+| **Discover (D)**  | Role (R)         | Perspectives identified (3-5), target role defined |
+| **Engineer (E)**  | Instructions (I) | Requirements structured, framework selected        |
+| **Prototype (P)** | Context (C)      | All layers integrated, format applied              |
+| **Test (T)**      | Constraints (C)  | CLEAR scored, standards validated                  |
+| **Harmonize (H)** | Examples (E)     | Validation complete, quality confirmed             |
 
 ### Integration Checkpoints
 
@@ -1299,15 +1300,15 @@ user_communication:
 
 ### Quality Score Targets
 
-| Dimension | Target | Threshold | Action if Below |
-|-----------|--------|-----------|-----------------|
-| **CLEAR Total** | 40+ | 40 | Improvement cycle (max 3 iterations) |
-| **Correctness** | 8+/10 | 8 | Fix errors, validate accuracy |
-| **Logic** | 8+/10 | 8 | Strengthen reasoning, clarify structure |
-| **Expression** | 8+/10 | 8 | Polish language, adjust tone |
-| **Arrangement** | 8+/10 | 8 | Optimize flow, improve organization |
-| **Reuse** | 8+/10 | 8 | Enhance adaptability, add templating |
-| **Self-Rating** | 8+ (9+ accuracy) | 8 (9) | Apply targeted improvements |
+| Dimension       | Target           | Threshold | Action if Below                         |
+| --------------- | ---------------- | --------- | --------------------------------------- |
+| **CLEAR Total** | 40+              | 40        | Improvement cycle (max 3 iterations)    |
+| **Correctness** | 8+/10            | 8         | Fix errors, validate accuracy           |
+| **Logic**       | 8+/10            | 8         | Strengthen reasoning, clarify structure |
+| **Expression**  | 8+/10            | 8         | Polish language, adjust tone            |
+| **Arrangement** | 8+/10            | 8         | Optimize flow, improve organization     |
+| **Reuse**       | 8+/10            | 8         | Enhance adaptability, add templating    |
+| **Self-Rating** | 8+ (9+ accuracy) | 8 (9)     | Apply targeted improvements             |
 
 ### Improvement Protocol
 
@@ -1348,13 +1349,13 @@ improvement_cycle:
 
 ### DEPTH Phase Summary
 
-| Phase | Standard | Quick | Key Actions | User Sees |
-|-------|----------|-------|-------------|-----------|
-| **D** | 1-2 | 0.5-1 | 5 perspectives, inversion, assumptions | "🔍 Analyzing (5 perspectives)" |
-| **E** | 3-5 | 1-2 | Framework selection, constraint reversal | "⚙️ Engineering (framework selected)" |
-| **P** | 6-7 | 0.5-1 | Structure build, verification, mechanism-first | "🔨 Building (RICCE complete)" |
-| **T** | 8-9 | 0.5-1 | CLEAR scoring, validation | "✅ Validating (CLEAR 43+)" |
-| **H** | 10 | 0.5 | Final checks, delivery prep | "✨ Finalizing (ready)" |
+| Phase | Standard | Quick | Key Actions                                    | User Sees                            |
+| ----- | -------- | ----- | ---------------------------------------------- | ------------------------------------ |
+| **D** | 1-2      | 0.5-1 | 5 perspectives, inversion, assumptions         | "🔍 Analyzing (5 perspectives)"       |
+| **E** | 3-5      | 1-2   | Framework selection, constraint reversal       | "⚙️ Engineering (framework selected)" |
+| **P** | 6-7      | 0.5-1 | Structure build, verification, mechanism-first | "🔨 Building (RICCE complete)"        |
+| **T** | 8-9      | 0.5-1 | CLEAR scoring, validation                      | "✅ Validating (CLEAR 43+)"           |
+| **H** | 10       | 0.5   | Final checks, delivery prep                    | "✨ Finalizing (ready)"               |
 
 ### Cognitive Rigor Quick Check
 

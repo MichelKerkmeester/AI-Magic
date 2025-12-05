@@ -2,7 +2,8 @@
 
 Formatting guide for Markdown (Standard) output structure in prompt engineering with RCAF/CRAFT frameworks, file delivery standards, syntax validation, and format-specific best practices.
 
-**Core Purpose:** Define Markdown syntax specifications, structure patterns, validation rules, and file delivery standards. This guide focuses exclusively on HOW to format Markdown output—processing logic, cognitive frameworks, and interaction patterns are handled by other guides (DEPTH, Interactive Mode, Patterns).
+> **Purpose**: Defines Markdown syntax specifications, structure patterns, validation rules, and file delivery standards for natural language prompt output
+> **Scope**: RCAF/CRAFT frameworks in Markdown format, file delivery standards, syntax validation, format conversions, advanced patterns, best practices
 
 ---
 
@@ -51,13 +52,13 @@ Markdown format provides natural language prompt engineering with optimal human 
 
 ### Format Comparison Summary
 
-| Aspect | Markdown (Standard) | JSON | YAML |
-|--------|-------------------|------|------|
-| **Readability** | Natural language | Structured data | Human-friendly structure |
-| **Token Usage** | Baseline (100%) | +5-10% | +3-7% |
-| **Best For** | Human interaction | API integration | Configuration |
-| **Framework Fit** | RCAF/CRAFT equal | RCAF preferred | RCAF optimal |
-| **Learning Curve** | None | Medium | Low |
+| Aspect             | Markdown (Standard) | JSON            | YAML                     |
+| ------------------ | ------------------- | --------------- | ------------------------ |
+| **Readability**    | Natural language    | Structured data | Human-friendly structure |
+| **Token Usage**    | Baseline (100%)     | +5-10%          | +3-7%                    |
+| **Best For**       | Human interaction   | API integration | Configuration            |
+| **Framework Fit**  | RCAF/CRAFT equal    | RCAF preferred  | RCAF optimal             |
+| **Learning Curve** | None                | Medium          | Low                      |
 
 ---
 
@@ -84,13 +85,13 @@ Markdown format provides natural language prompt engineering with optimal human 
 
 ### Markdown Elements for Prompts
 
-| Element | Use Case | Example |
-|---------|----------|---------|
-| **Bold Headers** | Section markers | `**Role:** Data Analyst` |
-| **Bullet Lists** | Multiple requirements | `- Requirement 1` |
-| **Numbered Lists** | Sequential steps | `1. First step` |
-| **Inline Code** | Technical terms | `` `API endpoint` `` |
-| **Block Quotes** | Context emphasis | `> Important note` |
+| Element            | Use Case              | Example                  |
+| ------------------ | --------------------- | ------------------------ |
+| **Bold Headers**   | Section markers       | `**Role:** Data Analyst` |
+| **Bullet Lists**   | Multiple requirements | `- Requirement 1`        |
+| **Numbered Lists** | Sequential steps      | `1. First step`          |
+| **Inline Code**    | Technical terms       | `` `API endpoint` ``     |
+| **Block Quotes**   | Context emphasis      | `> Important note`       |
 
 ---
 
@@ -259,12 +260,12 @@ Mode: $improve | Complexity: Medium | Framework: RCAF
 
 ### RCAF Field Guidelines
 
-| Field | Required | Description | Best Practices |
-|-------|----------|-------------|----------------|
-| **Role** | Yes | Expertise needed | Be specific about domain and skills |
-| **Context** | Yes | Essential background | Include constraints and scope |
-| **Action** | Yes | Task to perform | Make measurable and specific |
-| **Format** | Yes | Output structure | Define sections and length |
+| Field       | Required | Description          | Best Practices                      |
+| ----------- | -------- | -------------------- | ----------------------------------- |
+| **Role**    | Yes      | Expertise needed     | Be specific about domain and skills |
+| **Context** | Yes      | Essential background | Include constraints and scope       |
+| **Action**  | Yes      | Task to perform      | Make measurable and specific        |
+| **Format**  | Yes      | Output structure     | Define sections and length          |
 
 ---
 
@@ -311,12 +312,12 @@ Mode: $refine | Complexity: High | Framework: CRAFT
 
 ### CRAFT vs RCAF Decision Matrix
 
-| Use CRAFT When | Use RCAF When |
-|----------------|---------------|
-| Multiple success metrics needed | Single clear outcome |
-| Complex multi-stakeholder scenarios | Straightforward task |
-| Detailed specifications required | Flexibility preferred |
-| Comprehensive documentation needed | Quick clarity needed |
+| Use CRAFT When                      | Use RCAF When         |
+| ----------------------------------- | --------------------- |
+| Multiple success metrics needed     | Single clear outcome  |
+| Complex multi-stakeholder scenarios | Straightforward task  |
+| Detailed specifications required    | Flexibility preferred |
+| Comprehensive documentation needed  | Quick clarity needed  |
 
 ---
 
@@ -491,14 +492,14 @@ format: Dashboard with charts and executive summary
 
 ### Format Selection Matrix
 
-| Factor | Choose Markdown | Choose JSON | Choose YAML |
-|--------|----------------|-------------|-------------|
-| **Audience** | Humans | Machines/APIs | Configurations |
-| **Complexity** | Any level | Structured only | Hierarchical |
-| **Flexibility** | High | Low | Medium |
-| **Readability** | Excellent | Fair | Good |
-| **Token Efficiency** | Best | Lower | Medium |
-| **Integration** | Manual | Automated | Semi-automated |
+| Factor               | Choose Markdown | Choose JSON     | Choose YAML    |
+| -------------------- | --------------- | --------------- | -------------- |
+| **Audience**         | Humans          | Machines/APIs   | Configurations |
+| **Complexity**       | Any level       | Structured only | Hierarchical   |
+| **Flexibility**      | High            | Low             | Medium         |
+| **Readability**      | Excellent       | Fair            | Good           |
+| **Token Efficiency** | Best            | Lower           | Medium         |
+| **Integration**      | Manual          | Automated       | Semi-automated |
 
 ---
 

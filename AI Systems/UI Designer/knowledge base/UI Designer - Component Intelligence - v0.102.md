@@ -2,9 +2,8 @@
 
 Component architecture, reference extraction, and shadcn/ui integration for rapid prototyping.
 
-**Core Purpose:** Define shadcn/ui component usage, visual reference extraction workflows, token generation, and creative control modes for systematic design system application.
-
-**Scope:** Component selection, reference extraction, token application, MCP tools, preview strategies. For design philosophy, see `UI Designer - Visual Intelligence`. For thinking methodology, see `UI Designer - CANVAS Thinking Framework`.
+> **Purpose**: Define shadcn/ui component usage, visual reference extraction workflows, token generation, and creative control modes for systematic design system application.
+> **Scope**: Component selection, reference extraction, token application, MCP tools, preview strategies. For design philosophy, see `UI Designer - Visual Intelligence`. For thinking methodology, see `UI Designer - CANVAS Thinking Framework`.
 
 ---
 

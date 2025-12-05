@@ -2,7 +2,8 @@
 
 User story templates with integrated formatting rules and quality standards. All delivery logic consolidated for self-contained operation.
 
-**Core Purpose:** Transform user requests into narrative-focused user stories that communicate user value, business outcomes, and implementation requirements through clean storytelling without QA checklists.
+> **Purpose**: Defines Story Mode templates for creating narrative-focused user stories with auto-scaling complexity levels (Simple/Standard/Complex) and integrated DEPTH methodology.
+> **Scope**: Story Mode command structure, delivery standards, complexity auto-scaling rules, quality validation checklists, error recovery protocols, template formats (Simple/Standard/Complex/Quick), formatting standards, and story-specific requirements.
 
 ---
 
@@ -140,11 +141,11 @@ For development tickets with QA checklists and resolution tracking, use `$ticket
 
 ## 3. 📏 COMPLEXITY AUTO-SCALING
 
-| Keywords | Complexity | Sections | Focus | DEPTH Processing |
-|----------|------------|----------|-------|------------------|
-| simple, basic, quick | Simple | 2-3 | Single component update | 10 rounds (1-2 if $quick) |
-| feature, capability, page | Standard | 4-5 | Complete page/feature | 10 rounds (3 if $quick) |
-| platform, system, ecosystem | Complex | 6-8 | Multi-component system | 10 rounds (5 if $quick) |
+| Keywords                    | Complexity | Sections | Focus                   | DEPTH Processing          |
+| --------------------------- | ---------- | -------- | ----------------------- | ------------------------- |
+| simple, basic, quick        | Simple     | 2-3      | Single component update | 10 rounds (1-2 if $quick) |
+| feature, capability, page   | Standard   | 4-5      | Complete page/feature   | 10 rounds (3 if $quick)   |
+| platform, system, ecosystem | Complex    | 6-8      | Multi-component system  | 10 rounds (5 if $quick)   |
 
 **Important:** Complexity determines TEMPLATE SIZE, not content scope
 - User requests "simple button update" → Simple template for THAT button only

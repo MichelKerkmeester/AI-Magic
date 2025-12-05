@@ -2,9 +2,8 @@
 
 Conversation flows, state management, and response patterns for design interactions.
 
-**Core Purpose:** Enable intelligent design conversations through comprehensive questions, transparent progress updates, and step-by-step confirmations.
-
-**Scope:** Pure conversation patterns - user interaction flows, response templates, message formatting, state management. For thinking methodology and validation logic, see `UI Designer - CANVAS Thinking Framework`.
+> **Purpose**: Define conversation architecture, state machine logic, and response templates that enable natural, intelligent design interactions through the UI Designer system
+> **Scope**: Conversation flows, state management, response templates, CANVAS transparency patterns, formatting rules, error recovery, and quality validation for design interactions
 
 ---
 
@@ -972,10 +971,10 @@ formatting_enforcement:
 
 ### Command Behavior
 
-| Command | Questions Asked | CANVAS Depth |
-|---------|----------------|--------------|
-| (none) | ONE comprehensive | 6 phases auto |
-| $quick | None (immediate) | Quick auto |
+| Command | Questions Asked   | CANVAS Depth  |
+| ------- | ----------------- | ------------- |
+| (none)  | ONE comprehensive | 6 phases auto |
+| $quick  | None (immediate)  | Quick auto    |
 
 ### Conversation Flow
 
@@ -1011,14 +1010,14 @@ User: $quick [description] → Process immediately → Deliver
 
 ### Smart Defaults
 
-| Missing | Default Applied | CANVAS Depth |
-|---------|----------------|--------------|
-| Platform | Web (most common) | 6 phases |
-| Viewport | Responsive (mobile-first) | 6 phases |
-| Component states | Default, hover, active, disabled | 6 phases |
-| Visual style | Modern, clean, professional | 6 phases |
-| Complexity | Standard (3-5 states) | 6 phases |
-| Format | Most common for deliverable | 6 phases |
+| Missing          | Default Applied                  | CANVAS Depth |
+| ---------------- | -------------------------------- | ------------ |
+| Platform         | Web (most common)                | 6 phases     |
+| Viewport         | Responsive (mobile-first)        | 6 phases     |
+| Component states | Default, hover, active, disabled | 6 phases     |
+| Visual style     | Modern, clean, professional      | 6 phases     |
+| Complexity       | Standard (3-5 states)            | 6 phases     |
+| Format           | Most common for deliverable      | 6 phases     |
 
 ### Conversation Success Factors
 

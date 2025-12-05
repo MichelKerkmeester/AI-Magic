@@ -2,7 +2,8 @@
 
 Formatting guide for JSON output structure in prompt engineering with RCAF/CRAFT frameworks, file delivery standards, syntax validation, and format-specific best practices.
 
-**Core Purpose:** Define JSON syntax specifications, structure patterns, validation rules, and file delivery standards. This guide focuses exclusively on HOW to format JSON output—processing logic, cognitive frameworks, and interaction patterns are handled by other guides (DEPTH, Interactive Mode, Patterns).
+> **Purpose**: Define JSON syntax specifications, structure patterns, validation rules, and file delivery standards for prompt engineering output
+> **Scope**: JSON format fundamentals, RCAF/CRAFT JSON structures, file delivery standards, syntax validation, format conversions, advanced patterns, and best practices
 
 ---
 
@@ -39,12 +40,12 @@ JSON format provides structured, machine-parseable prompt engineering with consi
 
 ### JSON vs Other Formats Summary
 
-| Aspect | Markdown (Standard) | JSON | YAML |
-|--------|-------------------|------|------|
-| **Readability** | Natural language | Structured data | Human-friendly structure |
-| **Token Usage** | Baseline | +5-10% | +3-7% |
-| **Best For** | Human interaction | API/System integration | Configuration |
-| **Framework Fit** | RCAF/CRAFT | RCAF preferred | RCAF optimal |
+| Aspect            | Markdown (Standard) | JSON                   | YAML                     |
+| ----------------- | ------------------- | ---------------------- | ------------------------ |
+| **Readability**   | Natural language    | Structured data        | Human-friendly structure |
+| **Token Usage**   | Baseline            | +5-10%                 | +3-7%                    |
+| **Best For**      | Human interaction   | API/System integration | Configuration            |
+| **Framework Fit** | RCAF/CRAFT          | RCAF preferred         | RCAF optimal             |
 
 **Note:** Quality evaluation (CLEAR scoring) and enhancement processing are handled by separate guides (Patterns guide, DEPTH guide).
 
@@ -81,13 +82,13 @@ JSON format provides structured, machine-parseable prompt engineering with consi
 
 ### JSON Data Types for Prompts
 
-| Type | Use Case | Example |
-|------|----------|---------|
-| **String** | Text values | `"role": "Data Analyst"` |
-| **Number** | Quantities | `"limit": 100` |
-| **Boolean** | Flags | `"detailed": true` |
-| **Array** | Lists | `"skills": ["Python", "SQL"]` |
-| **Object** | Nested structure | `"format": {"type": "report"}` |
+| Type        | Use Case         | Example                        |
+| ----------- | ---------------- | ------------------------------ |
+| **String**  | Text values      | `"role": "Data Analyst"`       |
+| **Number**  | Quantities       | `"limit": 100`                 |
+| **Boolean** | Flags            | `"detailed": true`             |
+| **Array**   | Lists            | `"skills": ["Python", "SQL"]`  |
+| **Object**  | Nested structure | `"format": {"type": "report"}` |
 
 ---
 
@@ -406,12 +407,12 @@ Mode: $json | Complexity: Medium | Framework: RCAF
 
 ### RCAF JSON Field Guidelines
 
-| Field | Required | Description | Purpose |
-|-------|----------|-------------|---------|
-| **role** | Yes | Expertise needed | Defines AI's perspective and knowledge domain |
-| **context** | Yes | Essential info | Provides situation, constraints, and background |
-| **action** | Yes | Specific task | Specifies what AI should do |
-| **format** | Yes | Output structure | Defines how results should be organized |
+| Field       | Required | Description      | Purpose                                         |
+| ----------- | -------- | ---------------- | ----------------------------------------------- |
+| **role**    | Yes      | Expertise needed | Defines AI's perspective and knowledge domain   |
+| **context** | Yes      | Essential info   | Provides situation, constraints, and background |
+| **action**  | Yes      | Specific task    | Specifies what AI should do                     |
+| **format**  | Yes      | Output structure | Defines how results should be organized         |
 
 ---
 
@@ -663,21 +664,21 @@ json_to_standard_conversion:
 
 ### When to Use JSON Format
 
-| Use JSON When | Use Standard When | Use YAML When |
-|---------------|-------------------|---------------|
-| API integration needed | Human readability priority | Configuration templates |
-| Structured data processing | Natural conversation flow | Human editing needed |
-| Programmatic generation | Creative or open-ended tasks | Complex hierarchies |
-| Schema validation required | Flexibility needed | Comments helpful |
-| Batch processing | Single prompt usage | Multi-line text common |
+| Use JSON When              | Use Standard When            | Use YAML When           |
+| -------------------------- | ---------------------------- | ----------------------- |
+| API integration needed     | Human readability priority   | Configuration templates |
+| Structured data processing | Natural conversation flow    | Human editing needed    |
+| Programmatic generation    | Creative or open-ended tasks | Complex hierarchies     |
+| Schema validation required | Flexibility needed           | Comments helpful        |
+| Batch processing           | Single prompt usage          | Multi-line text common  |
 
 ### CLEAR Score Impact
 
-| Format | Avg CLEAR | Strengths | Weaknesses |
-|--------|-----------|-----------|------------|
-| **Standard** | 43/50 | Expression (9/10), Natural flow | Structure consistency |
-| **JSON** | 41/50 | Arrangement (9/10), Precision | Expression (7/10) |
-| **YAML** | 42/50 | Balance (8/10 avg) | Learning curve |
+| Format       | Avg CLEAR | Strengths                       | Weaknesses            |
+| ------------ | --------- | ------------------------------- | --------------------- |
+| **Standard** | 43/50     | Expression (9/10), Natural flow | Structure consistency |
+| **JSON**     | 41/50     | Arrangement (9/10), Precision   | Expression (7/10)     |
+| **YAML**     | 42/50     | Balance (8/10 avg)              | Learning curve        |
 
 ---
 
@@ -788,16 +789,16 @@ Before delivering $json file:
 
 ### Common JSON Syntax Issues
 
-| Issue | Recognition | Solution |
-|-------|------------|----------|
-| **Invalid JSON** | Parse errors | Validate with JSON linter |
+| Issue                | Recognition              | Solution                         |
+| -------------------- | ------------------------ | -------------------------------- |
+| **Invalid JSON**     | Parse errors             | Validate with JSON linter        |
 | **Format violation** | Markdown instead of JSON | STOP and regenerate as pure JSON |
-| **Mixed format** | JSON with markdown | Strip markdown elements |
-| **Trailing commas** | Extra comma at end | Remove trailing commas |
-| **Unquoted keys** | Parse failure | Wrap all keys in quotes |
-| **Single quotes** | Parse failure | Use double quotes only |
-| **Comments** | Parse failure | Remove comments (not valid JSON) |
-| **Missing braces** | Incomplete structure | Add closing brackets/braces |
+| **Mixed format**     | JSON with markdown       | Strip markdown elements          |
+| **Trailing commas**  | Extra comma at end       | Remove trailing commas           |
+| **Unquoted keys**    | Parse failure            | Wrap all keys in quotes          |
+| **Single quotes**    | Parse failure            | Use double quotes only           |
+| **Comments**         | Parse failure            | Remove comments (not valid JSON) |
+| **Missing braces**   | Incomplete structure     | Add closing brackets/braces      |
 
 ### JSON Parser Validation
 
@@ -894,11 +895,11 @@ validate_json_syntax:
 
 ### Framework Structure Guidelines
 
-| Complexity | Framework | JSON Structure | Nesting Depth |
-|------------|-----------|----------------|---------------|
-| Simple (1-3) | RCAF | Flat structure | 1-2 levels |
-| Medium (4-6) | RCAF | Nested format field | 2-3 levels |
-| Complex (7-10) | CRAFT | Multi-level nesting | 3-4 levels |
+| Complexity     | Framework | JSON Structure      | Nesting Depth |
+| -------------- | --------- | ------------------- | ------------- |
+| Simple (1-3)   | RCAF      | Flat structure      | 1-2 levels    |
+| Medium (4-6)   | RCAF      | Nested format field | 2-3 levels    |
+| Complex (7-10) | CRAFT     | Multi-level nesting | 3-4 levels    |
 
 ### JSON Format Principles
 

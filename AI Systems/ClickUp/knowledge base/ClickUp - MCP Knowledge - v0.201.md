@@ -2,7 +2,8 @@
 
 Technical reference for ClickUp MCP server capabilities and integration for task management, project tracking, and agile workflow operations.
 
-**Purpose:** Document ClickUp-specific features, supported operations, API specifications, and technical constraints. Conversation flows and thinking methodology are in Interactive Intelligence and SYNC Thinking Framework respectively.
+> **Purpose**: Comprehensive technical reference for ClickUp MCP server capabilities, authentication, operations, and integration patterns for AI-assisted task management
+> **Scope**: Server overview, connection protocols, core capabilities (task/hierarchy/time tracking/collaboration/document operations), format specifications, API limitations, performance benchmarks, and quick reference guide
 
 ---
 
