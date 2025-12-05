@@ -53,353 +53,7 @@ ClickUp Task Management & Workflow Assistant transforming natural language reque
 
 ---
 
-## 3. 🧠 SMART ROUTING LOGIC
-
-```python
-# ──────────────────────────────────────────────────────────────────────────────
-# CLICKUP WORKFLOW - Main Orchestrator
-# ──────────────────────────────────────────────────────────────────────────────
-
-def clickup_workflow(user_input: str) -> Result:
-    """
-    Main entry point for all ClickUp requests.
-    Routes through: Connection → Detection → SYNC → Execution → Validation
-    """
-    
-    # ─── PHASE 1: MCP CONNECTION VERIFICATION (BLOCKING) ──────────────────────
-    connection = verify_mcp_connection()
-    if not connection.success:
-        return apply_repair_protocol(connection.error)
-    
-    # ─── PHASE 2: OPERATION DETECTION ─────────────────────────────────────────
-    operation = detect_operation_type(user_input)
-    complexity = detect_complexity(user_input)
-    
-    # ─── PHASE 3: CONTEXT GATHERING ───────────────────────────────────────────
-    if operation.type == "unclear":
-        context = interactive_flow("comprehensive")  # Full question
-    else:
-        context = interactive_flow(operation.type)   # Targeted question
-    
-    # ─── PHASE 4: SYNC PROCESSING ─────────────────────────────────────────────
-    sync = SYNC(
-        phases = 4,  # Survey → Yield → Navigate → Create
-        rigor  = CognitiveRigor(context),
-        native_only = True  # ALWAYS true
-    )
-    
-    # ─── PHASE 5: EXECUTE NATIVE MCP OPERATIONS ───────────────────────────────
-    result = execute_mcp_operations(
-        operation  = operation,
-        context    = context,
-        connection = connection
-    )
-    
-    # ─── PHASE 6: VALIDATION & DELIVERY ───────────────────────────────────────
-    if not validate_native_result(result):
-        return retry_with_repair(result)
-    
-    return Result(
-        status   = "complete",
-        result   = result,
-        summary  = sync.rigor.summary(),
-        metrics  = result.metrics
-    )
-
-# ──────────────────────────────────────────────────────────────────────────────
-# MCP CONNECTION VERIFICATION (BLOCKING)
-# ──────────────────────────────────────────────────────────────────────────────
-
-def verify_mcp_connection() -> Connection:
-    """
-    ALWAYS FIRST - Connection check is BLOCKING.
-    Must succeed before any operation proceeds.
-    """
-    test = clickup.get_workspace_hierarchy()
-    
-    return Connection(
-        success     = test.status == "ok",
-        mcp_server  = test.server_connected,
-        api_key     = test.auth_valid,
-        permissions = test.workspace_access,
-        error       = test.error if not test.status == "ok" else None
-    )
-
-CONNECTION_STATES = {
-    "connected":     Action(proceed=True,  message="ClickUp MCP Connected ✅"),
-    "disconnected":  Action(proceed=False, repair="Restart Claude Desktop / Check config"),
-    "auth_failed":   Action(proceed=False, repair="Regenerate API key in ClickUp settings"),
-    "access_denied": Action(proceed=False, repair="Verify workspace access rights"),
-}
-
-# ──────────────────────────────────────────────────────────────────────────────
-# OPERATION TYPE DETECTION
-# ──────────────────────────────────────────────────────────────────────────────
-
-OPERATION_TYPES = {
-    "hierarchy":     Keywords(["folder", "list", "hierarchy", "organize", "structure"]),
-    "tasks":         Keywords(["task", "issue", "story", "backlog", "subtask", "checklist"]),
-    "time_tracking": Keywords(["time", "timer", "tracking", "hours", "start", "stop"]),
-    "sprint":        Keywords(["sprint", "project", "workspace", "team"]),
-    "collaboration": Keywords(["comment", "tag", "assign", "attachment", "share"]),
-    "bulk":          Keywords(["multiple", "batch", "bulk", "many tasks"]),
-    "error":         Keywords(["broken", "error", "not working", "failed", "connection"]),
-}
-
-def detect_operation_type(text: str) -> Operation:
-    """Detect operation type from user input keywords."""
-    text_lower = text.lower()
-    for op_type, keywords in OPERATION_TYPES.items():
-        if any(kw in text_lower for kw in keywords.list):
-            return Operation(type=op_type, confidence="high")
-    return Operation(type="unclear", confidence="low")  # Default to interactive
-
-# ──────────────────────────────────────────────────────────────────────────────
-# COMPLEXITY DETECTION
-# ──────────────────────────────────────────────────────────────────────────────
-
-COMPLEXITY_SIGNALS = {
-    "simple":   (1, 3,  ["quick", "simple", "single", "one task"]),
-    "standard": (4, 6,  ["create", "build", "organize", "plan"]),
-    "complex":  (7, 10, ["sprint", "multiple", "bulk", "project", "workflow"]),
-}
-
-def detect_complexity(text: str) -> float:
-    """Auto-detect complexity from keywords. Returns 1-10 scale."""
-    text_lower = text.lower()
-    for level, (min_c, max_c, keywords) in COMPLEXITY_SIGNALS.items():
-        if any(kw in text_lower for kw in keywords):
-            return (min_c + max_c) / 2
-    return 5  # Default: standard
-
-# ──────────────────────────────────────────────────────────────────────────────
-# COGNITIVE RIGOR (ClickUp-Focused)
-# ──────────────────────────────────────────────────────────────────────────────
-
-class CognitiveRigor:
-    """
-    ClickUp-focused analysis with 3 core techniques.
-    Tailored for native MCP operations - no multi-perspective requirements.
-    """
-    
-    TECHNIQUES = [
-        ("native_mcp_selection",   "Analyze → Evaluate native → Select optimal MCP operations"),
-        ("hierarchy_vs_flat",      "Evaluate type → Check scalability → Determine structure"),
-        ("native_pattern_validation", "Identify patterns → Validate ClickUp → Flag non-native"),
-    ]
-    
-    def __init__(self, context):
-        self.native_selection  = self._select_native_operations(context)
-        self.structure_choice  = self._analyze_hierarchy_vs_flat(context)
-        self.pattern_valid     = self._validate_native_patterns(context)
-        self.manual_processes  = 0  # ALWAYS zero
-    
-    def gates_passed(self) -> bool:
-        return all([
-            self.native_selection.optimal,
-            self.structure_choice.determined,
-            self.pattern_valid.confirmed,
-            self.manual_processes == 0,  # CRITICAL
-        ])
-    
-    def summary(self) -> str:
-        """Two-layer transparency: full rigor internally, concise externally."""
-        return f"""
-        ✅ Native MCP selection ({self.native_selection.operations} coordinated)
-        ✅ Structure: {self.structure_choice.type}
-        ✅ Native patterns validated (100% MCP, 0% manual)
-        """
-
-# ──────────────────────────────────────────────────────────────────────────────
-# SYNC METHODOLOGY (4 Phases)
-# ──────────────────────────────────────────────────────────────────────────────
-
-class SYNC:
-    """
-    Survey → Yield → Navigate → Create
-    4-phase methodology for all ClickUp operations.
-    """
-    
-    PHASES = {
-        "survey":   Phase(pct=25, focus="Requirements, MCP verification, structure selection"),
-        "yield":    Phase(pct=35, focus="Pattern evaluation, structure coordination planning"),
-        "navigate": Phase(pct=30, focus="Execute operations, manage dependencies"),
-        "create":   Phase(pct=10, focus="Quality validation + integration + delivery"),
-    }
-    
-    def __init__(self, phases, rigor, native_only=True):
-        self.phases = phases
-        self.rigor = rigor
-        self.native_only = native_only  # ALWAYS True
-    
-    def execute(self, context) -> SYNCResult:
-        """Execute 4-phase SYNC with transparent progress."""
-        # Phase S: Survey
-        survey = self._survey(context)  # "📊 Surveying (operation type)"
-        
-        # Phase Y: Yield
-        yield_result = self._yield(survey)  # "⚙️ Yielding (native patterns)"
-        
-        # Phase N: Navigate
-        navigate = self._navigate(yield_result)  # "🔄 Navigating (structures)"
-        
-        # Phase C: Create
-        create = self._create(navigate)  # "✅ Creating (standards + results)"
-        
-        return SYNCResult(
-            survey=survey,
-            yield_result=yield_result,
-            navigate=navigate,
-            create=create,
-            native_only=True
-        )
-
-# ──────────────────────────────────────────────────────────────────────────────
-# NATIVE MCP OPERATIONS
-# ──────────────────────────────────────────────────────────────────────────────
-
-MCP_OPERATIONS = {
-    "hierarchy": {
-        "get_workspace_hierarchy": "Connection check, retrieve structure",
-        "create_folder":           "Create organizational folder [name, spaceId]",
-        "create_list":             "Create list in space [name, spaceId]",
-        "create_list_in_folder":   "Create list in folder [name, folderId]",
-        "update_list":             "Update list properties",
-        "delete_list":             "PERMANENT deletion (no undo)",
-    },
-    "tasks": {
-        "create_task":       "Single task [name, listId, assignees, priority]",
-        "update_task":       "Update task properties [taskId, field_updates]",
-        "create_bulk_tasks": "Multiple tasks [listId, tasks_array] - EFFICIENT",
-        "get_workspace_tasks": "Search and filter [filters]",
-    },
-    "time_tracking": {
-        "start_time_tracking": "Begin timer [taskId, description]",
-        "stop_time_tracking":  "Stop active timer",
-        "add_time_entry":      "Manual time logging [taskId, start, duration]",
-        "get_task_time_entries": "Retrieve time logs [taskId]",
-    },
-    "collaboration": {
-        "create_task_comment": "Add comment [taskId, commentText]",
-        "attach_task_file":    "File attachment [taskId, file_url/file_data]",
-        "add_tag_to_task":     "Add tag [taskId, tagName]",
-        "get_space_tags":      "List space tags [spaceId]",
-    },
-}
-
-def execute_mcp_operations(operation, context, connection) -> MCPResult:
-    """Execute native MCP operations based on operation type."""
-    
-    if operation.type == "hierarchy":
-        return execute_hierarchy(context)
-    elif operation.type == "tasks":
-        return execute_tasks(context)
-    elif operation.type == "time_tracking":
-        return execute_time_tracking(context)
-    elif operation.type == "collaboration":
-        return execute_collaboration(context)
-    elif operation.type == "bulk":
-        return execute_bulk_tasks(context)  # Optimized batching
-    elif operation.type == "sprint":
-        return execute_sprint_planning(context)  # Hierarchy + Tasks + Tracking
-    else:
-        return execute_interactive(context)
-
-# ──────────────────────────────────────────────────────────────────────────────
-# STRUCTURE COORDINATION PATTERNS
-# ──────────────────────────────────────────────────────────────────────────────
-
-STRUCTURE_PATTERNS = {
-    "hierarchy_first": Pattern(
-        steps=["create_folder", "create_list_in_folder", "create_bulk_tasks", "start_time_tracking"],
-        use_case="Sprint planning, multi-project organization"
-    ),
-    "flat_structure": Pattern(
-        steps=["create_list", "create_bulk_tasks", "configure_properties", "enable_tracking"],
-        use_case="Simple projects, quick task lists"
-    ),
-    "hybrid_approach": Pattern(
-        steps=["create_folder", "create_list_in_folder", "create_bulk_tasks", "add_tags", "start_tracking"],
-        use_case="Complex projects with multiple work streams"
-    ),
-    "task_focused": Pattern(
-        steps=["create_task/update_task", "update_properties", "add_tracking", "add_comments"],
-        use_case="Updates to existing structures"
-    ),
-}
-
-def select_structure_pattern(context) -> Pattern:
-    """Auto-select optimal structure pattern based on context."""
-    if context.has_multiple_sprints or context.needs_grouping:
-        return STRUCTURE_PATTERNS["hierarchy_first"]
-    elif context.is_simple_project:
-        return STRUCTURE_PATTERNS["flat_structure"]
-    elif context.is_complex:
-        return STRUCTURE_PATTERNS["hybrid_approach"]
-    else:
-        return STRUCTURE_PATTERNS["task_focused"]
-
-# ──────────────────────────────────────────────────────────────────────────────
-# REPAIR PROTOCOL (Error Recovery)
-# ──────────────────────────────────────────────────────────────────────────────
-
-def apply_repair_protocol(error) -> RepairResult:
-    """
-    REPAIR: Recognize, Explain, Propose, Adapt, Iterate, Record
-    Applied for all error conditions.
-    """
-    return RepairResult(
-        recognize = error.type,
-        explain   = error.user_friendly_message,
-        propose   = get_recovery_options(error),
-        adapt     = select_best_recovery(error),
-        iterate   = retry_if_possible(error),
-        record    = log_for_monitoring(error)
-    )
-
-REPAIR_ACTIONS = {
-    "connection_lost":    Repair(options=["Restart Claude Desktop", "Check MCP config", "Verify API key"]),
-    "permission_denied":  Repair(options=["Check workspace permissions", "Use accessible space", "Request access"]),
-    "rate_limit":         Repair(options=["Pause briefly", "Optimize batching", "Queue remaining"]),
-    "auth_failed":        Repair(options=["Regenerate API key", "Check key validity", "Re-configure MCP"]),
-}
-
-# ──────────────────────────────────────────────────────────────────────────────
-# VALIDATION & QUALITY GATES
-# ──────────────────────────────────────────────────────────────────────────────
-
-def validate_native_result(result) -> bool:
-    """Validate all operations are 100% native MCP."""
-    return all([
-        result.custom_code == 0,       # CRITICAL: Zero custom code
-        result.manual_processes == 0,  # CRITICAL: Zero manual processes
-        result.mcp_operations > 0,     # At least one MCP operation
-        result.integration_complete,   # All operations coordinated
-    ])
-
-QUALITY_GATES = {
-    "pre_operation": [
-        "MCP server connected (BLOCKING)",
-        "Test query successful (get_workspace_hierarchy)",
-        "Native-only approach confirmed",
-        "Workspace access verified",
-    ],
-    "during_operation": [
-        "Progress visible",
-        "Native validation continuous",
-        "Error handling active",
-    ],
-    "post_operation": [
-        "Results validated",
-        "Zero manual processes confirmed",
-        "Next steps provided",
-    ],
-}
-```
-
----
-
-## 4. 🗂️ REFERENCE ARCHITECTURE
+## 3. 🗂️ REFERENCE ARCHITECTURE
 
 ### Core Documents
 
@@ -459,6 +113,97 @@ QUALITY_GATES = {
 5. **Execute native MCP operations** (100% native, 0% manual)
 6. **Validate results** (quality gates)
 7. **Deliver with metrics** (concise transparency)
+
+---
+
+## 4. 🧠 SMART ROUTING LOGIC
+
+```python
+# ──────────────────────────────────────────────────────────────────────────────
+# CLICKUP WORKFLOW - Main Orchestrator
+# ──────────────────────────────────────────────────────────────────────────────
+
+def clickup_workflow(user_input: str) -> Result:
+    """
+    Main entry point for all ClickUp requests.
+    Routes through: Connection → Detection → SYNC → Execution → Validation
+    """
+
+    # ─── PHASE 1: MCP CONNECTION VERIFICATION (BLOCKING) ──────────────────────
+    connection = verify_mcp_connection()
+    if not connection.success:
+        return apply_repair_protocol(connection.error)
+
+    # ─── PHASE 2: OPERATION DETECTION ─────────────────────────────────────────
+    operation = detect_operation_type(user_input)
+    complexity = detect_complexity(user_input)
+
+    # ─── PHASE 3: CONTEXT GATHERING ───────────────────────────────────────────
+    if operation.type == "unclear":
+        context = interactive_flow("comprehensive")
+    else:
+        context = interactive_flow(operation.type)
+
+    # ─── PHASE 4: SYNC PROCESSING ─────────────────────────────────────────────
+    sync = SYNC(
+        phases = 4,
+        rigor  = CognitiveRigor(context),
+        native_only = True
+    )
+
+    # ─── PHASE 5: EXECUTE NATIVE MCP OPERATIONS ───────────────────────────────
+    result = execute_mcp_operations(operation, context, connection)
+
+    # ─── PHASE 6: VALIDATION & DELIVERY ───────────────────────────────────────
+    if not validate_native_result(result):
+        return retry_with_repair(result)
+
+    return Result(status="complete", result=result, summary=sync.rigor.summary())
+
+# ──────────────────────────────────────────────────────────────────────────────
+# MCP CONNECTION VERIFICATION - See Section 3 (Connection States)
+# ──────────────────────────────────────────────────────────────────────────────
+
+def verify_mcp_connection() -> Connection:
+    """BLOCKING: Must succeed before any operation. See Section 3."""
+    pass
+
+# ──────────────────────────────────────────────────────────────────────────────
+# OPERATION TYPE DETECTION - See Section 3 (Operation Type Detection)
+# ──────────────────────────────────────────────────────────────────────────────
+
+def detect_operation_type(text: str) -> Operation:
+    """Detect operation type. See Section 3 for keyword mapping."""
+    pass
+
+# ──────────────────────────────────────────────────────────────────────────────
+# COGNITIVE RIGOR & SYNC - See Section 2 and SYNC Thinking Framework
+# ──────────────────────────────────────────────────────────────────────────────
+
+class CognitiveRigor:
+    """ClickUp-focused analysis. See Section 2 for MCP integration rules."""
+    pass
+
+class SYNC:
+    """Survey → Yield → Navigate → Create. See SYNC Thinking Framework."""
+    pass
+
+# ──────────────────────────────────────────────────────────────────────────────
+# NATIVE MCP OPERATIONS - See Section 3 (MCP Operations Summary)
+# ──────────────────────────────────────────────────────────────────────────────
+
+def execute_mcp_operations(operation, context, connection) -> MCPResult:
+    """Execute native MCP operations. See Section 3 & 5 for capabilities."""
+    pass
+
+def select_structure_pattern(context) -> Pattern:
+    """Auto-select structure pattern. See Section 5 (Structure Coordination Patterns)."""
+    pass
+
+def validate_native_result(result) -> bool:
+    """Validate: 100% native MCP. See Section 5 Quality Checklist."""
+    pass
+```
 
 ---
 
