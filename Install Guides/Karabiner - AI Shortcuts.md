@@ -19,7 +19,8 @@ Please help me:
    - Cmd+Ctrl+2: Paste "Think really hard about this... Use Sequantial Thinking MCP"
    - Cmd+Ctrl+3: Paste "Skills Scanner" prompt
    - Cmd+Ctrl+4: Paste "Commands Scanner" prompt
-   - Cmd+Ctrl+5: Paste the "Senior Orchestrator" prompt
+   - Cmd+Ctrl+5: Paste "Delegate simultaneously to up to {x} {Model Name} sub-agents."
+   - Cmd+Ctrl+6: Paste the "Senior Orchestrator" prompt
    - Cmd+Ctrl+8: Paste "◻︎"
    - Cmd+Ctrl+9: Paste "❖"
    - Cmd+Ctrl+0: Paste "---"
@@ -105,7 +106,7 @@ The configuration is stored in `~/.config/karabiner/karabiner.json`.
 
 ```json
 {
-    "description": "AI & Symbol Shortcuts (Cmd+Ctrl+1-5, 8-9, 0)",
+    "description": "AI & Symbol Shortcuts (Cmd+Ctrl+1-6, 8-9, 0)",
     "manipulators": [
         {
             "description": "Cmd+Ctrl+1: Ultrathink Prompt",
@@ -152,13 +153,24 @@ The configuration is stored in `~/.config/karabiner/karabiner.json`.
             "type": "basic"
         },
         {
-            "description": "Cmd+Ctrl+5: Orchestrator Prompt",
+            "description": "Cmd+Ctrl+5: Orchestrator Setup",
             "from": {
                 "key_code": "5",
                 "modifiers": { "mandatory": ["left_command", "left_control"] }
             },
             "to": [{
-                "shell_command": "osascript -e 'set the clipboard to \"You are the senior orchestration agent with full authority over task delegation and final delivery. Analyze my previously mentioned request to identify components that can execute in parallel versus those requiring sequential processing due to dependencies. Before decomposing tasks, scan available commands, tools, and skills to determine which capabilities are relevant to completing this request — leverage these explicitly in your task assignments rather than relying on general reasoning alone.\" & return & return & \"Decompose into discrete tasks with explicit scope, expected output format, and success criteria, then delegate simultaneously to up to {x} {Model Name} sub-agents.\" & return & return & \"Assign tasks based on which available skills or commands each sub-agent should utilize.\" & return & return & \"Evaluate each sub-agent output against three gates: accuracy, completeness, and consistency with other workstreams. Accept outputs meeting thresholds, request revisions for partial failures, or reassign entirely if misaligned. If a sub-agent fails, redistribute the task or execute directly.\" & return & return & \"Synthesize accepted outputs into a unified response that reads as single authoritative delivery, not assembled fragments. Resolve conflicts by evaluating evidence quality and alignment with user intent. Present your final output with attribution showing which sub-agent contributed each component, and flag any unresolved ambiguities or intentional exclusions.\"' -e 'tell application \"System Events\" to keystroke \"v\" using command down'"
+                "shell_command": "osascript -e 'set the clipboard to \"Delegate simultaneously to up to {x} {Model Name} sub-agents.\"' -e 'tell application \"System Events\" to keystroke \"v\" using command down'"
+            }],
+            "type": "basic"
+        },
+        {
+            "description": "Cmd+Ctrl+6: Orchestrator Execution",
+            "from": {
+                "key_code": "6",
+                "modifiers": { "mandatory": ["left_command", "left_control"] }
+            },
+            "to": [{
+                "shell_command": "osascript -e 'set the clipboard to \"You are the senior orchestration agent with full authority over task delegation and final delivery. Analyze my previously mentioned request to identify components that can execute in parallel versus those requiring sequential processing due to dependencies. Before decomposing tasks, scan available commands, tools, and skills to determine which capabilities are relevant to completing this request — leverage these explicitly in your task assignments rather than relying on general reasoning alone.\" & return & return & \"Decompose into discrete tasks with explicit scope, expected output format, and success criteria, utilizing the sub-agents defined earlier.\" & return & return & \"Assign tasks based on which available skills or commands each sub-agent should utilize.\" & return & return & \"Evaluate each sub-agent output against three gates: accuracy, completeness, and consistency with other workstreams. Accept outputs meeting thresholds, request revisions for partial failures, or reassign entirely if misaligned. If a sub-agent fails, redistribute the task or execute directly.\" & return & return & \"Synthesize accepted outputs into a unified response that reads as single authoritative delivery, not assembled fragments. Resolve conflicts by evaluating evidence quality and alignment with user intent. Present your final output with attribution showing which sub-agent contributed each component, and flag any unresolved ambiguities or intentional exclusions.\"' -e 'tell application \"System Events\" to keystroke \"v\" using command down'"
             }],
             "type": "basic"
         },
@@ -209,13 +221,14 @@ The configuration is stored in `~/.config/karabiner/karabiner.json`.
 
 ### 6. 🚀 USAGE
 
-| Shortcut       | Output                                                        | Description                     |
-| :------------- | :------------------------------------------------------------ | :------------------------------ |
-| **Cmd+Ctrl+1** | `Think really hard about this... Use ultrathink`              | Trigger deep thinking mode      |
-| **Cmd+Ctrl+2** | `Think really hard about this... Use Sequantial Thinking MCP` | Trigger sequential thinking     |
-| **Cmd+Ctrl+3** | `Before diving in, use a parallel sub-agent...`               | Trigger skills scanner prompt   |
-| **Cmd+Ctrl+4** | `Before diving in, use a parallel sub-agent...`               | Trigger commands scanner prompt |
-| **Cmd+Ctrl+5** | `You are the senior orchestration agent...`                   | Trigger orchestrator agent mode |
-| **Cmd+Ctrl+8** | `◻︎`                                                           | Checkbox symbol                 |
-| **Cmd+Ctrl+9** | `❖`                                                           | Option/Alt symbol               |
-| **Cmd+Ctrl+0** | `---`                                                         | Horizontal rule / Separator     |
+| Shortcut       | Output                                                        | Description                      |
+| :------------- | :------------------------------------------------------------ | :------------------------------- |
+| **Cmd+Ctrl+1** | `Think really hard about this... Use ultrathink`              | Trigger deep thinking mode       |
+| **Cmd+Ctrl+2** | `Think really hard about this... Use Sequantial Thinking MCP` | Trigger sequential thinking      |
+| **Cmd+Ctrl+3** | `Before diving in, use a parallel sub-agent...`               | Trigger skills scanner prompt    |
+| **Cmd+Ctrl+4** | `Before diving in, use a parallel sub-agent...`               | Trigger commands scanner prompt  |
+| **Cmd+Ctrl+5** | `Delegate simultaneously to up to {x}...`                     | Orchestrator: Define sub-agents  |
+| **Cmd+Ctrl+6** | `You are the senior orchestration agent...`                   | Orchestrator: Execute delegation |
+| **Cmd+Ctrl+8** | `◻︎`                                                           | Checkbox symbol                  |
+| **Cmd+Ctrl+9** | `❖`                                                           | Option/Alt symbol                |
+| **Cmd+Ctrl+0** | `---`                                                         | Horizontal rule / Separator      |

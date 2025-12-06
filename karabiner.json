@@ -86,7 +86,24 @@
                                 },
                                 "to": [
                                     {
-                                        "shell_command": "osascript -e 'set the clipboard to \"You are the senior orchestration agent with full authority over task delegation and final delivery. Analyze my previously mentioned request to identify components that can execute in parallel versus those requiring sequential processing due to dependencies. Before decomposing tasks, scan available commands, tools, and skills to determine which capabilities are relevant to completing this request — leverage these explicitly in your task assignments rather than relying on general reasoning alone.\" & return & return & \"Decompose into discrete tasks with explicit scope, expected output format, and success criteria, then delegate simultaneously to up to {x} {Model Name} sub-agents.\" & return & return & \"Assign tasks based on which available skills or commands each sub-agent should utilize.\" & return & return & \"Evaluate each sub-agent output against three gates: accuracy, completeness, and consistency with other workstreams. Accept outputs meeting thresholds, request revisions for partial failures, or reassign entirely if misaligned. If a sub-agent fails, redistribute the task or execute directly.\" & return & return & \"Synthesize accepted outputs into a unified response that reads as single authoritative delivery, not assembled fragments. Resolve conflicts by evaluating evidence quality and alignment with user intent. Present your final output with attribution showing which sub-agent contributed each component, and flag any unresolved ambiguities or intentional exclusions.\"' -e 'tell application \"System Events\" to keystroke \"v\" using command down'"
+                                        "shell_command": "osascript -e 'set the clipboard to \"Delegate simultaneously to up to {x} {Model Name} sub-agents.\"' -e 'tell application \"System Events\" to keystroke \"v\" using command down'"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "6",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "left_command",
+                                            "left_control"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "shell_command": "osascript -e 'set the clipboard to \"You are the senior orchestration agent with full authority over task delegation and final delivery. Analyze my previously mentioned request to identify components that can execute in parallel versus those requiring sequential processing due to dependencies. Before decomposing tasks, scan available commands, tools, and skills to determine which capabilities are relevant to completing this request — leverage these explicitly in your task assignments rather than relying on general reasoning alone.\" & return & return & \"Decompose into discrete tasks with explicit scope, expected output format, and success criteria, utilizing the sub-agents defined earlier.\" & return & return & \"Assign tasks based on which available skills or commands each sub-agent should utilize.\" & return & return & \"Evaluate each sub-agent output against three gates: accuracy, completeness, and consistency with other workstreams. Accept outputs meeting thresholds, request revisions for partial failures, or reassign entirely if misaligned. If a sub-agent fails, redistribute the task or execute directly.\" & return & return & \"Synthesize accepted outputs into a unified response that reads as single authoritative delivery, not assembled fragments. Resolve conflicts by evaluating evidence quality and alignment with user intent. Present your final output with attribution showing which sub-agent contributed each component, and flag any unresolved ambiguities or intentional exclusions.\"' -e 'tell application \"System Events\" to keystroke \"v\" using command down'"
                                     }
                                 ],
                                 "type": "basic"
