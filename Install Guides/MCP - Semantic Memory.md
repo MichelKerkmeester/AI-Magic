@@ -4,7 +4,7 @@ A comprehensive guide to installing, configuring, and using the Semantic Memory 
 
 ---
 
-## AI-FIRST INSTALL GUIDE
+## 🤖 AI-FIRST INSTALL GUIDE
 
 **Copy and paste this prompt to your AI assistant to get installation help:**
 
@@ -39,21 +39,21 @@ Guide me through each step with the exact commands and configuration needed.
 
 ---
 
-#### TABLE OF CONTENTS
+#### 📋 TABLE OF CONTENTS
 
-1. [OVERVIEW](#1--overview)
-2. [PREREQUISITES](#2--prerequisites)
-3. [INSTALLATION](#3--installation)
-4. [CONFIGURATION](#4-️-configuration)
-5. [VERIFICATION](#5--verification)
-6. [USAGE](#6--usage)
-7. [FEATURES](#7--features)
-8. [TROUBLESHOOTING](#8--troubleshooting)
-9. [RESOURCES](#9--resources)
+1. [📖 OVERVIEW](#1--overview)
+2. [📋 PREREQUISITES](#2--prerequisites)
+3. [📥 INSTALLATION](#3--installation)
+4. [⚙️ CONFIGURATION](#4-️-configuration)
+5. [✅ VERIFICATION](#5--verification)
+6. [🚀 USAGE](#6--usage)
+7. [🎯 FEATURES](#7--features)
+8. [🔧 TROUBLESHOOTING](#8--troubleshooting)
+9. [📚 RESOURCES](#9--resources)
 
 ---
 
-## 1. OVERVIEW
+## 1. 📖 OVERVIEW
 
 The Semantic Memory MCP Server provides AI assistants with conversation memory retrieval capabilities. It enables semantic search using local vector embeddings, fast trigger phrase matching, and direct memory content loading.
 
@@ -72,7 +72,7 @@ User Request
      │
      ▼
 ┌─────────────────────────────────────────┐
-│ Does request contain specific keywords? │
+│ Does request contain specific keywords?  │
 └────────────────┬────────────────────────┘
                  │
          ┌───────┴───────┐
@@ -114,43 +114,43 @@ User Request
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                    memory-server.js                         │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ MCP Protocol Handler (@modelcontextprotocol/sdk)    │   │
-│  │ - ListTools / CallTool handlers                     │   │
-│  └─────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │ MCP Protocol Handler (@modelcontextprotocol/sdk)    │    │
+│  │ - ListTools / CallTool handlers                     │    │
+│  └─────────────────────────────────────────────────────┘    │
 │                              │                              │
-│  ┌───────────┬───────────────┼───────────────┬───────────┐ │
-│  │           │               │               │           │ │
-│  ▼           ▼               ▼               ▼           │ │
-│ ┌─────┐   ┌─────────┐   ┌─────────┐   ┌──────────────┐  │ │
-│ │embed│   │vector-  │   │trigger- │   │trigger-      │  │ │
-│ │dings│   │index.js │   │matcher  │   │extractor.js  │  │ │
-│ │.js  │   │         │   │.js      │   │(save only)   │  │ │
-│ └──┬──┘   └────┬────┘   └────┬────┘   └──────────────┘  │ │
-│    │           │              │                          │ │
-│    │     ┌─────┴─────┐        │                          │ │
-│    │     │           │        │                          │ │
-│    ▼     ▼           ▼        ▼                          │ │
-│ ┌────────────┐  ┌────────────────┐                       │ │
-│ │ HuggingFace│  │ SQLite + vec   │                       │ │
-│ │ MiniLM-L6  │  │ memory-index   │                       │ │
-│ │ (local)    │  │ .sqlite        │                       │ │
-│ └────────────┘  └────────────────┘                       │ │
+│  ┌───────────┬───────────────┼───────────────┬───────────┐  │
+│  │           │               │               │           │  │
+│  ▼           ▼               ▼               ▼           │  │
+│ ┌─────┐   ┌─────────┐   ┌─────────┐   ┌──────────────┐   │  │
+│ │embed│   │vector-  │   │trigger- │   │trigger-      │   │  │
+│ │dings│   │index.js │   │matcher  │   │extractor.js  │   │  │
+│ │.js  │   │         │   │.js      │   │(save only)   │   │  │
+│ └──┬──┘   └────┬────┘   └────┬────┘   └──────────────┘   │  │
+│    │           │              │                          │  │
+│    │     ┌─────┴─────┐        │                          │  │
+│    │     │           │        │                          │  │
+│    ▼     ▼           ▼        ▼                          │  │
+│ ┌────────────┐  ┌────────────────┐                       │  │
+│ │ HuggingFace│  │ SQLite + vec   │                       │  │
+│ │ MiniLM-L6  │  │ memory-index   │                       │  │
+│ │ (local)    │  │ .sqlite        │                       │  │
+│ └────────────┘  └────────────────┘                       │  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ### Performance Targets
 
-| Operation | Target | Typical |
-|-----------|--------|---------|
-| Trigger matching | <50ms | ~35ms |
-| Vector search | <500ms | ~450ms |
-| Memory load | <10ms | ~5ms |
-| Embedding generation | <500ms | ~400ms |
+| Operation            | Target | Typical |
+| -------------------- | ------ | ------- |
+| Trigger matching     | <50ms  | ~35ms   |
+| Vector search        | <500ms | ~450ms  |
+| Memory load          | <10ms  | ~5ms    |
+| Embedding generation | <500ms | ~400ms  |
 
 ---
 
-## 2. PREREQUISITES
+## 2. 📋 PREREQUISITES
 
 Before installing the Semantic Memory MCP server, ensure you have:
 
@@ -175,12 +175,12 @@ Before installing the Semantic Memory MCP server, ensure you have:
 
 These dependencies are required and typically available via shared node_modules:
 
-| Dependency | Purpose |
-|------------|---------|
+| Dependency                  | Purpose                     |
+| --------------------------- | --------------------------- |
 | `@modelcontextprotocol/sdk` | MCP protocol implementation |
-| `better-sqlite3` | SQLite database driver |
-| `sqlite-vec` | Vector similarity extension |
-| `@huggingface/transformers` | Local embedding model |
+| `better-sqlite3`            | SQLite database driver      |
+| `sqlite-vec`                | Vector similarity extension |
+| `@huggingface/transformers` | Local embedding model       |
 
 ### Database Location
 
@@ -193,7 +193,7 @@ This location is shared between Claude Code and OpenCode.
 
 ---
 
-## 3. INSTALLATION
+## 3. 📥 INSTALLATION
 
 ### Step 1: Create Server Directory
 
@@ -262,7 +262,7 @@ node memory-server.js
 
 ---
 
-## 4. CONFIGURATION
+## 4. ⚙️ CONFIGURATION
 
 ### Option A: Configure for Claude Code CLI
 
@@ -327,7 +327,7 @@ The default database path is `~/.claude/memory-index.sqlite`. This can be overri
 
 ---
 
-## 5. VERIFICATION
+## 5. ✅ VERIFICATION
 
 ### Check 1: Verify Server Files
 
@@ -394,7 +394,7 @@ sqlite3 ~/.claude/memory-index.sqlite "SELECT COUNT(*) FROM memory_index"
 
 ---
 
-## 6. USAGE
+## 6. 🚀 USAGE
 
 ### Pattern 1: Quick Topic Check
 
@@ -460,16 +460,16 @@ When you know exactly what you need:
 
 ### Tool Selection Guide
 
-| Scenario | Tool | Why |
-|----------|------|-----|
-| Quick keyword lookup | `memory_match_triggers` | <50ms, no embeddings |
-| Semantic understanding | `memory_search` | Vector similarity |
-| Known spec folder | `memory_load` | Direct access |
-| Multi-concept search | `memory_search` with `concepts` | AND search |
+| Scenario               | Tool                            | Why                  |
+| ---------------------- | ------------------------------- | -------------------- |
+| Quick keyword lookup   | `memory_match_triggers`         | <50ms, no embeddings |
+| Semantic understanding | `memory_search`                 | Vector similarity    |
+| Known spec folder      | `memory_load`                   | Direct access        |
+| Multi-concept search   | `memory_search` with `concepts` | AND search           |
 
 ---
 
-## 7. FEATURES
+## 7. 🎯 FEATURES
 
 ### 7.1 memory_search
 
@@ -477,12 +477,12 @@ When you know exactly what you need:
 
 **Parameters**:
 
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `query` | string | Yes | - | Natural language search query |
-| `concepts` | array | No | - | 2-5 concepts for AND search |
-| `specFolder` | string | No | - | Limit to specific spec folder |
-| `limit` | number | No | 10 | Maximum results |
+| Parameter    | Type   | Required | Default | Description                   |
+| ------------ | ------ | -------- | ------- | ----------------------------- |
+| `query`      | string | Yes      | -       | Natural language search query |
+| `concepts`   | array  | No       | -       | 2-5 concepts for AND search   |
+| `specFolder` | string | No       | -       | Limit to specific spec folder |
+| `limit`      | number | No       | 10      | Maximum results               |
 
 **Example Request**:
 ```json
@@ -518,11 +518,11 @@ When you know exactly what you need:
 
 **Parameters**:
 
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `specFolder` | string | Yes* | - | Spec folder identifier |
-| `anchorId` | string | No | - | Load specific section |
-| `memoryId` | number | No | - | Direct memory ID access |
+| Parameter    | Type   | Required | Default | Description             |
+| ------------ | ------ | -------- | ------- | ----------------------- |
+| `specFolder` | string | Yes*     | -       | Spec folder identifier  |
+| `anchorId`   | string | No       | -       | Load specific section   |
+| `memoryId`   | number | No       | -       | Direct memory ID access |
 
 *Either `specFolder` or `memoryId` required
 
@@ -552,10 +552,10 @@ When you know exactly what you need:
 
 **Parameters**:
 
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `prompt` | string | Yes | - | Text to match against triggers |
-| `limit` | number | No | 3 | Maximum results |
+| Parameter | Type   | Required | Default | Description                    |
+| --------- | ------ | -------- | ------- | ------------------------------ |
+| `prompt`  | string | Yes      | -       | Text to match against triggers |
+| `limit`   | number | No       | 3       | Maximum results                |
 
 **Example Request**:
 ```json
@@ -585,7 +585,7 @@ When you know exactly what you need:
 
 ---
 
-## 8. TROUBLESHOOTING
+## 8. 🔧 TROUBLESHOOTING
 
 ### Server Won't Start
 
@@ -668,7 +668,7 @@ When you know exactly what you need:
 
 ---
 
-## 9. RESOURCES
+## 9. 📚 RESOURCES
 
 ### File Structure
 
@@ -713,10 +713,10 @@ CREATE VIRTUAL TABLE vec_memories USING vec0(
 
 ### Configuration Paths
 
-| Client | Configuration File | Server Key |
-|--------|-------------------|------------|
+| Client          | Configuration File                  | Server Key      |
+| --------------- | ----------------------------------- | --------------- |
 | **Claude Code** | `.mcp.json` + `settings.local.json` | `memory_server` |
-| **OpenCode** | `opencode.json` | `memory_server` |
+| **OpenCode**    | `opencode.json`                     | `memory_server` |
 
 ### Verification Commands
 
@@ -748,23 +748,23 @@ Slow operations are logged automatically:
 
 ### Related Documentation
 
-| Document | Location | Purpose |
-|----------|----------|---------|
-| Server README | `semantic-memory/README.md` | Full server documentation |
-| Spec 011 | `specs/011-semantic-memory-upgrade/` | Full specification |
-| Skills SKILL.md | `.claude/skills/workflows-save-context/SKILL.md` | Save context workflow |
+| Document        | Location                                         | Purpose                   |
+| --------------- | ------------------------------------------------ | ------------------------- |
+| Server README   | `semantic-memory/README.md`                      | Full server documentation |
+| Spec 011        | `specs/011-semantic-memory-upgrade/`             | Full specification        |
+| Skills SKILL.md | `.claude/skills/workflows-save-context/SKILL.md` | Save context workflow     |
 
 ---
 
-## Quick Reference
+## ⚡ Quick Reference
 
 ### Tool Summary
 
-| Tool | Purpose | Speed | Use When |
-|------|---------|-------|----------|
-| `memory_search` | Semantic vector search | ~500ms | Need meaning-based retrieval |
-| `memory_load` | Load memory content | <10ms | Know exact spec folder/ID |
-| `memory_match_triggers` | Fast phrase matching | <50ms | Quick keyword lookup first |
+| Tool                    | Purpose                | Speed  | Use When                     |
+| ----------------------- | ---------------------- | ------ | ---------------------------- |
+| `memory_search`         | Semantic vector search | ~500ms | Need meaning-based retrieval |
+| `memory_load`           | Load memory content    | <10ms  | Know exact spec folder/ID    |
+| `memory_match_triggers` | Fast phrase matching   | <50ms  | Quick keyword lookup first   |
 
 ### Essential Commands
 
