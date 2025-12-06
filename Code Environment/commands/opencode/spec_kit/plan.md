@@ -112,7 +112,55 @@ If no `:auto` or `:confirm` suffix is present, use AskUserQuestion:
 
 **Wait for user response before proceeding.**
 
-#### Step 1.3: Transform Raw Input
+#### Step 1.3: Spec Folder Confirmation (MANDATORY - DO NOT SKIP)
+
+🚨 **This step is REQUIRED by AGENTS.md Section 1 - "Collaboration First"**
+
+**BEFORE any file creation or workflow execution, you MUST:**
+
+1. **Search for related spec folders:**
+   ```bash
+   ls -d specs/*/ 2>/dev/null | head -10
+   ```
+   Also search for keyword matches in existing spec folders related to the planning topic.
+
+2. **Present A/B/C/D options using AskUserQuestion:**
+   ```
+   question: "Where should this plan be documented?"
+   options:
+     - A) Use existing spec folder: [suggest if related spec found]
+     - B) Create new spec folder: specs/[NNN]-[feature-slug]/
+     - C) Update related spec: [if partial match found]
+     - D) Skip documentation (planning only, no persistent artifacts)
+   ```
+
+3. **WAIT for explicit user response** - Do NOT proceed until user selects an option.
+
+4. **If user selects Option A or C AND memory files exist:**
+   - Trigger memory file selection (MANDATORY per AGENTS.md Section 1):
+   ```
+   question: "Load previous context from this spec folder?"
+   options:
+     - A) Load most recent memory file (quick context refresh)
+     - B) Load all recent files (up to 3) (comprehensive context)
+     - C) List all files and select specific (historical search)
+     - D) Skip (start fresh, no context)
+   ```
+   - Use Read tool to load selected memory files
+   - Acknowledge loaded context before proceeding
+
+5. **Create/use spec folder based on user's explicit choice:**
+   - Option A: Use specified existing folder
+   - Option B: Create new folder with next sequential number
+   - Option C: Update specified related folder
+   - Option D: Skip folder creation (plan output will not be persisted)
+
+**CRITICAL:**
+- NEVER auto-create spec folders without user confirmation
+- NEVER skip this step even if `$ARGUMENTS` contains a spec folder reference
+- NEVER proceed to Step 1.4 until user has explicitly chosen
+
+#### Step 1.4: Transform Raw Input
 
 Parse the raw text from `$ARGUMENTS` and transform into structured user_inputs fields.
 
@@ -121,14 +169,17 @@ Parse the raw text from `$ARGUMENTS` and transform into structured user_inputs f
 | Field | Pattern Detection | Default If Empty |
 |-------|-------------------|------------------|
 | `git_branch` | "branch: X", "on branch X", "feature/X" | Auto-create feature-{NNN} |
-| `spec_folder` | "specs/NNN", "spec folder X", "in specs/X" | Auto-create next available |
+| `spec_folder` | "specs/NNN", "spec folder X", "in specs/X" | **USE VALUE FROM STEP 1.3** (user's explicit choice) |
 | `context` | "using X", "with Y", "tech stack:", "constraints:" | Infer from request |
 | `issues` | "issue:", "bug:", "problem:", "error:", "question:", "unknown:" | Discover during workflow |
 | `request` | Primary task description (REQUIRED) | ERROR if completely empty |
 | `environment` | URLs starting with http(s)://, "staging:", "production:" | Skip browser testing |
 | `scope` | File paths, glob patterns, "files:" | Default to specs/** |
 
-#### Step 1.4: Load & Execute Workflow Prompt
+**IMPORTANT:** The `spec_folder` field MUST come from the user's explicit choice in Step 1.3.
+Do NOT auto-create or infer - the user MUST have selected Option A, B, C, or D.
+
+#### Step 1.5: Load & Execute Workflow Prompt
 
 Based on detected/selected mode:
 

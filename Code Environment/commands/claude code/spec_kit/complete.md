@@ -117,7 +117,55 @@ If no `:auto` or `:confirm` suffix is present, use AskUserQuestion:
 
 **Wait for user response before proceeding.**
 
-#### Step 1.3: Transform Raw Input
+#### Step 1.3: Spec Folder Confirmation (MANDATORY - DO NOT SKIP)
+
+🚨 **This step is REQUIRED by AGENTS.md Section 1 - "Collaboration First"**
+
+**BEFORE any file creation or workflow execution, you MUST:**
+
+1. **Search for related spec folders:**
+   ```bash
+   ls -d specs/*/ 2>/dev/null | head -10
+   ```
+   Also search for keyword matches in existing spec folders related to the feature.
+
+2. **Present A/B/C/D options using AskUserQuestion:**
+   ```
+   question: "Where should this feature be documented?"
+   options:
+     - A) Use existing spec folder: [suggest if related spec found]
+     - B) Create new spec folder: specs/[NNN]-[feature-slug]/
+     - C) Update related spec: [if partial match found]
+     - D) Skip documentation (not recommended for complete workflow)
+   ```
+
+3. **WAIT for explicit user response** - Do NOT proceed until user selects an option.
+
+4. **If user selects Option A or C AND memory files exist:**
+   - Trigger memory file selection (MANDATORY per AGENTS.md Section 1):
+   ```
+   question: "Load previous context from this spec folder?"
+   options:
+     - A) Load most recent memory file (quick context refresh)
+     - B) Load all recent files (up to 3) (comprehensive context)
+     - C) List all files and select specific (historical search)
+     - D) Skip (start fresh, no context)
+   ```
+   - Use Read tool to load selected memory files
+   - Acknowledge loaded context before proceeding
+
+5. **Create/use spec folder based on user's explicit choice:**
+   - Option A: Use specified existing folder
+   - Option B: Create new folder with next sequential number
+   - Option C: Update specified related folder
+   - Option D: Skip folder creation (WARNING: complete workflow produces many artifacts)
+
+**CRITICAL:**
+- NEVER auto-create spec folders without user confirmation
+- NEVER skip this step even if `$ARGUMENTS` contains a spec folder reference
+- NEVER proceed to Step 1.4 until user has explicitly chosen
+
+#### Step 1.4: Transform Raw Input
 
 Parse the raw text from `$ARGUMENTS` and transform into structured user_inputs fields.
 
@@ -126,18 +174,21 @@ Parse the raw text from `$ARGUMENTS` and transform into structured user_inputs f
 | Field | Pattern Detection | Default If Empty |
 |-------|-------------------|------------------|
 | `git_branch` | "branch: X", "on branch X", "feature/X" | Auto-create feature-{NNN} |
-| `spec_folder` | "specs/NNN", "spec folder X", "in specs/X" | Auto-create next available |
+| `spec_folder` | "specs/NNN", "spec folder X", "in specs/X" | **USE VALUE FROM STEP 1.3** (user's explicit choice) |
 | `context` | "using X", "with Y", "tech stack:", "constraints:" | Infer from request |
 | `issues` | "issue:", "bug:", "problem:", "error:", "question:", "unknown:" | Discover during workflow |
 | `request` | Primary task description (REQUIRED) | ERROR if completely empty |
 | `environment` | URLs starting with http(s)://, "staging:", "production:" | Skip browser testing |
 | `scope` | File paths, glob patterns like `src/**/*.js`, "files:" | Default to specs/** |
 
+**IMPORTANT:** The `spec_folder` field MUST come from the user's explicit choice in Step 1.3.
+Do NOT auto-create or infer - the user MUST have selected Option A, B, C, or D.
+
 **Transformation Process**:
 
 1. **Extract explicit fields**: Scan for labeled patterns ("branch:", "files:", etc.)
 2. **Infer implicit fields**: Extract context clues from natural language
-3. **Apply defaults**: Fill remaining fields with intelligent defaults
+3. **Apply defaults**: Fill remaining fields with intelligent defaults (EXCEPT spec_folder - use Step 1.3 value)
 4. **Validate required**: Ensure `request` field has substantive content
 
 **Example Transformation**:
@@ -149,11 +200,11 @@ Use Passport.js for the backend. Staging: https://staging.example.com
 Files in src/auth/ and src/middleware/
 ```
 
-Transformed:
+Transformed (after user selected Option B in Step 1.3):
 ```yaml
 user_inputs:
   git_branch: ""  # Auto-create
-  spec_folder: ""  # Auto-create
+  spec_folder: "specs/045-oauth-auth/"  # FROM USER CHOICE IN STEP 1.3
   context: "Technical stack: Passport.js for OAuth2 implementation"
   issues: ""  # Discover during workflow
   request: "Add user authentication with OAuth2 to the dashboard"
@@ -163,7 +214,7 @@ user_inputs:
     src/middleware/**
 ```
 
-#### Step 1.4: Load & Execute Workflow Prompt
+#### Step 1.5: Load & Execute Workflow Prompt
 
 Based on detected/selected mode:
 

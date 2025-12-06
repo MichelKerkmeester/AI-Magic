@@ -131,7 +131,56 @@ If no `:auto` or `:confirm` suffix is present, use AskUserQuestion:
 
 **Wait for user response before proceeding.**
 
-#### Step 1.3: Transform Raw Input
+#### Step 1.3: Spec Folder Confirmation (MANDATORY - DO NOT SKIP)
+
+🚨 **This step is REQUIRED by AGENTS.md Section 1 - "Collaboration First"**
+
+**BEFORE any file reading or workflow execution, you MUST:**
+
+1. **Detect or search for spec folder:**
+   - If spec folder specified in `$ARGUMENTS`: validate it exists and has required files
+   - If NOT specified: search for spec folders with plan.md:
+   ```bash
+   ls -d specs/*/ 2>/dev/null | head -10
+   ```
+
+2. **Present confirmation using AskUserQuestion:**
+   ```
+   question: "Which spec folder should be implemented?"
+   options:
+     - A) Use [detected/specified folder]: specs/[NNN]-[name]/ (has plan.md ✓)
+     - B) Select different spec folder (I'll list available options)
+     - C) Search by keyword (I'll find matching specs)
+   ```
+
+3. **WAIT for explicit user response** - Do NOT proceed until user confirms.
+
+4. **Validate prerequisites exist in chosen folder:**
+   - `spec.md` - REQUIRED
+   - `plan.md` - REQUIRED
+   - `tasks.md` - Will create if missing
+   - `checklist.md` - REQUIRED for Level 2+
+
+   If missing required files, guide user to run `/spec_kit:plan` first.
+
+5. **If memory files exist in chosen spec folder, ask for memory loading:**
+   ```
+   question: "Load previous context from this spec folder?"
+   options:
+     - A) Load most recent memory file (quick context refresh)
+     - B) Load all recent files (up to 3) (comprehensive context)
+     - C) List all files and select specific (historical search)
+     - D) Skip (start fresh, no context)
+   ```
+   - Use Read tool to load selected memory files
+   - Acknowledge loaded context before proceeding
+
+**CRITICAL:**
+- NEVER assume which spec folder to use without user confirmation
+- NEVER skip memory loading prompt if memory files exist
+- NEVER proceed to Step 1.4 until user has explicitly confirmed spec folder
+
+#### Step 1.4: Transform Raw Input
 
 Parse the raw text from `$ARGUMENTS` and transform into structured user_inputs fields.
 
@@ -140,14 +189,17 @@ Parse the raw text from `$ARGUMENTS` and transform into structured user_inputs f
 | Field | Pattern Detection | Default If Empty |
 |-------|-------------------|------------------|
 | `git_branch` | "branch: X", "on branch X", "feature/X" | Use existing branch from spec folder |
-| `spec_folder` | "specs/NNN", "spec folder X", "in specs/X" | REQUIRED - must specify or detect |
+| `spec_folder` | "specs/NNN", "spec folder X", "in specs/X" | **USE VALUE FROM STEP 1.3** (user's confirmed choice) |
 | `context` | "using X", "with Y", "constraints:" | Infer from spec folder |
 | `issues` | "issue:", "bug:", "problem:", "error:", "question:", "unknown:" | Discover during workflow |
 | `request` | Additional instructions | "Conduct comprehensive review and implement" |
 | `environment` | URLs, "staging:", "production:" | Skip browser testing |
 | `scope` | File paths, glob patterns | Default to specs/** |
 
-#### Step 1.4: Load & Execute Workflow Prompt
+**IMPORTANT:** The `spec_folder` field MUST come from the user's confirmed choice in Step 1.3.
+Do NOT auto-detect or assume - the user MUST have explicitly confirmed.
+
+#### Step 1.5: Load & Execute Workflow Prompt
 
 Based on detected/selected mode:
 
