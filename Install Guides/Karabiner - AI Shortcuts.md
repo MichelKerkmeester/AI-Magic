@@ -17,13 +17,11 @@ Please help me:
 3. Configure a "complex modification" rule that maps:
    - Cmd+Ctrl+1: Paste "Think really hard about this... Use ultrathink"
    - Cmd+Ctrl+2: Paste "Think really hard about this... Use Sequantial Thinking MCP"
-   - Cmd+Ctrl+3: Paste "Skills Scanner" prompt
-   - Cmd+Ctrl+4: Paste "Commands Scanner" prompt
-   - Cmd+Ctrl+5: Paste "Delegate simultaneously to up to {x} {Model Name} sub-agents."
-   - Cmd+Ctrl+6: Paste the "Senior Orchestrator" prompt
+   - Cmd+Ctrl+3: Paste "Delegate simultaneously to up to {x} {Model Name} sub-agents."
+   - Cmd+Ctrl+4: Paste the "Senior Orchestrator" prompt
    - Cmd+Ctrl+8: Paste "◻︎"
-   - Cmd+Ctrl+9: Paste "❖"
-   - Cmd+Ctrl+0: Paste "---"
+   - Cmd+Ctrl+9: Paste "Skills Scanner" prompt
+   - Cmd+Ctrl+0: Paste "Commands Scanner" prompt
 4. Verify the shortcuts work by testing them in a text editor.
 
 Guide me through editing the JSON file safely to add these rules to my "Default profile".
@@ -106,7 +104,7 @@ The configuration is stored in `~/.config/karabiner/karabiner.json`.
 
 ```json
 {
-    "description": "AI & Symbol Shortcuts (Cmd+Ctrl+1-6, 8-9, 0)",
+    "description": "AI & Symbol Shortcuts (Cmd+Ctrl+1-4, 8-0)",
     "manipulators": [
         {
             "description": "Cmd+Ctrl+1: Ultrathink Prompt",
@@ -131,31 +129,9 @@ The configuration is stored in `~/.config/karabiner/karabiner.json`.
             "type": "basic"
         },
         {
-            "description": "Cmd+Ctrl+3: Skills Scanner Prompt",
+            "description": "Cmd+Ctrl+3: Sub-agents Setup",
             "from": {
                 "key_code": "3",
-                "modifiers": { "mandatory": ["left_command", "left_control"] }
-            },
-            "to": [{
-                "shell_command": "osascript -e 'set the clipboard to \"Before diving in, use a parallel sub-agent to scan all available skills and identify which ones are relevant to completing this task. Apply these skills directly in your approach rather than relying on general reasoning alone.\" & return & return & \"After completing the task, report which skills you utilized and how each one contributed to the outcome.\"' -e 'tell application \"System Events\" to keystroke \"v\" using command down'"
-            }],
-            "type": "basic"
-        },
-        {
-            "description": "Cmd+Ctrl+4: Commands Scanner Prompt",
-            "from": {
-                "key_code": "4",
-                "modifiers": { "mandatory": ["left_command", "left_control"] }
-            },
-            "to": [{
-                "shell_command": "osascript -e 'set the clipboard to \"Before diving in, use a parallel sub-agent to scan all available commands and identify which ones are relevant to completing this task.\" & return & return & \"Treat these commands as reference patterns rather than literal instructions. Extract their underlying logic, sequencing, or workflow structure and adapt what'\\''s useful to build an approach tailored to this specific task. Only apply a command directly as-is when it'\\''s 80% or more relevant to what you'\\''re trying to accomplish.\" & return & return & \"After completing the task, report which commands you referenced or applied and how each one contributed to the outcome.\"' -e 'tell application \"System Events\" to keystroke \"v\" using command down'"
-            }],
-            "type": "basic"
-        },
-        {
-            "description": "Cmd+Ctrl+5: Orchestrator Setup",
-            "from": {
-                "key_code": "5",
                 "modifiers": { "mandatory": ["left_command", "left_control"] }
             },
             "to": [{
@@ -164,9 +140,9 @@ The configuration is stored in `~/.config/karabiner/karabiner.json`.
             "type": "basic"
         },
         {
-            "description": "Cmd+Ctrl+6: Orchestrator Execution",
+            "description": "Cmd+Ctrl+4: Orchestrator Execution",
             "from": {
-                "key_code": "6",
+                "key_code": "4",
                 "modifiers": { "mandatory": ["left_command", "left_control"] }
             },
             "to": [{
@@ -186,24 +162,24 @@ The configuration is stored in `~/.config/karabiner/karabiner.json`.
             "type": "basic"
         },
         {
-            "description": "Cmd+Ctrl+9: Option/Alt Symbol",
+            "description": "Cmd+Ctrl+9: Skills Scanner Prompt",
             "from": {
                 "key_code": "9",
                 "modifiers": { "mandatory": ["left_command", "left_control"] }
             },
             "to": [{
-                "shell_command": "osascript -e 'set the clipboard to \"❖\"' -e 'tell application \"System Events\" to keystroke \"v\" using command down'"
+                "shell_command": "osascript -e 'set the clipboard to \"Before diving in, use a parallel sub-agent to scan all available skills and identify which ones are relevant to completing this task. Apply these skills directly in your approach rather than relying on general reasoning alone.\" & return & return & \"After completing the task, report which skills you utilized and how each one contributed to the outcome.\"' -e 'tell application \"System Events\" to keystroke \"v\" using command down'"
             }],
             "type": "basic"
         },
         {
-            "description": "Cmd+Ctrl+0: Separator",
+            "description": "Cmd+Ctrl+0: Commands Scanner Prompt",
             "from": {
                 "key_code": "0",
                 "modifiers": { "mandatory": ["left_command", "left_control"] }
             },
             "to": [{
-                "shell_command": "osascript -e 'set the clipboard to \"---\"' -e 'tell application \"System Events\" to keystroke \"v\" using command down'"
+                "shell_command": "osascript -e 'set the clipboard to \"Before diving in, use a parallel sub-agent to scan all available commands and identify which ones are relevant to completing this task.\" & return & return & \"Treat these commands as reference patterns rather than literal instructions. Extract their underlying logic, sequencing, or workflow structure and adapt what'\\''s useful to build an approach tailored to this specific task. Only apply a command directly as-is when it'\\''s 80% or more relevant to what you'\\''re trying to accomplish.\" & return & return & \"After completing the task, report which commands you referenced or applied and how each one contributed to the outcome.\"' -e 'tell application \"System Events\" to keystroke \"v\" using command down'"
             }],
             "type": "basic"
         }
@@ -225,10 +201,8 @@ The configuration is stored in `~/.config/karabiner/karabiner.json`.
 | :------------- | :------------------------------------------------------------ | :------------------------------- |
 | **Cmd+Ctrl+1** | `Think really hard about this... Use ultrathink`              | Trigger deep thinking mode       |
 | **Cmd+Ctrl+2** | `Think really hard about this... Use Sequantial Thinking MCP` | Trigger sequential thinking      |
-| **Cmd+Ctrl+3** | `Before diving in, use a parallel sub-agent...`               | Trigger skills scanner prompt    |
-| **Cmd+Ctrl+4** | `Before diving in, use a parallel sub-agent...`               | Trigger commands scanner prompt  |
-| **Cmd+Ctrl+5** | `Delegate simultaneously to up to {x}...`                     | Orchestrator: Define sub-agents  |
-| **Cmd+Ctrl+6** | `You are the senior orchestration agent...`                   | Orchestrator: Execute delegation |
+| **Cmd+Ctrl+3** | `Delegate simultaneously to up to {x}...`                     | Orchestrator: Define sub-agents  |
+| **Cmd+Ctrl+4** | `You are the senior orchestration agent...`                   | Orchestrator: Execute delegation |
 | **Cmd+Ctrl+8** | `◻︎`                                                           | Checkbox symbol                  |
-| **Cmd+Ctrl+9** | `❖`                                                           | Option/Alt symbol                |
-| **Cmd+Ctrl+0** | `---`                                                         | Horizontal rule / Separator      |
+| **Cmd+Ctrl+9** | `Before diving in, use a parallel sub-agent...`               | Trigger skills scanner prompt    |
+| **Cmd+Ctrl+0** | `Before diving in, use a parallel sub-agent...`               | Trigger commands scanner prompt  |
